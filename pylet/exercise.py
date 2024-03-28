@@ -1,3 +1,4 @@
+import os
 from typing import List
 import yaml
 
@@ -10,3 +11,6 @@ class ExerciseHandler:
         with open(path) as f:
             exercises = yaml.safe_load(f)
         return exercises["exercises"]
+
+    def check_file_exists(self, path) -> bool:
+        return os.path.isfile(path)
