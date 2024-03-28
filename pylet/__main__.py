@@ -1,4 +1,4 @@
-from .exercise import ExerciseHandler
+from exercise import ExerciseHandler
 
 
 if __name__ == '__main__':
