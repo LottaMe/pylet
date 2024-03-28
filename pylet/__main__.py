@@ -5,6 +5,6 @@ if __name__ == "__main__":
 
     for e in exercise_handler.exercises:
         if exercise_handler.check_file_exists(f"exercises/{e}.py"):
-            print(e + " exists")
+            print(e)
         else:
-            print(e + "does not exist")
+            pass
