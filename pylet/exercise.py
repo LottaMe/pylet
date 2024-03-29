@@ -4,6 +4,12 @@ from typing import List
 import yaml
 
 
+class CompileResult:
+    def __init__(self, success: bool, output: str) -> None:
+        self.success = success
+        self.output = output
+
+
 class ExerciseHandler:
     def __init__(self, exercise_info_path: str) -> None:
         self.exercises = self.get_exercises(exercise_info_path)
@@ -16,7 +22,9 @@ class ExerciseHandler:
     def check_file_exists(self, path) -> bool:
         return os.path.isfile(path)
 
-    def compile_exercise(self, path) -> bool:
+    def compile_exercise(self, path) -> CompileResult:
         result = subprocess.run(["python", path], capture_output=True, text=True)
-        print("output:", result.stdout)
-        print("error:", result.stderr)
+        if result.returncode == 0:
+            return CompileResult(True, result.stdout)
+        else:
+            return CompileResult(False, result.stderr)

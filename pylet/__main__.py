@@ -6,6 +6,13 @@ if __name__ == "__main__":
         path = f"exercises/{e}.py"
         if exercise_handler.check_file_exists(path):
             print(e)
-            exercise_handler.compile_exercise(path)
+            result = exercise_handler.compile_exercise(path)
+            if result.success == True:
+                print("success", result.output)
+            else:
+                print("error:", result.output)
+                exit = ""
+                while exit != "exit":
+                    exit = input()
         else:
             pass
