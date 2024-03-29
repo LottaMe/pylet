@@ -1,8 +1,8 @@
 from exercise import ExerciseHandler
 
 if __name__ == "__main__":
-    exercise_handler = ExerciseHandler(exercise_info_path="exercise_info.yaml")
-    for e in exercise_handler.exercises:
+    exercise_handler = ExerciseHandler()
+    for e in exercise_handler.get_exercises("exercise_info.yaml"):
         path = f"exercises/{e}.py"
         if exercise_handler.check_file_exists(path):
             print(e)
