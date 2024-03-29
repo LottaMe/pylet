@@ -1,4 +1,5 @@
 import os
+import subprocess
 from typing import List
 import yaml
 
@@ -14,3 +15,8 @@ class ExerciseHandler:
 
     def check_file_exists(self, path) -> bool:
         return os.path.isfile(path)
+
+    def compile_exercise(self, path) -> bool:
+        result = subprocess.run(["python", path], capture_output=True, text=True)
+        print("output:", result.stdout)
+        print("error:", result.stderr)
