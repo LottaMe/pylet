@@ -11,7 +11,7 @@ class TestExerciseHandler:
         assert expected_exercises == exercise_handler.exercises
 
     def test_check_file_exists(self):
-        expect_true = "tests/mocks/test_exercise.py"
+        expect_true = "tests/mocks/mock_exercise.py"
         expect_false = "i_am_nobody.py"
         exercise_handler = ExerciseHandler(self.path)
 
