@@ -3,6 +3,8 @@ import subprocess
 from typing import List
 import yaml
 
+from interface import Interface
+
 
 class CompileResult:
     def __init__(self, success: bool, output: str) -> None:
@@ -11,8 +13,9 @@ class CompileResult:
 
 
 class ExerciseHandler:
-    def __init__(self, path: str) -> None:
+    def __init__(self, path: str, interface: Interface) -> None:
         self.path = path
+        self.interface = interface
         self.exercises = self.get_exercises(path)
 
     def get_exercises(self, path) -> List[str]:
@@ -31,20 +34,15 @@ class ExerciseHandler:
             return CompileResult(False, result.stderr)
 
     def run(self) -> None:
-        # for loop through self.exercises
         for exercise in self.exercises:
             exercise_path = f"exercises/{exercise}.py"
-            # check if file exists
             if not self.check_file_exists(exercise_path):
                 continue
-            # check if file compiles
             compile_result = self.compile_exercise(exercise_path)
-            # yes -> feedback message
             if compile_result.success == True:
-                print("success:", compile_result.output)
-            # no -> while loop, wait for file change/exit
+                self.interface.print_success(compile_result.output)
             else:
-                print("error:", compile_result.output)
+                self.interface.print_error(compile_result.output)
                 exit = ""
                 valid_exits = ["exit", "exit()", "q"]
                 while exit not in valid_exits:
