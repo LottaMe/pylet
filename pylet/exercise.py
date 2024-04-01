@@ -40,7 +40,10 @@ class ExerciseHandler:
     def on_modified(self, event, path):
         self.interface.clear()
         result = self.compile_exercise(path)
-        self.interface.print_error(result.output)
+        if result.success == True:
+                self.interface.print_success(result.output)
+        else:
+            self.interface.print_error(result.output)
 
     def watch_exercise_till_pass(self, path) -> None:
         event_handler = FileSystemEventHandler()
