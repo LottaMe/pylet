@@ -29,8 +29,8 @@ class ExerciseHandler:
             return CompileResult(True, result.stdout)
         else:
             return CompileResult(False, result.stderr)
-        
-    def run(self) -> None: 
+
+    def run(self) -> None:
         # for loop through self.exercises
         for exercise in self.exercises:
             exercise_path = f"exercises/{exercise}.py"
