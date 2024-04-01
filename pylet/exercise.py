@@ -1,8 +1,10 @@
 import os
 import subprocess
+import time
 from typing import List
 import yaml
-
+from watchdog.events import FileSystemEventHandler
+from watchdog.observers import Observer
 from interface import Interface
 
 
@@ -33,6 +35,24 @@ class ExerciseHandler:
         else:
             return CompileResult(False, result.stderr)
 
+    def watch_exercise_till_pass(self, path) -> None:
+        event_handler = FileSystemEventHandler()
+        # event_handler.on_modified
+        observer = Observer()
+        observer.schedule(event_handler, path, recursive=True)
+        observer.start()
+
+        try:
+            while self.compile_exercise(path=path).success != True:
+                time.sleep(1)
+            else:
+                observer.stop()
+                observer.join()
+        except KeyboardInterrupt:
+            observer.stop()
+            observer.join()
+            exit(0)
+
     def run(self) -> None:
         for exercise in self.exercises:
             exercise_path = f"exercises/{exercise}.py"
@@ -43,7 +63,6 @@ class ExerciseHandler:
                 self.interface.print_success(compile_result.output)
             else:
                 self.interface.print_error(compile_result.output)
-                exit = ""
-                valid_exits = ["exit", "exit()", "q"]
-                while exit not in valid_exits:
-                    exit = input()
+                # exit = ""
+                # valid_exits = ["exit", "exit()", "q"]
+                self.watch_exercise_till_pass(path=exercise_path)
