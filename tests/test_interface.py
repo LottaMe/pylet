@@ -1,5 +1,6 @@
 from interface import Interface
 
+
 class TestInterface:
     interface = Interface()
 

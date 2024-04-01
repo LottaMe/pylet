@@ -1,6 +1,7 @@
 from exercise import ExerciseHandler
 from interface import Interface
 
+
 class TestExerciseHandler:
     path = "tests/mocks/mock_exercise_info.yaml"
     interface = Interface()
