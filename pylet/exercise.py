@@ -38,6 +38,7 @@ class ExerciseHandler:
             return CompileResult(False, result.stderr)
 
     def on_modified(self, event, path):
+        self.interface.clear()
         result = self.compile_exercise(path)
         self.interface.print_error(result.output)
 

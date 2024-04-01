@@ -1,3 +1,6 @@
+import subprocess
+
+
 class Interface:
     def print_success(self, output) -> None:
         print("success:", output)
@@ -10,3 +13,6 @@ class Interface:
 
     def print_course_complete(self) -> None:
         print("You have completed the course!")
+
+    def clear(self) -> None:
+        subprocess.run(["clear"])
