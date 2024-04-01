@@ -1,11 +1,13 @@
 import os
 import subprocess
 import time
+from functools import partial
 from typing import List
+
 import yaml
+from interface import Interface
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
-from interface import Interface
 
 
 class CompileResult:
@@ -35,9 +37,13 @@ class ExerciseHandler:
         else:
             return CompileResult(False, result.stderr)
 
+    def on_modified(self, event, path):
+        result = self.compile_exercise(path)
+        self.interface.print_error(result.output)
+
     def watch_exercise_till_pass(self, path) -> None:
         event_handler = FileSystemEventHandler()
-        # event_handler.on_modified
+        event_handler.on_modified = partial(self.on_modified, path=path)
         observer = Observer()
         observer.schedule(event_handler, path, recursive=True)
         observer.start()
