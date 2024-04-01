@@ -1,8 +1,8 @@
 from exercise import ExerciseHandler
-
+from interface import Interface
 
 if __name__ == "__main__":
-    exercise_handler = ExerciseHandler(exercise_info_path="exercise_info.yaml")
+    interface = Interface()
+    exercise_handler = ExerciseHandler(path="exercise_info.yaml", interface=interface)
 
-    for e in exercise_handler.exercises:
-        print(e)
+    exercise_handler.run()
