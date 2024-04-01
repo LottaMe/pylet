@@ -1,9 +1,10 @@
-from ..pylet.exercise import ExerciseHandler
-
+from exercise import ExerciseHandler
+from interface import Interface
 
 class TestExerciseHandler:
     path = "tests/mocks/mock_exercise_info.yaml"
-    exercise_handler = ExerciseHandler(path=path)
+    interface = Interface()
+    exercise_handler = ExerciseHandler(path=path, interface=interface)
 
     def test_get_exercises(self):
         expected_exercises = ["play_piano", "listen_to_taylor_swift", "procrastinate"]
