@@ -41,7 +41,7 @@ class ExerciseHandler:
         self.interface.clear()
         result = self.compile_exercise(path)
         if result.success == True:
-                self.interface.print_success(result.output)
+            self.interface.print_success(result.output)
         else:
             self.interface.print_error(result.output)
 
@@ -53,7 +53,7 @@ class ExerciseHandler:
         observer.start()
 
         try:
-            while self.compile_exercise(path=path).success != True:
+            while not self.compile_exercise(path=path).success:
                 time.sleep(1)
             else:
                 observer.stop()
@@ -73,6 +73,4 @@ class ExerciseHandler:
                 self.interface.print_success(compile_result.output)
             else:
                 self.interface.print_error(compile_result.output)
-                # exit = ""
-                # valid_exits = ["exit", "exit()", "q"]
                 self.watch_exercise_till_pass(path=exercise_path)
