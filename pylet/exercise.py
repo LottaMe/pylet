@@ -1,9 +1,13 @@
 import os
 import subprocess
+import time
+from functools import partial
 from typing import List
-import yaml
 
+import yaml
 from interface import Interface
+from watchdog.events import FileSystemEventHandler
+from watchdog.observers import Observer
 
 
 class CompileResult:
@@ -33,6 +37,32 @@ class ExerciseHandler:
         else:
             return CompileResult(False, result.stderr)
 
+    def on_modified(self, event, path):
+        self.interface.clear()
+        result = self.compile_exercise(path)
+        if result.success == True:
+            self.interface.print_success(result.output)
+        else:
+            self.interface.print_error(result.output)
+
+    def watch_exercise_till_pass(self, path) -> None:
+        event_handler = FileSystemEventHandler()
+        event_handler.on_modified = partial(self.on_modified, path=path)
+        observer = Observer()
+        observer.schedule(event_handler, path, recursive=True)
+        observer.start()
+
+        try:
+            while not self.compile_exercise(path=path).success:
+                time.sleep(1)
+            else:
+                observer.stop()
+                observer.join()
+        except KeyboardInterrupt:
+            observer.stop()
+            observer.join()
+            exit(0)
+
     def run(self) -> None:
         for exercise in self.exercises:
             exercise_path = f"exercises/{exercise}.py"
@@ -43,7 +73,4 @@ class ExerciseHandler:
                 self.interface.print_success(compile_result.output)
             else:
                 self.interface.print_error(compile_result.output)
-                exit = ""
-                valid_exits = ["exit", "exit()", "q"]
-                while exit not in valid_exits:
-                    exit = input()
+                self.watch_exercise_till_pass(path=exercise_path)
