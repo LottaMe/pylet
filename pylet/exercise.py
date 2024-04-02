@@ -37,6 +37,14 @@ class ExerciseHandler:
         else:
             return CompileResult(False, result.stderr)
 
+    def check_done_comment(self, path: str) -> bool:
+        with open(path, "r") as f:
+            lines = f.readlines()
+            for line in lines:
+                if line.find("# I AM NOT DONE") != -1:
+                    return True
+        return False
+
     def on_modified(self, event, path):
         self.interface.clear()
         result = self.compile_exercise(path)
