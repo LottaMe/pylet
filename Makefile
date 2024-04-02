@@ -7,4 +7,4 @@ setup: requirements.txt
 	pip install -r requirements.txt
 format:
 	black . --extend-exclude exercises
-	isort .
+	isort pylet
