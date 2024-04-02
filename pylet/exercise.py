@@ -60,7 +60,7 @@ class ExerciseHandler:
         if result.success and self.check_done_comment(path=path):
             return True
         return False
-    
+
     def watch_exercise_till_pass(self, path) -> None:
         event_handler = FileSystemEventHandler()
         event_handler.on_modified = partial(self.on_modified, path=path)
@@ -91,7 +91,7 @@ class ExerciseHandler:
                     self.watch_exercise_till_pass(path=exercise_path)
                 else:
                     continue
-                    
+
             else:
                 self.interface.print_error(compile_result.output)
                 self.watch_exercise_till_pass(path=exercise_path)

@@ -48,15 +48,17 @@ class TestExerciseHandler:
 
         result = self.exercise_handler.check_done_comment(path)
         assert result == False
-        
+
         f = open(path, "w")
-        f.write("""
+        f.write(
+            """
 
                 # I AM NOT DONE
 
                 print "hello world"
 
-                """)
+                """
+        )
         f.close()
 
         result = self.exercise_handler.check_done_comment(path)
