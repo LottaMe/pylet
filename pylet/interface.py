@@ -1,15 +1,30 @@
 import subprocess
+from typing import List
 
 
 class Interface:
-    def print_success(self, output) -> None:
+    def print_success(self, output: str) -> None:
         print("success:", output)
 
-    def print_error(self, output) -> None:
+    def print_error(self, output: str) -> None:
         print("error:", output)
 
-    def print_progress(self) -> None:
-        pass
+    def print_progress(
+        self, all_exercises: List[str], completed_exercises: List[str]
+    ) -> None:
+        progress = []
+        progress.extend(["#" for _ in completed_exercises])
+        if completed_exercises < all_exercises:
+            progress.append(">")
+            progress.extend(
+                ["-" for _ in all_exercises[len(completed_exercises) + 1 :]]
+            )
+        print(
+            "progress:",
+            "".join(progress),
+            f"{len(completed_exercises)}/{len(all_exercises)}",
+            f"{round(((len(completed_exercises) / len(all_exercises)) * 100),1)}%",
+        )
 
     def print_course_complete(self) -> None:
         print("You have completed the course!")

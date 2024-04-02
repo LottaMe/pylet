@@ -39,3 +39,36 @@ class TestExerciseHandler:
         assert len(result_fail.output) > 0 and isinstance(result_success.output, str)
 
         open(path, "w").close()
+
+    def test_check_done_comment(self):
+        path = "tests/mocks/mock_exercise.py"
+        f = open(path, "w")
+        f.write("print 'hello world'")
+        f.close()
+
+        result = self.exercise_handler.check_done_comment(path)
+        assert result == False
+
+        f = open(path, "w")
+        f.write(
+            """
+
+                # I AM NOT DONE
+
+                print "hello world"
+
+                """
+        )
+        f.close()
+
+        result = self.exercise_handler.check_done_comment(path)
+        assert result == True
+
+        f = open(path, "w")
+        f.write("       ### I AM NOT DONE       ")
+        f.close()
+
+        result = self.exercise_handler.check_done_comment(path)
+        assert result == True
+
+        open(path, "w").close()

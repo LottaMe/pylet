@@ -21,6 +21,7 @@ class ExerciseHandler:
         self.path = path
         self.interface = interface
         self.exercises = self.get_exercises(path)
+        self.completed_exercises = []
 
     def get_exercises(self, path) -> List[str]:
         with open(path) as f:
@@ -37,6 +38,14 @@ class ExerciseHandler:
         else:
             return CompileResult(False, result.stderr)
 
+    def check_done_comment(self, path: str) -> bool:
+        with open(path, "r") as f:
+            lines = f.readlines()
+            for line in lines:
+                if line.find("# I AM NOT DONE") != -1:
+                    return True
+        return False
+
     def on_modified(self, event, path):
         self.interface.clear()
         result = self.compile_exercise(path)
@@ -44,6 +53,14 @@ class ExerciseHandler:
             self.interface.print_success(result.output)
         else:
             self.interface.print_error(result.output)
+
+    def wait_on_exercise(self, path) -> bool:
+        result = self.compile_exercise(path=path)
+        if not result.success:
+            return True
+        if result.success and self.check_done_comment(path=path):
+            return True
+        return False
 
     def watch_exercise_till_pass(self, path) -> None:
         event_handler = FileSystemEventHandler()
@@ -53,11 +70,12 @@ class ExerciseHandler:
         observer.start()
 
         try:
-            while not self.compile_exercise(path=path).success:
+            while self.wait_on_exercise(path=path):
                 time.sleep(1)
             else:
                 observer.stop()
                 observer.join()
+                self.completed_exercises.append(path)
         except KeyboardInterrupt:
             observer.stop()
             observer.join()
@@ -68,9 +86,24 @@ class ExerciseHandler:
             exercise_path = f"exercises/{exercise}.py"
             if not self.check_file_exists(exercise_path):
                 continue
+            self.interface.print_progress(self.exercises, self.completed_exercises)
             compile_result = self.compile_exercise(exercise_path)
             if compile_result.success == True:
-                self.interface.print_success(compile_result.output)
+                if self.check_done_comment(path=exercise_path):
+                    self.interface.clear()
+                    self.interface.print_progress(self.exercises, self.completed_exercises)
+                    self.interface.print_success(compile_result.output)
+
+                    self.watch_exercise_till_pass(path=exercise_path)
+                else:
+                    continue
+
             else:
+                self.interface.clear()
+                self.interface.print_progress(self.exercises, self.completed_exercises)
                 self.interface.print_error(compile_result.output)
+
                 self.watch_exercise_till_pass(path=exercise_path)
+        
+        self.interface.print_progress(self.exercises, self.completed_exercises)
+        self.interface.print_course_complete()
