@@ -53,6 +53,14 @@ class ExerciseHandler:
         else:
             self.interface.print_error(result.output)
 
+    def wait_on_exercise(self, path) -> bool:
+        result = self.compile_exercise(path=path)
+        if not result.success:
+            return True
+        if result.success and self.check_done_comment(path=path):
+            return True
+        return False
+    
     def watch_exercise_till_pass(self, path) -> None:
         event_handler = FileSystemEventHandler()
         event_handler.on_modified = partial(self.on_modified, path=path)
@@ -61,7 +69,7 @@ class ExerciseHandler:
         observer.start()
 
         try:
-            while not self.compile_exercise(path=path).success:
+            while self.wait_on_exercise(path=path):
                 time.sleep(1)
             else:
                 observer.stop()
@@ -78,7 +86,12 @@ class ExerciseHandler:
                 continue
             compile_result = self.compile_exercise(exercise_path)
             if compile_result.success == True:
-                self.interface.print_success(compile_result.output)
+                if self.check_done_comment(path=exercise_path):
+                    self.interface.print_success(compile_result.output)
+                    self.watch_exercise_till_pass(path=exercise_path)
+                else:
+                    continue
+                    
             else:
                 self.interface.print_error(compile_result.output)
                 self.watch_exercise_till_pass(path=exercise_path)
