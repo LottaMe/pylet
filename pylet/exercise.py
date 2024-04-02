@@ -21,6 +21,7 @@ class ExerciseHandler:
         self.path = path
         self.interface = interface
         self.exercises = self.get_exercises(path)
+        self.completed_exercises = []
 
     def get_exercises(self, path) -> List[str]:
         with open(path) as f:
@@ -74,6 +75,7 @@ class ExerciseHandler:
             else:
                 observer.stop()
                 observer.join()
+                self.completed_exercises.append(path)
         except KeyboardInterrupt:
             observer.stop()
             observer.join()
@@ -84,14 +86,24 @@ class ExerciseHandler:
             exercise_path = f"exercises/{exercise}.py"
             if not self.check_file_exists(exercise_path):
                 continue
+            self.interface.print_progress(self.exercises, self.completed_exercises)
             compile_result = self.compile_exercise(exercise_path)
             if compile_result.success == True:
                 if self.check_done_comment(path=exercise_path):
+                    self.interface.clear()
+                    self.interface.print_progress(self.exercises, self.completed_exercises)
                     self.interface.print_success(compile_result.output)
+
                     self.watch_exercise_till_pass(path=exercise_path)
                 else:
                     continue
 
             else:
+                self.interface.clear()
+                self.interface.print_progress(self.exercises, self.completed_exercises)
                 self.interface.print_error(compile_result.output)
+
                 self.watch_exercise_till_pass(path=exercise_path)
+        
+        self.interface.print_progress(self.exercises, self.completed_exercises)
+        self.interface.print_course_complete()
