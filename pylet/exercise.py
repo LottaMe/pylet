@@ -40,7 +40,10 @@ class ExerciseHandler:
 
     def test_exercise(self, path) -> CompileResult:
         result = subprocess.run(["pytest", path], capture_output=True, text=True)
-        return CompileResult(True, result.stdout)
+        if "FAILURES" in result.stdout:
+            return CompileResult(False, result.stdout)
+        else:
+            return CompileResult(True, result.stdout)
         
     def check_done_comment(self, path: str) -> bool:
         with open(path, "r") as f:
@@ -56,7 +59,8 @@ class ExerciseHandler:
         if result.success == True:
             self.interface.print_success(result.output)
             test = self.test_exercise(path)
-            self.interface.print_success(test.output)
+            print(test.success)
+            print(test.output)
         else:
             self.interface.print_error(result.output)
 
