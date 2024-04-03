@@ -86,7 +86,6 @@ class ExerciseHandler:
             exercise_path = f"exercises/{exercise}.py"
             if not self.check_file_exists(exercise_path):
                 continue
-            self.interface.print_progress(self.exercises, self.completed_exercises)
             compile_result = self.compile_exercise(exercise_path)
             if compile_result.success == True:
                 if self.check_done_comment(path=exercise_path):
