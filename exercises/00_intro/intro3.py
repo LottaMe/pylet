@@ -2,10 +2,10 @@
 
 
 def plus_one(a: int) -> int:
-    return
-
+    return a+1
 
 ## tests
 
-assert plus_one(1) == 2
-assert plus_one(5) == 6
+def test_plus_one():
+    assert plus_one(1) == 2
+    assert plus_one(5) == 6

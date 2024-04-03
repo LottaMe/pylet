@@ -30,4 +30,5 @@ class Interface:
         print("You have completed the course!")
 
     def clear(self) -> None:
-        subprocess.run(["clear"])
+        # subprocess.run(["clear"])
+        pass

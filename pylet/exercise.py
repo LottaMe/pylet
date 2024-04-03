@@ -38,6 +38,10 @@ class ExerciseHandler:
         else:
             return CompileResult(False, result.stderr)
 
+    def test_exercise(self, path) -> CompileResult:
+        result = subprocess.run(["pytest", path], capture_output=True, text=True)
+        return CompileResult(True, result.stdout)
+        
     def check_done_comment(self, path: str) -> bool:
         with open(path, "r") as f:
             lines = f.readlines()
@@ -51,6 +55,8 @@ class ExerciseHandler:
         result = self.compile_exercise(path)
         if result.success == True:
             self.interface.print_success(result.output)
+            test = self.test_exercise(path)
+            self.interface.print_success(test.output)
         else:
             self.interface.print_error(result.output)
 
@@ -87,6 +93,8 @@ class ExerciseHandler:
             if not self.check_file_exists(exercise_path):
                 continue
             compile_result = self.compile_exercise(exercise_path)
+            self.test_exercise(exercise_path)
+
             if compile_result.success == True:
                 if self.check_done_comment(path=exercise_path):
                     self.interface.clear()
