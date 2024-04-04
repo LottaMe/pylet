@@ -60,3 +60,12 @@ class TestExercise:
         assert result == True
 
         open(self.path, "w").close()
+
+    def test_on_modified_recheck(self) -> None:
+        pass
+
+    def test_check_wait(self) -> bool:
+        pass
+
+    def test_watch_till_pass(self) -> str:
+        pass
