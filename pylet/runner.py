@@ -1,9 +1,8 @@
 from typing import List
 
 import yaml
-
-from interface import Interface
 from exercise import Exercise
+from interface import Interface
 
 
 class Runner:
@@ -18,17 +17,21 @@ class Runner:
         with open(path) as f:
             exercises = yaml.safe_load(f)
         return exercises["exercises"]
-    
+
     def run(self) -> None:
         for exercise in self.exercises:
-            exercise = Exercise(path=f"exercises/{exercise}.py", interface=self.interface)
+            exercise = Exercise(
+                path=f"exercises/{exercise}.py", interface=self.interface
+            )
             compile_result = exercise.compile()
             # exercise.run_tests()
 
             if compile_result.success == True:
                 if exercise.check_done_comment():
                     self.interface.clear()
-                    self.interface.print_progress(self.exercises, self.completed_exercises)
+                    self.interface.print_progress(
+                        self.exercises, self.completed_exercises
+                    )
                     self.interface.print_success(compile_result.output)
 
                     self.completed_exercises.append(exercise.watch_till_pass())
@@ -41,7 +44,6 @@ class Runner:
                 self.interface.print_error(compile_result.output)
 
                 self.completed_exercises.append(exercise.watch_till_pass())
-        
+
         self.interface.print_progress(self.exercises, self.completed_exercises)
         self.interface.print_course_complete()
-    

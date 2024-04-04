@@ -2,10 +2,9 @@ import subprocess
 import time
 from functools import partial
 
+from interface import Interface
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
-
-from interface import Interface
 
 
 class CompileResult:
@@ -13,8 +12,9 @@ class CompileResult:
         self.success = success
         self.output = output
 
+
 class Exercise:
-    def __init__(self, path:str, interface: Interface) -> None:
+    def __init__(self, path: str, interface: Interface) -> None:
         self.path = path
         self.interface = interface
 
@@ -24,14 +24,14 @@ class Exercise:
             return CompileResult(True, result.stdout)
         else:
             return CompileResult(False, result.stderr)
-        
+
     # def run_tests(self) -> CompileResult:
     #     result = subprocess.run(["pytest", self.path], capture_output=True, text=True)
     #     if "FAILURES" in result.stdout:
     #         return CompileResult(False, result.stdout)
     #     else:
     #         return CompileResult(True, result.stdout)
-        
+
     def check_done_comment(self) -> bool:
         with open(self.path, "r") as f:
             lines = f.readlines()
@@ -39,7 +39,7 @@ class Exercise:
                 if line.find("# I AM NOT DONE") != -1:
                     return True
         return False
-    
+
     def on_modified_recheck(self, event) -> None:
         self.interface.clear()
         result = self.compile()
@@ -50,7 +50,7 @@ class Exercise:
             # print(test.output)
         else:
             self.interface.print_error(result.output)
-    
+
     def check_wait(self) -> bool:
         result = self.compile()
         if not result.success:
@@ -58,7 +58,7 @@ class Exercise:
         if result.success and self.check_done_comment():
             return True
         return False
-    
+
     def watch_till_pass(self) -> str:
         event_handler = FileSystemEventHandler()
         event_handler.on_modified = partial(self.on_modified_recheck)

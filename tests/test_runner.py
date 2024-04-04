@@ -1,6 +1,7 @@
 from runner import Runner
 from interface import Interface
 
+
 class TestRunner:
     interface = Interface()
     path = "tests/mocks/mock_exercise_info.yaml"
