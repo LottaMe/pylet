@@ -25,12 +25,12 @@ class Exercise:
         else:
             return CompileResult(False, result.stderr)
 
-    # def run_tests(self) -> CompileResult:
-    #     result = subprocess.run(["pytest", self.path], capture_output=True, text=True)
-    #     if "FAILURES" in result.stdout:
-    #         return CompileResult(False, result.stdout)
-    #     else:
-    #         return CompileResult(True, result.stdout)
+    def run_tests(self) -> CompileResult:
+        result = subprocess.run(["pytest", self.path], capture_output=True, text=True)
+        if "FAILURES" in result.stdout:
+            return CompileResult(False, result.stdout)
+        else:
+            return CompileResult(True, result.stdout)
 
     def check_done_comment(self) -> bool:
         with open(self.path, "r") as f:

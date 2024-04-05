@@ -27,6 +27,33 @@ class TestExercise:
 
         open(self.path, "w").close()
 
+    def test_run_tests(self):
+        exercise = Exercise(path=self.path, interface=self.interface)
+
+        f = open(self.path, "w")
+        f.write("""
+def test_sth():
+    assert True == True
+        """)
+        f.close()
+
+        result_success = exercise.run_tests()
+        assert result_success.success == True
+        assert len(result_success.output) > 0 and isinstance(result_success.output, str)
+
+        f = open(self.path, "w")
+        f.write("""
+def test_sth():
+    assert True == False
+        """)
+        f.close()
+
+        result_success = exercise.run_tests()
+        assert result_success.success == False
+        assert len(result_success.output) > 0 and isinstance(result_success.output, str)
+
+        open(self.path, "w").close()
+
     def test_check_done_comment(self):
         exercise = Exercise(path=self.path, interface=self.interface)
 
