@@ -23,7 +23,7 @@ class Runner:
 
     def run(self) -> None:
         for exercise in self.exercises:
-            compile_result = exercise.compile()
+            compile_result = exercise.run_exercise()
             # exercise.run_tests()
 
             if compile_result.success == True:

@@ -33,6 +33,16 @@ class Exercise:
         else:
             return CompileResult(True, result.stdout)
 
+    def run_exercise(self) -> CompileResult:
+        if not self.test:
+            return self.compile()
+        else:
+            compile_result = self.compile()
+            if compile_result.success:
+                return self.run_tests()
+            else:
+                return compile_result
+            
     def check_done_comment(self) -> bool:
         with open(self.path, "r") as f:
             lines = f.readlines()
@@ -43,17 +53,14 @@ class Exercise:
 
     def on_modified_recheck(self, event) -> None:
         self.interface.clear()
-        result = self.compile()
+        result = self.run_exercise()
         if result.success == True:
             self.interface.print_success(result.output)
-            # test = self.run_tests()
-            # print(test.success)
-            # print(test.output)
         else:
             self.interface.print_error(result.output)
 
     def check_wait(self) -> bool:
-        result = self.compile()
+        result = self.run_exercise()
         if not result.success:
             return True
         if result.success and self.check_done_comment():
