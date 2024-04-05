@@ -6,11 +6,10 @@ from runner import Runner
 from exercise import Exercise
 import yaml
 
-# Sample exercise data for testing
 EXERCISE_DATA = {
     "exercises": {
-        "exercise1": {"path": "exercise1", "test": "test1"},
-        "exercise2": {"path": "exercise2", "test": "test2"},
+        "exercise1": {"path": "exercise1", "test": False},
+        "exercise2": {"path": "exercise2", "test": True},
     }
 }
 
