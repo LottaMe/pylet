@@ -1,4 +1,10 @@
 exercises:
-  - 00_intro/intro1
-  - 00_intro/intro2
-  - 00_intro/intro3
+  intro1:
+    path: 00_intro/intro1
+    test: true
+  intro2:
+    path: 00_intro/intro2
+    test: false
+  intro3:
+    path: 00_intro/intro3
+    test: true

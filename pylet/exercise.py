@@ -14,10 +14,11 @@ class CompileResult:
 
 
 class Exercise:
-    def __init__(self, path: str, interface: Interface) -> None:
+    def __init__(self, path: str, test: bool, interface: Interface) -> None:
         self.path = path
         self.interface = interface
-
+        self.test = test
+        
     def compile(self) -> CompileResult:
         result = subprocess.run(["python", self.path], capture_output=True, text=True)
         if result.returncode == 0:
