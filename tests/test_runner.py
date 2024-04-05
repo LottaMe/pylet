@@ -1,8 +1,9 @@
 # test_runner.py
 
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 import pytest
 from runner import Runner
+from exercise import Exercise
 import yaml
 
 # Sample exercise data for testing
@@ -32,4 +33,4 @@ def test_get_exercises(runner):
     exercises = runner.get_exercises()
 
     assert len(exercises) == 2
-    assert all(isinstance(exercise, MagicMock) for exercise in exercises)
+    assert all(isinstance(exercise, Exercise) for exercise in exercises)
