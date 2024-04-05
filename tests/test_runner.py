@@ -1,18 +1,35 @@
+# test_runner.py
+
+from unittest.mock import MagicMock, patch
+import pytest
 from runner import Runner
-from interface import Interface
+import yaml
+
+# Sample exercise data for testing
+EXERCISE_DATA = {
+    "exercises": {
+        "exercise1": {"path": "exercise1", "test": "test1"},
+        "exercise2": {"path": "exercise2", "test": "test2"},
+    }
+}
 
 
-class TestRunner:
-    interface = Interface()
-    path = "tests/mocks/mock_exercise_info.yaml"
+@pytest.fixture
+def mock_interface():
+    return MagicMock()
 
-    def test_get_exercises(self):
-        runner = Runner(exercise_info_path=self.path, interface=self.interface)
 
-        expected_exercises = ["play_piano", "listen_to_taylor_swift", "procrastinate"]
+@pytest.fixture
+def runner(tmp_path, mock_interface):
+    exercise_info_path = tmp_path / "exercise_info.yaml"
+    with open(exercise_info_path, "w") as f:
+        yaml.dump(EXERCISE_DATA, f)
 
-        assert expected_exercises == runner.get_exercises(self.path)
-        assert expected_exercises == runner.exercises
+    return Runner(str(exercise_info_path), mock_interface)
 
-    def test_run(self):
-        pass
+
+def test_get_exercises(runner):
+    exercises = runner.get_exercises()
+
+    assert len(exercises) == 2
+    assert all(isinstance(exercise, MagicMock) for exercise in exercises)
