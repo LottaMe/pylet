@@ -33,7 +33,7 @@ def test_get_exercises(runner):
 
     assert len(exercises) == 2
     assert all(isinstance(exercise, Exercise) for exercise in exercises)
-    
+
     assert exercises[0].path == "exercises/exercise1.py"
     assert exercises[0].test == False
     assert exercises[1].path == "exercises/exercise2.py"
