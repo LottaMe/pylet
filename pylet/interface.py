@@ -14,7 +14,7 @@ class Interface:
     ) -> None:
         progress = []
         progress.extend(["#" for _ in completed_exercises])
-        if completed_exercises < all_exercises:
+        if len(completed_exercises) < len(all_exercises):
             progress.append(">")
             progress.extend(
                 ["-" for _ in all_exercises[len(completed_exercises) + 1 :]]
