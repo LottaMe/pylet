@@ -29,7 +29,7 @@ class Runner:
 
     def run(self) -> None:
         for exercise in self.exercises:
-            compile_result = exercise.run_exercise()
+            compile_result = exercise.run_compile_and_tests()
 
             if compile_result.success == True:
                 if exercise.check_done_comment():
