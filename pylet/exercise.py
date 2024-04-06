@@ -18,7 +18,7 @@ class Exercise:
         self.path = path
         self.interface = interface
         self.test = test
-        
+
     def compile(self) -> CompileResult:
         result = subprocess.run(["python", self.path], capture_output=True, text=True)
         if result.returncode == 0:
@@ -42,7 +42,7 @@ class Exercise:
                 return self.run_tests()
             else:
                 return compile_result
-            
+
     def check_done_comment(self) -> bool:
         with open(self.path, "r") as f:
             lines = f.readlines()

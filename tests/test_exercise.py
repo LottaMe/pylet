@@ -1,98 +1,280 @@
-from exercise import Exercise
-from interface import Interface
+from unittest.mock import MagicMock, call, patch
+import pytest
+from exercise import Exercise, CompileResult
+from watchdog.events import FileModifiedEvent
+
+# from interface import Interface
 
 
-class TestExercise:
-    path = "tests/mocks/mock_exercise.py"
-    interface = Interface()
+@pytest.fixture
+def mock_interface():
+    return MagicMock()
 
-    def test_compile(self):
-        exercise = Exercise(path=self.path, interface=self.interface)
 
-        f = open(self.path, "w")
-        f.write("print 'hello world'")
-        f.close()
+@pytest.fixture
+def exercise(mock_interface):
+    return Exercise("mock_path", False, mock_interface)
 
-        result_fail = exercise.compile()
-        assert result_fail.success == False
-        assert len(result_fail.output) > 0 and isinstance(result_fail.output, str)
 
-        f = open(self.path, "w")
-        f.write("print('hello world')")
-        f.close()
+def test_compile_success(exercise):
+    with patch("subprocess.run") as mock_run:
+        mock_run.return_value.returncode = 0
+        mock_run.return_value.stdout = "We compiled!"
 
-        result_success = exercise.compile()
-        assert result_success.success == True
-        assert len(result_fail.output) > 0 and isinstance(result_success.output, str)
+        result = exercise.compile()
 
-        open(self.path, "w").close()
-
-    def test_run_tests(self):
-        exercise = Exercise(path=self.path, interface=self.interface)
-
-        f = open(self.path, "w")
-        f.write("""
-def test_sth():
-    assert True == True
-        """)
-        f.close()
-
-        result_success = exercise.run_tests()
-        assert result_success.success == True
-        assert len(result_success.output) > 0 and isinstance(result_success.output, str)
-
-        f = open(self.path, "w")
-        f.write("""
-def test_sth():
-    assert True == False
-        """)
-        f.close()
-
-        result_success = exercise.run_tests()
-        assert result_success.success == False
-        assert len(result_success.output) > 0 and isinstance(result_success.output, str)
-
-        open(self.path, "w").close()
-
-    def test_check_done_comment(self):
-        exercise = Exercise(path=self.path, interface=self.interface)
-
-        f = open(self.path, "w")
-        f.write("print 'hello world'")
-        f.close()
-
-        result = exercise.check_done_comment()
-        assert result == False
-
-        f = open(self.path, "w")
-        f.write(
-            """
-
-                # I AM NOT DONE
-
-                print "hello world"
-
-                """
+        mock_run.assert_called_once_with(
+            ["python", "mock_path"], capture_output=True, text=True
         )
-        f.close()
+        assert result.success == True
+        assert result.output == "We compiled!"
 
-        result = exercise.check_done_comment()
-        assert result == True
 
-        f = open(self.path, "w")
-        f.write("       ### I AM NOT DONE       ")
-        f.close()
+def test_compile_failure(exercise):
+    with patch("subprocess.run") as mock_run:
+        mock_run.return_value.returncode = 1
+        mock_run.return_value.stderr = "We failed!"
 
-        result = exercise.check_done_comment()
-        assert result == True
+        result = exercise.compile()
 
-        open(self.path, "w").close()
+        mock_run.assert_called_once_with(
+            ["python", "mock_path"], capture_output=True, text=True
+        )
+        assert result.success == False
+        assert result.output == "We failed!"
 
-    def test_on_modified_recheck(self) -> None:
-        pass
 
-    def test_check_wait(self) -> bool:
-        pass
+def test_run_tests_success(exercise):
+    with patch("subprocess.run") as mock_run:
+        mock_run.return_value.returncode = 1
+        mock_run.return_value.stdout = "Tests succeeded :)"
 
-    def test_watch_till_pass(self) -> str:
-        pass
+        result = exercise.run_tests()
+
+        mock_run.assert_called_once_with(
+            ["pytest", "mock_path"], capture_output=True, text=True
+        )
+        assert result.success == True
+        assert result.output == "Tests succeeded :)"
+
+
+def test_run_tests_success(exercise):
+    with patch("subprocess.run") as mock_run:
+        mock_run.return_value.returncode = 1
+        mock_run.return_value.stdout = "oh no FAILURES 0 of 1 passed"
+
+        result = exercise.run_tests()
+
+        mock_run.assert_called_once_with(
+            ["pytest", "mock_path"], capture_output=True, text=True
+        )
+        assert result.success == False
+        assert result.output == "oh no FAILURES 0 of 1 passed"
+
+
+def test_run_exercise_no_tests_success(exercise):
+    exercise.test = False
+    with patch("subprocess.run") as mock_run:
+        mock_run.return_value.returncode = 0
+        mock_run.return_value.stdout = "We compiled!"
+
+        result = exercise.run_exercise()
+
+        mock_run.assert_called_once_with(
+            ["python", "mock_path"], capture_output=True, text=True
+        )
+        assert result.success == True
+        assert result.output == "We compiled!"
+
+
+def test_run_exercise_no_tests_failure(exercise):
+    exercise.test = False
+    with patch("subprocess.run") as mock_run:
+        mock_run.return_value.returncode = 1
+        mock_run.return_value.stderr = "We failed!"
+
+        result = exercise.run_exercise()
+
+        mock_run.assert_called_once_with(
+            ["python", "mock_path"], capture_output=True, text=True
+        )
+        assert result.success == False
+        assert result.output == "We failed!"
+
+
+def test_run_exercise_with_tests_success(exercise):
+    exercise.test = True
+    with patch("subprocess.run") as mock_run:
+        mock_run.side_effect = [
+            MagicMock(returncode=0, stdout="We compiled!."),
+            MagicMock(returncode=0, stdout="Tests succeeded :)"),
+        ]
+
+        result = exercise.run_exercise()
+
+        mock_run.assert_has_calls(
+            [
+                call(["python", "mock_path"], capture_output=True, text=True),
+                call(["pytest", "mock_path"], capture_output=True, text=True),
+            ]
+        )
+        assert result.success == True
+        assert result.output == "Tests succeeded :)"
+
+
+def test_run_exercise_with_tests_compile_fails(exercise):
+    exercise.test = True
+    with patch("subprocess.run") as mock_run:
+        mock_run.side_effect = [
+            MagicMock(returncode=1, stderr="We failed!"),
+            MagicMock(returncode=0, stdout="Tests succeeded :)"),
+        ]
+
+        result = exercise.run_exercise()
+
+        mock_run.assert_called_once_with(
+            ["python", "mock_path"], capture_output=True, text=True
+        )
+
+        assert result.success == False
+        assert result.output == "We failed!"
+
+
+def test_run_exercise_with_tests_test_fails(exercise):
+    exercise.test = True
+    with patch("subprocess.run") as mock_run:
+        mock_run.side_effect = [
+            MagicMock(returncode=0, stdout="We compiled!."),
+            MagicMock(returncode=0, stdout="oh no FAILURES 0 of 1 passed"),
+        ]
+
+        result = exercise.run_exercise()
+
+        mock_run.assert_has_calls(
+            [
+                call(["python", "mock_path"], capture_output=True, text=True),
+                call(["pytest", "mock_path"], capture_output=True, text=True),
+            ]
+        )
+        assert result.success == False
+        assert result.output == "oh no FAILURES 0 of 1 passed"
+
+
+def test_check_done_comment_present(exercise, tmp_path):
+    exercise_file = tmp_path / "exercise_with_done_comment.py"
+    with open(exercise_file, "w") as f:
+        f.write("### Remove I AM NOT DONE COMMENT TO CONTINUE ###")
+        f.write("### I AM NOT DONE ###")
+        f.write("print('Hello World!')")
+
+    exercise.path = exercise_file
+    assert exercise.check_done_comment() == True
+
+
+def test_check_done_comment_not_present(exercise, tmp_path):
+    exercise_file = tmp_path / "exercise_with_done_comment.py"
+    with open(exercise_file, "w") as f:
+        f.write("### Remove I AM NOT DONE COMMENT TO CONTINUE ###")
+        f.write("print('Hello World!')")
+
+    exercise.path = exercise_file
+    assert exercise.check_done_comment() == False
+
+
+def test_on_modified_recheck_success(exercise, mock_interface):
+    exercise.interface = mock_interface
+    with patch.object(exercise, "run_exercise") as mock_run_exercise:
+        mock_run_exercise.return_value = CompileResult(
+            success=True, output="We compiled!."
+        )
+
+        exercise.on_modified_recheck(event=None)
+
+        mock_interface.clear.assert_called_once()
+        mock_interface.print_success.assert_called_once_with("We compiled!.")
+
+
+def test_on_modified_recheck_failure(exercise, mock_interface):
+    exercise.interface = mock_interface
+    with patch.object(exercise, "run_exercise") as mock_run_exercise:
+        mock_run_exercise.return_value = CompileResult(False, "We failed!")
+
+        exercise.on_modified_recheck(event=None)
+
+        mock_interface.clear.assert_called_once()
+        mock_interface.print_error.assert_called_once_with("We failed!")
+
+
+def test_check_wait_result_failure(exercise):
+    with patch.object(exercise, "run_exercise") as mock_run_exercise:
+        mock_run_exercise.return_value = CompileResult(False, "We failed!")
+
+        assert exercise.check_wait() == True
+
+
+def test_check_wait_not_done_comment(exercise):
+    with patch.object(exercise, "run_exercise") as mock_run_exercise:
+        mock_run_exercise.return_value = CompileResult(True, "We compiled!")
+        exercise.check_done_comment = MagicMock(return_value=True)
+
+        assert exercise.check_wait() == True
+        exercise.check_done_comment.assert_called_once()
+
+
+def test_check_wait_result_success_and_done(exercise):
+    with patch.object(exercise, "run_exercise") as mock_run_exercise:
+        mock_run_exercise.return_value = CompileResult(True, "We compiled!")
+        exercise.check_done_comment = MagicMock(return_value=False)
+
+        assert exercise.check_wait() == False
+        exercise.check_done_comment.assert_called_once()
+
+
+# watch_till_pass
+"""
+- creates event_handler FileSystemEventHandler
+- on_modified -> on_modified_recheck (maybe mock?)
+- creates observer Observer
+- while check_wait() -> watch
+- else stop -> return path
+- except KeyboardInterrupt -> exit
+"""
+
+
+def test_watch_till_pass_succeeds(exercise):
+    exercise.path = "fake_path3"
+    with patch("exercise.time.sleep"):
+        with patch.object(exercise, "check_wait") as mock_check_wait:
+            mock_check_wait.side_effect = [False]
+
+            result = exercise.watch_till_pass()
+
+            assert result == "fake_path3"
+
+
+def test_watch_till_pass_modify(exercise):
+    exercise.on_modified_recheck = MagicMock()
+    with patch("exercise.time.sleep"):
+        with patch("exercise.FileSystemEventHandler") as mock_file_system_event_handler:
+            mock_event_handler_instance = mock_file_system_event_handler.return_value
+
+            with patch.object(exercise, "check_wait") as mock_check_wait:
+                mock_check_wait.side_effect = [True, False]
+
+                exercise.watch_till_pass()
+
+                event = FileModifiedEvent("mock_path")
+                mock_event_handler_instance.on_modified(event)
+
+                exercise.on_modified_recheck.assert_called_once()
+
+
+def test_watch_till_pass_keyboard_interrupt(exercise):
+    with patch("exercise.time.sleep"):
+        with patch.object(exercise, "check_wait") as mock_check_wait:
+            mock_check_wait.side_effect = KeyboardInterrupt()
+
+            try:
+                exercise.watch_till_pass()
+            except SystemExit:
+                assert True == True

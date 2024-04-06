@@ -10,15 +10,21 @@ class Runner:
         self.exercise_info_path = exercise_info_path
         self.interface = interface
 
-        self.exercises = self.get_exercises(exercise_info_path)
+        self.exercises = self.get_exercises()
         self.completed_exercises = []
 
-    def get_exercises(self, path) -> List[Exercise]:
+    def get_exercises(self) -> List[Exercise]:
         final_list = []
-        with open(path) as f:
+        with open(self.exercise_info_path) as f:
             exercises = yaml.safe_load(f)
         for exercise in exercises["exercises"].items():
-            final_list.append(Exercise(path=f"exercises/{exercise[1]['path']}.py", test=exercise[1]["test"], interface=self.interface))
+            final_list.append(
+                Exercise(
+                    path=f"exercises/{exercise[1]['path']}.py",
+                    test=exercise[1]["test"],
+                    interface=self.interface,
+                )
+            )
         return final_list
 
     def run(self) -> None:
