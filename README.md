@@ -11,10 +11,10 @@ python3 -m venv env
 source env/bin/activate
 ```
 
-Now that you are in the environment, you can use the make commands defined in the Makefile.
+Now that you are in the environment, you should install the dependencies in the requirements.tsx.
 
 ```
-run setup
+pip install -r requirements.txt
 ```
 
 Now the requirements are installed in the virtual environment env.
@@ -30,7 +30,7 @@ source env/bin/activate
 To run pylet enter:
 
 ```
-make run
+python pylet
 ```
 
 ## Test the application
@@ -38,7 +38,7 @@ make run
 To test the application enter:
 
 ```
-make test
+pytest
 ```
 
 ## Keep code formatting consistent
@@ -48,5 +48,6 @@ The exercise folder should be excluded from formatting.
 To do this run:
 
 ```
-make format
+black . --extend-exclude exercises
+isort pylet
 ```
