@@ -243,17 +243,18 @@ def test_check_wait_result_success_and_done(exercise):
 
 def test_watch_till_pass_succeeds(exercise):
     exercise.path = "fake_path3"
-    with patch('exercise.time.sleep'):
-        with patch.object(exercise, 'check_wait') as mock_check_wait:
+    with patch("exercise.time.sleep"):
+        with patch.object(exercise, "check_wait") as mock_check_wait:
             mock_check_wait.side_effect = [False]
 
             result = exercise.watch_till_pass()
 
             assert result == "fake_path3"
 
+
 def test_watch_till_pass_modify(exercise):
     exercise.on_modified_recheck = MagicMock()
-    with patch('exercise.time.sleep'):
+    with patch("exercise.time.sleep"):
         with patch("exercise.FileSystemEventHandler") as mock_file_system_event_handler:
             mock_event_handler_instance = mock_file_system_event_handler.return_value
 
@@ -267,11 +268,12 @@ def test_watch_till_pass_modify(exercise):
 
                 exercise.on_modified_recheck.assert_called_once()
 
+
 def test_watch_till_pass_keyboard_interrupt(exercise):
-    with patch('exercise.time.sleep'):
+    with patch("exercise.time.sleep"):
         with patch.object(exercise, "check_wait") as mock_check_wait:
             mock_check_wait.side_effect = KeyboardInterrupt()
-            
+
             try:
                 exercise.watch_till_pass()
             except SystemExit:
