@@ -157,3 +157,22 @@ def test_run_exercise_with_tests_test_fails(exercise):
         )
         assert result.success == False
         assert result.output == "oh no FAILURES 0 of 1 passed"
+
+def test_check_done_comment_present(exercise, tmp_path):
+    exercise_file = tmp_path / "exercise_with_done_comment.py"
+    with open(exercise_file, "w") as f:
+        f.write("### Remove I AM NOT DONE COMMENT TO CONTINUE ###")
+        f.write("### I AM NOT DONE ###")
+        f.write("print('Hello World!')")
+
+    exercise.path = exercise_file
+    assert exercise.check_done_comment() == True
+
+def test_check_done_comment_not_present(exercise, tmp_path):
+    exercise_file = tmp_path / "exercise_with_done_comment.py"
+    with open(exercise_file, "w") as f:
+        f.write("### Remove I AM NOT DONE COMMENT TO CONTINUE ###")
+        f.write("print('Hello World!')")
+
+    exercise.path = exercise_file
+    assert exercise.check_done_comment() == False
