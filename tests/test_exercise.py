@@ -1,6 +1,6 @@
 from unittest.mock import MagicMock, call, patch
 import pytest
-from exercise import Exercise
+from exercise import Exercise, CompileResult
 
 # from interface import Interface
 
@@ -176,3 +176,23 @@ def test_check_done_comment_not_present(exercise, tmp_path):
 
     exercise.path = exercise_file
     assert exercise.check_done_comment() == False
+
+def test_on_modified_recheck_success(exercise, mock_interface):
+    exercise.interface = mock_interface
+    with patch.object(exercise, 'run_exercise') as mock_run_exercise:
+        mock_run_exercise.return_value = CompileResult(success=True, output="We compiled!.")
+
+        exercise.on_modified_recheck(event=None)
+
+        mock_interface.clear.assert_called_once()
+        mock_interface.print_success.assert_called_once_with("We compiled!.")
+
+def test_on_modified_recheck_failure(exercise, mock_interface):
+    exercise.interface = mock_interface
+    with patch.object(exercise, 'run_exercise') as mock_run_exercise:
+        mock_run_exercise.return_value = CompileResult(False, "We failed!")
+
+        exercise.on_modified_recheck(event=None)
+
+        mock_interface.clear.assert_called_once()
+        mock_interface.print_error.assert_called_once_with("We failed!")
