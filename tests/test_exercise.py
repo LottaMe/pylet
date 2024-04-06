@@ -158,6 +158,7 @@ def test_run_exercise_with_tests_test_fails(exercise):
         assert result.success == False
         assert result.output == "oh no FAILURES 0 of 1 passed"
 
+
 def test_check_done_comment_present(exercise, tmp_path):
     exercise_file = tmp_path / "exercise_with_done_comment.py"
     with open(exercise_file, "w") as f:
@@ -168,6 +169,7 @@ def test_check_done_comment_present(exercise, tmp_path):
     exercise.path = exercise_file
     assert exercise.check_done_comment() == True
 
+
 def test_check_done_comment_not_present(exercise, tmp_path):
     exercise_file = tmp_path / "exercise_with_done_comment.py"
     with open(exercise_file, "w") as f:
@@ -177,22 +179,51 @@ def test_check_done_comment_not_present(exercise, tmp_path):
     exercise.path = exercise_file
     assert exercise.check_done_comment() == False
 
+
 def test_on_modified_recheck_success(exercise, mock_interface):
     exercise.interface = mock_interface
-    with patch.object(exercise, 'run_exercise') as mock_run_exercise:
-        mock_run_exercise.return_value = CompileResult(success=True, output="We compiled!.")
+    with patch.object(exercise, "run_exercise") as mock_run_exercise:
+        mock_run_exercise.return_value = CompileResult(
+            success=True, output="We compiled!."
+        )
 
         exercise.on_modified_recheck(event=None)
 
         mock_interface.clear.assert_called_once()
         mock_interface.print_success.assert_called_once_with("We compiled!.")
 
+
 def test_on_modified_recheck_failure(exercise, mock_interface):
     exercise.interface = mock_interface
-    with patch.object(exercise, 'run_exercise') as mock_run_exercise:
+    with patch.object(exercise, "run_exercise") as mock_run_exercise:
         mock_run_exercise.return_value = CompileResult(False, "We failed!")
 
         exercise.on_modified_recheck(event=None)
 
         mock_interface.clear.assert_called_once()
         mock_interface.print_error.assert_called_once_with("We failed!")
+
+
+def test_check_wait_result_failure(exercise):
+    with patch.object(exercise, "run_exercise") as mock_run_exercise:
+        mock_run_exercise.return_value = CompileResult(False, "We failed!")
+
+        assert exercise.check_wait() == True
+
+
+def test_check_wait_not_done_comment(exercise):
+    with patch.object(exercise, "run_exercise") as mock_run_exercise:
+        mock_run_exercise.return_value = CompileResult(True, "We compiled!")
+        exercise.check_done_comment = MagicMock(return_value=True)
+
+        assert exercise.check_wait() == True
+        exercise.check_done_comment.assert_called_once()
+
+
+def test_check_wait_result_success_and_done(exercise):
+    with patch.object(exercise, "run_exercise") as mock_run_exercise:
+        mock_run_exercise.return_value = CompileResult(True, "We compiled!")
+        exercise.check_done_comment = MagicMock(return_value=False)
+
+        assert exercise.check_wait() == False
+        exercise.check_done_comment.assert_called_once()
