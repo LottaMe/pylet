@@ -15,24 +15,23 @@ class Runner:
 
     def load_exercises_from_yaml(self) -> List[Tuple[str, Dict[str, bool]]]:
         with open(self.exercise_info_path) as f:
-            exercises = yaml.safe_load(f) 
+            exercises = yaml.safe_load(f)
         return list(exercises["exercises"].items())
-    
+
     def parse_exercise(self, exercise_tuple: Tuple[str, Dict[str, bool]]) -> Exercise:
         return Exercise(
             path=f"exercises/{exercise_tuple[1]['path']}.py",
             test=exercise_tuple[1]["test"],
             interface=self.interface,
         )
+
     def get_exercises(self) -> List[Exercise]:
         final_list = []
         exercises = self.load_exercises_from_yaml()
         for exercise in exercises:
-            final_list.append(
-                self.parse_exercise(exercise)
-            )
+            final_list.append(self.parse_exercise(exercise))
         return final_list
-    
+
     def run(self) -> None:
         for exercise in self.exercises:
             compile_result = exercise.run_compile_and_tests()
@@ -48,7 +47,6 @@ class Runner:
                     self.completed_exercises.append(exercise.watch_till_pass())
                 else:
                     self.completed_exercises.append(exercise.path)
-                    
 
             else:
                 self.interface.clear()
