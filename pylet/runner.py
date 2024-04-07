@@ -38,20 +38,22 @@ class Runner:
 
             if compile_result.success == True:
                 if exercise.check_done_comment():
-                    self.interface.clear()
-                    self.interface.print_progress(
-                        self.exercises, self.completed_exercises
+                    self.interface.print_on_modify(
+                        compile_result=compile_result,
+                        all_exercises=self.exercises,
+                        completed_exercises=self.completed_exercises,
                     )
-                    self.interface.print_output(compile_result)
 
                     self.completed_exercises.append(exercise.watch_till_pass())
                 else:
                     self.completed_exercises.append(exercise.path)
 
             else:
-                self.interface.clear()
-                self.interface.print_progress(self.exercises, self.completed_exercises)
-                self.interface.print_output(compile_result)
+                self.interface.print_on_modify(
+                    compile_result=compile_result,
+                    all_exercises=self.exercises,
+                    completed_exercises=self.completed_exercises,
+                )
 
                 self.completed_exercises.append(exercise.watch_till_pass())
 

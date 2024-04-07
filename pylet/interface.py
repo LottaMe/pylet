@@ -12,8 +12,10 @@ class Interface:
         print("error:", output)
 
     def print_output(self, compile_result: CompileResult) -> None:
-        if compile_result.success: self.print_success(compile_result.output)
-        else: self.print_error(compile_result.output)
+        if compile_result.success:
+            self.print_success(compile_result.output)
+        else:
+            self.print_error(compile_result.output)
 
     def print_progress(
         self, all_exercises: List[str], completed_exercises: List[str]
@@ -37,3 +39,13 @@ class Interface:
 
     def clear(self) -> None:
         subprocess.run(["clear"])
+
+    def print_on_modify(
+        self,
+        compile_result: CompileResult,
+        all_exercises: List[str],
+        completed_exercises: List[str],
+    ):
+        self.clear()
+        self.print_progress(all_exercises, completed_exercises)
+        self.print_output(compile_result)

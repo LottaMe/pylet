@@ -2,10 +2,11 @@ import subprocess
 import time
 from functools import partial
 
+from components import CompileResult
 from interface import Interface
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
-from components import CompileResult
+
 
 class Exercise:
     def __init__(self, path: str, test: bool, interface: Interface) -> None:
