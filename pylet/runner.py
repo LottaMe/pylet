@@ -18,16 +18,18 @@ class Runner:
             exercises = yaml.safe_load(f) 
         return list(exercises["exercises"].items())
     
+    def parse_exercise(self, exercise_tuple) -> Exercise:
+        return Exercise(
+            path=f"exercises/{exercise_tuple[1]['path']}.py",     # parse Exercise
+            test=exercise_tuple[1]["test"],
+            interface=self.interface,
+        )
     def get_exercises(self) -> List[Exercise]:
         final_list = []
         exercises = self.load_exercises_from_yaml()
         for exercise in exercises:
             final_list.append(
-                Exercise(
-                    path=f"exercises/{exercise[1]['path']}.py",     # parse Exercise
-                    test=exercise[1]["test"],
-                    interface=self.interface,
-                )
+                self.parse_exercise(exercise)
             )
         return final_list
 

@@ -37,6 +37,13 @@ def test_load_exercises_from_yaml(runner):
     assert exercises[1][0] == "exercise2"
     assert exercises[1][1] == {"path": "exercise2", "test": True}
 
+def test_parse_exercise(runner):
+    mock_exercise_tuple = ('e1', {"path": "path/e1", "test": True})
+    exercise = runner.parse_exercise(mock_exercise_tuple)
+    assert exercise.path == "exercises/path/e1.py"
+    assert exercise.test == True
+    assert exercise.interface == runner.interface
+
 def test_get_exercises(runner):
     exercises = runner.get_exercises()
 
