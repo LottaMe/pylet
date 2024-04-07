@@ -77,6 +77,7 @@ class Exercise:
             result = self.run_compile_and_tests()
             while self.check_wait(result):
                 time.sleep(1)
+                result = self.run_compile_and_tests()
             else:
                 observer.stop()
                 observer.join()
