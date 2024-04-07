@@ -206,28 +206,25 @@ def test_on_modified_recheck_failure(exercise, mock_interface):
 
 
 def test_check_wait_result_failure(exercise):
-    with patch.object(exercise, "run_compile_and_tests") as mock_run_compile_and_tests:
-        mock_run_compile_and_tests.return_value = CompileResult(False, "We failed!")
+    mock_compile_result = CompileResult(False, "We failed!")
 
-        assert exercise.check_wait() == True
+    assert exercise.check_wait(mock_compile_result) == True
 
 
 def test_check_wait_not_done_comment(exercise):
-    with patch.object(exercise, "run_compile_and_tests") as mock_run_compile_and_tests:
-        mock_run_compile_and_tests.return_value = CompileResult(True, "We compiled!")
-        exercise.check_done_comment = MagicMock(return_value=True)
+    mock_compile_result = CompileResult(True, "We compiled!")
+    exercise.check_done_comment = MagicMock(return_value=True)
 
-        assert exercise.check_wait() == True
-        exercise.check_done_comment.assert_called_once()
+    assert exercise.check_wait(mock_compile_result) == True
+    exercise.check_done_comment.assert_called_once()
 
 
 def test_check_wait_result_success_and_done(exercise):
-    with patch.object(exercise, "run_compile_and_tests") as mock_run_compile_and_tests:
-        mock_run_compile_and_tests.return_value = CompileResult(True, "We compiled!")
-        exercise.check_done_comment = MagicMock(return_value=False)
+    mock_compile_results = CompileResult(True, "We compiled!")
+    exercise.check_done_comment = MagicMock(return_value=False)
 
-        assert exercise.check_wait() == False
-        exercise.check_done_comment.assert_called_once()
+    assert exercise.check_wait(mock_compile_results) == False
+    exercise.check_done_comment.assert_called_once()
 
 
 def test_watch_till_pass_succeeds(exercise):

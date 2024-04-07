@@ -59,8 +59,7 @@ class Exercise:
         else:
             self.interface.print_error(result.output)
 
-    def check_wait(self) -> bool:
-        result = self.run_compile_and_tests()
+    def check_wait(self, result: CompileResult) -> bool:
         if not result.success:
             return True
         if result.success and self.check_done_comment():
@@ -75,7 +74,8 @@ class Exercise:
         observer.start()
 
         try:
-            while self.check_wait():
+            result = self.run_compile_and_tests()
+            while self.check_wait(result):
                 time.sleep(1)
             else:
                 observer.stop()
