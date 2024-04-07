@@ -20,7 +20,7 @@ class Runner:
     
     def parse_exercise(self, exercise_tuple) -> Exercise:
         return Exercise(
-            path=f"exercises/{exercise_tuple[1]['path']}.py",     # parse Exercise
+            path=f"exercises/{exercise_tuple[1]['path']}.py",
             test=exercise_tuple[1]["test"],
             interface=self.interface,
         )
@@ -33,13 +33,11 @@ class Runner:
             )
         return final_list
     
-    # def 
-
     def run(self) -> None:
         for exercise in self.exercises:
             compile_result = exercise.run_compile_and_tests()
 
-            if compile_result.success == True:                  # exercise method that takes result and returns true/false (maybe rewrite check_wait)
+            if compile_result.success == True:
                 if exercise.check_done_comment():
                     self.interface.clear()
                     self.interface.print_progress(
