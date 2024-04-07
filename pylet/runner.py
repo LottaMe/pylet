@@ -13,11 +13,15 @@ class Runner:
         self.exercises = self.get_exercises()
         self.completed_exercises = []
 
+    def load_exercises_from_yaml(self) -> List:
+        with open(self.exercise_info_path) as f:
+            exercises = yaml.safe_load(f) 
+        return list(exercises["exercises"].items())
+    
     def get_exercises(self) -> List[Exercise]:
         final_list = []
-        with open(self.exercise_info_path) as f:
-            exercises = yaml.safe_load(f)                   # load from yaml function
-        for exercise in exercises["exercises"].items():
+        exercises = self.load_exercises_from_yaml()
+        for exercise in exercises:
             final_list.append(
                 Exercise(
                     path=f"exercises/{exercise[1]['path']}.py",     # parse Exercise

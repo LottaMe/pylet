@@ -27,6 +27,15 @@ def runner(tmp_path, mock_interface):
 
     return Runner(str(exercise_info_path), mock_interface)
 
+def test_load_exercises_from_yaml(runner):
+    exercises = runner.load_exercises_from_yaml()
+
+    assert len(exercises) == 2
+    assert all(isinstance(exercise, tuple) for exercise in exercises)
+    assert exercises[0][0] == "exercise1"
+    assert exercises[0][1] == {"path": "exercise1", "test": False}
+    assert exercises[1][0] == "exercise2"
+    assert exercises[1][1] == {"path": "exercise2", "test": True}
 
 def test_get_exercises(runner):
     exercises = runner.get_exercises()
