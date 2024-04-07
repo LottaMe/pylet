@@ -5,13 +5,7 @@ from functools import partial
 from interface import Interface
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
-
-
-class CompileResult:
-    def __init__(self, success: bool, output: str) -> None:
-        self.success = success
-        self.output = output
-
+from components import CompileResult
 
 class Exercise:
     def __init__(self, path: str, test: bool, interface: Interface) -> None:
@@ -54,10 +48,7 @@ class Exercise:
     def on_modified_recheck(self, event) -> None:
         self.interface.clear()
         result = self.run_compile_and_tests()
-        if result.success == True:
-            self.interface.print_success(result.output)
-        else:
-            self.interface.print_error(result.output)
+        self.interface.print_output(result)
 
     def check_wait(self, result: CompileResult) -> bool:
         if not result.success:

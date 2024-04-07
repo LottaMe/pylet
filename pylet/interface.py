@@ -1,6 +1,8 @@
 import subprocess
 from typing import List
 
+from components import CompileResult
+
 
 class Interface:
     def print_success(self, output: str) -> None:
@@ -8,6 +10,10 @@ class Interface:
 
     def print_error(self, output: str) -> None:
         print("error:", output)
+
+    def print_output(self, compile_result: CompileResult) -> None:
+        if compile_result.success: self.print_success(compile_result.output)
+        else: self.print_error(compile_result.output)
 
     def print_progress(
         self, all_exercises: List[str], completed_exercises: List[str]

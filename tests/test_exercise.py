@@ -1,6 +1,7 @@
 from unittest.mock import MagicMock, call, patch
 import pytest
-from exercise import Exercise, CompileResult
+from exercise import Exercise
+from components import CompileResult
 from watchdog.events import FileModifiedEvent
 
 # from interface import Interface
@@ -184,25 +185,25 @@ def test_check_done_comment_not_present(exercise, tmp_path):
 def test_on_modified_recheck_success(exercise, mock_interface):
     exercise.interface = mock_interface
     with patch.object(exercise, "run_compile_and_tests") as mock_run_compile_and_tests:
-        mock_run_compile_and_tests.return_value = CompileResult(
-            success=True, output="We compiled!."
-        )
+        mock_compile_result = CompileResult(success=True, output="We compiled!.")
+        mock_run_compile_and_tests.return_value = mock_compile_result
 
         exercise.on_modified_recheck(event=None)
 
         mock_interface.clear.assert_called_once()
-        mock_interface.print_success.assert_called_once_with("We compiled!.")
+        mock_interface.print_output.assert_called_once_with(mock_compile_result)
 
 
 def test_on_modified_recheck_failure(exercise, mock_interface):
     exercise.interface = mock_interface
     with patch.object(exercise, "run_compile_and_tests") as mock_run_compile_and_tests:
-        mock_run_compile_and_tests.return_value = CompileResult(False, "We failed!")
+        mock_compile_result = CompileResult(False, "We failed!")
+        mock_run_compile_and_tests.return_value = mock_compile_result
 
         exercise.on_modified_recheck(event=None)
 
         mock_interface.clear.assert_called_once()
-        mock_interface.print_error.assert_called_once_with("We failed!")
+        mock_interface.print_output.assert_called_once_with(mock_compile_result)
 
 
 def test_check_wait_result_failure(exercise):
