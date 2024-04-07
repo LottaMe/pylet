@@ -42,7 +42,7 @@ class Runner:
                     self.interface.print_progress(
                         self.exercises, self.completed_exercises
                     )
-                    self.interface.print_success(compile_result.output)
+                    self.interface.print_output(compile_result)
 
                     self.completed_exercises.append(exercise.watch_till_pass())
                 else:
@@ -51,7 +51,7 @@ class Runner:
             else:
                 self.interface.clear()
                 self.interface.print_progress(self.exercises, self.completed_exercises)
-                self.interface.print_error(compile_result.output)
+                self.interface.print_output(compile_result)
 
                 self.completed_exercises.append(exercise.watch_till_pass())
 
