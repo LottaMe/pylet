@@ -32,6 +32,8 @@ class Runner:
                 self.parse_exercise(exercise)
             )
         return final_list
+    
+    # def 
 
     def run(self) -> None:
         for exercise in self.exercises:
@@ -47,7 +49,8 @@ class Runner:
 
                     self.completed_exercises.append(exercise.watch_till_pass())
                 else:
-                    continue
+                    self.completed_exercises.append(exercise.path)
+                    
 
             else:
                 self.interface.clear()
