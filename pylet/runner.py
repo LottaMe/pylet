@@ -35,27 +35,15 @@ class Runner:
     def run(self) -> None:
         for exercise in self.exercises:
             compile_result = exercise.run_compile_and_tests()
-
-            if compile_result.success == True:
-                if exercise.check_done_comment():
-                    self.interface.print_on_modify(
-                        compile_result=compile_result,
-                        all_exercises=self.exercises,
-                        completed_exercises=self.completed_exercises,
-                    )
-
-                    self.completed_exercises.append(exercise.watch_till_pass())
-                else:
-                    self.completed_exercises.append(exercise.path)
-
-            else:
+            if exercise.check_wait(compile_result):
                 self.interface.print_on_modify(
                     compile_result=compile_result,
                     all_exercises=self.exercises,
-                    completed_exercises=self.completed_exercises,
+                    completed_exercises=self.completed_exercises
                 )
-
                 self.completed_exercises.append(exercise.watch_till_pass())
+            else:
+                self.completed_exercises.append(exercise.path)
 
         self.interface.print_progress(self.exercises, self.completed_exercises)
         self.interface.print_course_complete()
