@@ -1,6 +1,8 @@
-from unittest.mock import patch
-from interface import Interface
+from unittest.mock import MagicMock, patch
+
 import pytest
+from components import CompileResult
+from interface import Interface
 
 
 @pytest.fixture
@@ -18,6 +20,28 @@ def test_print_error(interface, capsys) -> None:
     interface.print_error("nay")
     captured = capsys.readouterr()
     assert captured.out.strip() == "error: nay"
+
+
+def test_print_output_success_result(interface) -> None:
+    interface.print_success = MagicMock()
+    interface.print_error = MagicMock()
+
+    mock_compile_result = CompileResult(success=True, output="We did it!!")
+
+    interface.print_output(mock_compile_result)
+    interface.print_success.assert_called_once_with(mock_compile_result.output)
+    interface.print_error.assert_not_called()
+
+
+def test_print_output_failure_result(interface) -> None:
+    interface.print_success = MagicMock()
+    interface.print_error = MagicMock()
+
+    mock_compile_result = CompileResult(success=False, output="We failed!!")
+
+    interface.print_output(mock_compile_result)
+    interface.print_success.assert_not_called()
+    interface.print_error.assert_called_once_with(mock_compile_result.output)
 
 
 def test_print_progress_no_completed(interface, capsys) -> None:
@@ -64,3 +88,25 @@ def test_print_course_complete(interface, capsys) -> None:
 def test_clear(mock_subprocess, interface):
     interface.clear()
     mock_subprocess.assert_called_once_with(["clear"])
+
+
+def test_print_on_modify(interface):
+    interface.clear = MagicMock()
+    interface.print_progress = MagicMock()
+    interface.print_output = MagicMock()
+
+    mock_compile_result = CompileResult(success=True, output="We did it!!")
+    mock_all_exercises = ["1", "2", "3"]
+    mock_completed_exercises = ["1"]
+
+    interface.print_on_modify(
+        compile_result=mock_compile_result,
+        all_exercises=mock_all_exercises,
+        completed_exercises=mock_completed_exercises,
+    )
+
+    interface.clear.assert_called_once()
+    interface.print_progress.assert_called_once_with(
+        mock_all_exercises, mock_completed_exercises
+    )
+    interface.print_output.assert_called_once_with(mock_compile_result)

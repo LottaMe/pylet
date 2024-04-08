@@ -2,15 +2,10 @@ import subprocess
 import time
 from functools import partial
 
+from components import CompileResult
 from interface import Interface
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
-
-
-class CompileResult:
-    def __init__(self, success: bool, output: str) -> None:
-        self.success = success
-        self.output = output
 
 
 class Exercise:
@@ -33,7 +28,7 @@ class Exercise:
         else:
             return CompileResult(True, result.stdout)
 
-    def run_exercise(self) -> CompileResult:
+    def run_compile_and_tests(self) -> CompileResult:
         if not self.test:
             return self.compile()
         else:
@@ -53,14 +48,10 @@ class Exercise:
 
     def on_modified_recheck(self, event) -> None:
         self.interface.clear()
-        result = self.run_exercise()
-        if result.success == True:
-            self.interface.print_success(result.output)
-        else:
-            self.interface.print_error(result.output)
+        result = self.run_compile_and_tests()
+        self.interface.print_output(result)
 
-    def check_wait(self) -> bool:
-        result = self.run_exercise()
+    def check_wait(self, result: CompileResult) -> bool:
         if not result.success:
             return True
         if result.success and self.check_done_comment():
@@ -75,8 +66,10 @@ class Exercise:
         observer.start()
 
         try:
-            while self.check_wait():
+            result = self.run_compile_and_tests()
+            while self.check_wait(result):
                 time.sleep(1)
+                result = self.run_compile_and_tests()
             else:
                 observer.stop()
                 observer.join()
