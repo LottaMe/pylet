@@ -39,7 +39,7 @@ class Runner:
                 self.interface.print_on_modify(
                     compile_result=compile_result,
                     all_exercises=self.exercises,
-                    completed_exercises=self.completed_exercises
+                    completed_exercises=self.completed_exercises,
                 )
                 self.completed_exercises.append(exercise.watch_till_pass())
             else:
