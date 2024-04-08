@@ -1,10 +1,11 @@
 # test_runner.py
 
 from unittest.mock import MagicMock
+
 import pytest
-from runner import Runner
-from exercise import Exercise
 import yaml
+from exercise import Exercise
+from runner import Runner
 
 EXERCISE_DATA = {
     "exercises": {

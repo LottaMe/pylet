@@ -1,7 +1,8 @@
 from unittest.mock import MagicMock, call, patch
+
 import pytest
-from exercise import Exercise
 from components import CompileResult
+from exercise import Exercise
 from watchdog.events import FileModifiedEvent
 
 # from interface import Interface
