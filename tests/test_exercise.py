@@ -5,8 +5,6 @@ from components import CompileResult
 from exercise import Exercise
 from watchdog.events import FileModifiedEvent
 
-# from interface import Interface
-
 
 @pytest.fixture
 def mock_interface():
