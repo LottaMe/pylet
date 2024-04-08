@@ -88,3 +88,25 @@ def test_print_course_complete(interface, capsys) -> None:
 def test_clear(mock_subprocess, interface):
     interface.clear()
     mock_subprocess.assert_called_once_with(["clear"])
+
+
+def test_print_on_modify(interface):
+    interface.clear = MagicMock()
+    interface.print_progress = MagicMock()
+    interface.print_output = MagicMock()
+
+    mock_compile_result = CompileResult(success=True, output="We did it!!")
+    mock_all_exercises = ["1", "2", "3"]
+    mock_completed_exercises = ["1"]
+
+    interface.print_on_modify(
+        compile_result=mock_compile_result,
+        all_exercises=mock_all_exercises,
+        completed_exercises=mock_completed_exercises,
+    )
+
+    interface.clear.assert_called_once()
+    interface.print_progress.assert_called_once_with(
+        mock_all_exercises, mock_completed_exercises
+    )
+    interface.print_output.assert_called_once_with(mock_compile_result)
