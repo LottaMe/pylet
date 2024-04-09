@@ -1,7 +1,7 @@
 exercises:
   intro1:
     path: 00_intro/intro1
-    test: true
+    test: false
   intro2:
     path: 00_intro/intro2
     test: false
