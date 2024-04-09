@@ -8,4 +8,4 @@ class Colors:
         self.standard = "\033[0;0m"
         self.error = "\033[1;31m"
         self.success = "\033[1;32m"
-        self.neutral = "\033[1;34m"
+        self.neutral = "\033[1;33m"
