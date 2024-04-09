@@ -13,13 +13,20 @@ def interface():
 def test_print_success(interface, capsys) -> None:
     interface.print_success("yay")
     captured = capsys.readouterr()
-    assert captured.out.strip() == "success: yay"
+    assert "\033[1;32m" in captured.out
+    assert "Compiles Successfully!" in captured.out
+    assert "\033[0;0m" in captured.out
+    assert "yay" in captured.out
+
 
 
 def test_print_error(interface, capsys) -> None:
     interface.print_error("nay")
     captured = capsys.readouterr()
-    assert captured.out.strip() == "error: nay"
+    assert "\033[1;31m" in captured.out
+    assert "Compiling failed! Please try again. Here's the output:" in captured.out
+    assert "\033[0;0m" in captured.out
+    assert "nay" in captured.out
 
 
 def test_print_output_success_result(interface) -> None:

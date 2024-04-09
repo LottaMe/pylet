@@ -1,15 +1,22 @@
 import subprocess
 from typing import List
 
-from components import CompileResult
+from components import CompileResult, Colors
 
 
 class Interface:
+    def __init__(self) -> None:
+        self.colors = Colors()
+
     def print_success(self, output: str) -> None:
-        print("success:", output)
+        print(self.colors.success, "Compiles Successfully!", self.colors.standard)
+        print()
+        print(output)
 
     def print_error(self, output: str) -> None:
-        print("error:", output)
+        print(self.colors.error, "Compiling failed! Please try again. Here's the output:", self.colors.standard)
+        print()
+        print(output)
 
     def print_output(self, compile_result: CompileResult) -> None:
         if compile_result.success:
