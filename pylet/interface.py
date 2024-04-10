@@ -1,15 +1,22 @@
 import subprocess
 from typing import List
 
-from components import CompileResult
+from components import CompileResult, Colors
 
 
 class Interface:
+    def __init__(self) -> None:
+        self.colors = Colors()
+
     def print_success(self, output: str) -> None:
-        print("success:", output)
+        print(self.colors.success, "Compiles Successfully!", self.colors.standard)
+        print()
+        print(output)
 
     def print_error(self, output: str) -> None:
-        print("error:", output)
+        print(self.colors.error, "Compiling failed! Please try again. Here's the output:", self.colors.standard)
+        print()
+        print(output)
 
     def print_output(self, compile_result: CompileResult) -> None:
         if compile_result.success:
@@ -20,13 +27,14 @@ class Interface:
     def print_progress(
         self, all_exercises: List[str], completed_exercises: List[str]
     ) -> None:
-        progress = []
+        progress = [self.colors.success]
         progress.extend(["#" for _ in completed_exercises])
         if len(completed_exercises) < len(all_exercises):
-            progress.append(">")
+            progress.append(f"{self.colors.neutral}>{self.colors.error}")
             progress.extend(
                 ["-" for _ in all_exercises[len(completed_exercises) + 1 :]]
             )
+        progress.append(self.colors.standard)
         print(
             "progress:",
             "".join(progress),

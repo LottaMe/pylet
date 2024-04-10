@@ -13,13 +13,20 @@ def interface():
 def test_print_success(interface, capsys) -> None:
     interface.print_success("yay")
     captured = capsys.readouterr()
-    assert captured.out.strip() == "success: yay"
+    assert "\033[1;32m" in captured.out
+    assert "Compiles Successfully!" in captured.out
+    assert "\033[0;0m" in captured.out
+    assert "yay" in captured.out
+
 
 
 def test_print_error(interface, capsys) -> None:
     interface.print_error("nay")
     captured = capsys.readouterr()
-    assert captured.out.strip() == "error: nay"
+    assert "\033[1;31m" in captured.out
+    assert "Compiling failed! Please try again. Here's the output:" in captured.out
+    assert "\033[0;0m" in captured.out
+    assert "nay" in captured.out
 
 
 def test_print_output_success_result(interface) -> None:
@@ -50,8 +57,11 @@ def test_print_progress_no_completed(interface, capsys) -> None:
 
     interface.print_progress(all, completed)
     captured = capsys.readouterr()
-    assert captured.out.strip() == "progress: >---- 0/5 0.0%"
-
+    assert "progress: " in captured.out
+    assert f"{interface.colors.neutral}>" in captured.out
+    assert f"{interface.colors.error}----" in captured.out
+    assert f"{interface.colors.standard}" in captured.out
+    assert "0/5 0.0%" in captured.out
 
 def test_print_progress_half_completed(interface, capsys) -> None:
     all = ["1", "2", "3", "4", "5"]
@@ -59,7 +69,12 @@ def test_print_progress_half_completed(interface, capsys) -> None:
 
     interface.print_progress(all, completed)
     captured = capsys.readouterr()
-    assert captured.out.strip() == "progress: ##>-- 2/5 40.0%"
+    assert "progress: " in captured.out
+    assert f"{interface.colors.success}##" in captured.out
+    assert f"{interface.colors.neutral}>" in captured.out
+    assert f"{interface.colors.error}--" in captured.out
+    assert f"{interface.colors.standard}" in captured.out
+    assert "2/5 40.0%" in captured.out
 
 
 def test_print_progress_completed(interface, capsys) -> None:
@@ -67,7 +82,10 @@ def test_print_progress_completed(interface, capsys) -> None:
     completed = ["1", "2"]
     interface.print_progress(all, completed)
     captured = capsys.readouterr()
-    assert captured.out.strip() == "progress: ## 2/2 100.0%"
+    assert "progress: " in captured.out
+    assert f"{interface.colors.success}##" in captured.out
+    assert f"{interface.colors.standard}" in captured.out
+    assert "2/2 100.0%" in captured.out
 
 
 def test_print_progress_last_exercise(interface, capsys) -> None:
@@ -75,7 +93,11 @@ def test_print_progress_last_exercise(interface, capsys) -> None:
     completed = ["1", "2"]
     interface.print_progress(all, completed)
     captured = capsys.readouterr()
-    assert captured.out.strip() == "progress: ##> 2/3 66.7%"
+    assert "progress: " in captured.out
+    assert f"{interface.colors.success}##" in captured.out
+    assert f"{interface.colors.neutral}>" in captured.out
+    assert f"{interface.colors.standard}" in captured.out
+    assert "2/3 66.7%" in captured.out
 
 
 def test_print_course_complete(interface, capsys) -> None:
