@@ -8,3 +8,6 @@ exercises:
   intro3:
     path: 00_intro/intro3
     test: false
+  variables1:
+    path: 01_variables/variables1
+    test: false
