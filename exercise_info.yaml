@@ -14,3 +14,6 @@ exercises:
   variables2:
     path: 01_variables/variables2
     test: false
+  variables3:
+    path: 01_variables/variables3
+    test: true
