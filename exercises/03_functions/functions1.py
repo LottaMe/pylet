@@ -1,7 +1,7 @@
 # functions1.py
 
 
-# Below we have defined a function, that should .
+# Below we have defined a function, that should print a greeting.
 # Can you finish it, so that it prints "hello" to the console?
 
 
