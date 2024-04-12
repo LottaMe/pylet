@@ -17,3 +17,6 @@ exercises:
   variables3:
     path: 01_variables/variables3
     test: true
+  basic_types1:
+    path: 02_basic_types/basic_types1
+    test: false
