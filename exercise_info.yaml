@@ -44,3 +44,6 @@ exercises:
   functions4:
     path: 03_functions/functions4
     test: false
+  functions5:
+    path: 03_functions/functions5
+    test: true
