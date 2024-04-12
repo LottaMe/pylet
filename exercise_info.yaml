@@ -26,3 +26,6 @@ exercises:
   basic_types3:
     path: 02_basic_types/basic_types3
     test: false
+  basic_types4:
+    path: 02_basic_types/basic_types4
+    test: false
