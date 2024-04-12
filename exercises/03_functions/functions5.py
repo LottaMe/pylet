@@ -22,6 +22,8 @@ def add_tax(price: float) -> float:
 
 def add_discount(price: float) -> float:
     return
+
+
 # Don't modify code below
 
 def test_add_tax():
@@ -29,9 +31,9 @@ def test_add_tax():
     assert add_tax(3) == 3.3
 
 def test_add_discount():
-    assert add_discount(110.0) == 104.5
-    assert add_discount(3.3) == 3.14
+    assert add_discount(100) == 95.0
+    assert add_discount(3) == 2.85
 
 def test_calculate_final_price():
-    assert add_discount(100) == 104.5
-    assert add_discount(3) == 3.14
+    assert calculate_final_price(100) == 104.5
+    assert calculate_final_price(3) == 3.13
