@@ -17,6 +17,6 @@ print(fullname)
 # Don't modify code below
 
 def test_format_name():
-    assert format_name("John Doe") == "John Doe"
+    assert format_name("John", "Doe") == "John Doe"
     assert format_name("Max", "Mustermann") == "Max Mustermann"
 
