@@ -40,3 +40,4 @@ else:
     print(f"{x_minus_five} is {x} minus five.")
     print(f"{x_times_two} is {x} times two.")
     print(f"{x_divided_by_two} is {x} divided by two.")
+    print(f"{x_to_power_of_three} is {x} to the power of three.")
