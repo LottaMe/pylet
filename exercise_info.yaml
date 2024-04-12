@@ -35,3 +35,7 @@ exercises:
   functions1:
     path: 03_functions/functions1
     test: false
+  functions1:
+    path: 03_functions/functions2
+    test: true
+  
