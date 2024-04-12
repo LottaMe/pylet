@@ -40,7 +40,7 @@ exercises:
     test: true
   functions3:
     path: 03_functions/functions3
-    test: true
+    test: false
   functions4:
     path: 03_functions/functions4
     test: false

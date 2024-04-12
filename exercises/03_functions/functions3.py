@@ -12,11 +12,6 @@
 def format_name(firstname: str, lastname: str) -> str:
     fullname = firstname + " " + lastname
 
-print(fullname)
+format_name("Jane", "Doe")
 
-# Don't modify code below
-
-def test_format_name():
-    assert format_name("John", "Doe") == "John Doe"
-    assert format_name("Max", "Mustermann") == "Max Mustermann"
-
+print("The name is", fullname)
