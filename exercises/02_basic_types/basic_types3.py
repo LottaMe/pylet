@@ -18,6 +18,8 @@ x_times_two =
 
 x_divided_by_two = 
 
+x_to_power_of_three = 
+
 
 # Don't modify code below
 # After you finish, you can take a look at it, 
@@ -27,10 +29,12 @@ if(x_plus_three != x+3):
     raise ValueError(f"{x_plus_three} is not {x} plus three.")
 elif(x_minus_five != x-5):
     raise ValueError(f"{x_minus_five} is not {x} minus five.")
-if(x_times_two != x*2):
+elif(x_times_two != x*2):
     raise ValueError(f"{x_times_two} is not {x} times two.")
-if(x_divided_by_two != x/2):
+elif(x_divided_by_two != x/2):
     raise ValueError(f"{x_divided_by_two} is not {x} divided by two.")
+elif(x_to_power_of_three != x**3):
+    raise ValueError(f"{x_to_power_of_three} is not {x} to the power of three.")
 else:
     print(f"{x_plus_three} is {x} plus three.")
     print(f"{x_minus_five} is {x} minus five.")
