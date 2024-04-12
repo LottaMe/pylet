@@ -23,3 +23,6 @@ exercises:
   basic_types2:
     path: 02_basic_types/basic_types2
     test: false
+  basic_types3:
+    path: 02_basic_types/basic_types3
+    test: false
