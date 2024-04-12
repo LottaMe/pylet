@@ -19,5 +19,5 @@ assert 6.67 == 20/3
 
 # Fix the assertions, by replacing the None with the correct result.
 # Ask yourself: What do these operators do? How could they be useful?
-assert 3//2 == None
-assert 3%2 == None
+assert 20//3 == None
+assert 20%3 == None
