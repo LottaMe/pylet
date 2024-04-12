@@ -2,9 +2,7 @@
 
 
 
-# float(), int()
-# round()
-# %, //
+# Follow the instructions below, to fix the assertion errors
 
 
 ### I AM NOT DONE
