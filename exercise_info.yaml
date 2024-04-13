@@ -53,3 +53,6 @@ exercises:
   conditions2:
     path: 04_conditions/conditions2
     test: false
+  conditions3:
+    path: 04_conditions/conditions3
+    test: true
