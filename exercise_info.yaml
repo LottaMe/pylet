@@ -47,3 +47,6 @@ exercises:
   functions5:
     path: 03_functions/functions5
     test: true
+  conditions1:
+    path: 04_conditions/conditions1
+    test: false
