@@ -50,3 +50,6 @@ exercises:
   conditions1:
     path: 04_conditions/conditions1
     test: false
+  conditions2:
+    path: 04_conditions/conditions2
+    test: false
