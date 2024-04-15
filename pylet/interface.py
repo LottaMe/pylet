@@ -7,6 +7,8 @@ from components import CompileResult, Colors
 class Interface:
     def __init__(self) -> None:
         self.colors = Colors()
+        self.all_length = 0
+        self.completed_length = 0
 
     def print_success(self, output: str) -> None:
         print(self.colors.success, "Compiles Successfully!", self.colors.standard)
@@ -51,9 +53,7 @@ class Interface:
     def print_on_modify(
         self,
         compile_result: CompileResult,
-        all_length: int,
-        completed_length: int,
     ):
         self.clear()
-        self.print_progress(all_length, completed_length)
+        self.print_progress(self.all_length, self.completed_length)
         self.print_output(compile_result)

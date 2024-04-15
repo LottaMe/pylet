@@ -116,19 +116,17 @@ def test_print_on_modify(interface):
     interface.clear = MagicMock()
     interface.print_progress = MagicMock()
     interface.print_output = MagicMock()
+    interface.all_length = 3
+    interface.completed_length = 1
 
     mock_compile_result = CompileResult(success=True, output="We did it!!")
-    mock_all_exercises = 3
-    mock_completed_exercises = 1
 
     interface.print_on_modify(
-        compile_result=mock_compile_result,
-        all_length=mock_all_exercises,
-        completed_length=mock_completed_exercises,
+        compile_result=mock_compile_result
     )
 
     interface.clear.assert_called_once()
     interface.print_progress.assert_called_once_with(
-        mock_all_exercises, mock_completed_exercises
+        3, 1
     )
     interface.print_output.assert_called_once_with(mock_compile_result)
