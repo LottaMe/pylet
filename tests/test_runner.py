@@ -104,8 +104,8 @@ def test_run(runner):
 
     runner.interface.print_on_modify.assert_called_once_with(
         compile_result=compile_result2,
-        all_exercises=2,
-        completed_exercises=1,
+        all_length=2,
+        completed_length=1,
     )
     runner.interface.print_progress.assert_called_once_with(
         2, 2

@@ -38,8 +38,8 @@ class Runner:
             if exercise.check_wait(compile_result):
                 self.interface.print_on_modify(
                     compile_result=compile_result,
-                    all_exercises=len(self.exercises),
-                    completed_exercises=len(self.completed_exercises),
+                    all_length=len(self.exercises),
+                    completed_length=len(self.completed_exercises),
                 )
                 self.completed_exercises.append(exercise.watch_till_pass())
             else:
