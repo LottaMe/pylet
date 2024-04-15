@@ -56,3 +56,6 @@ exercises:
   conditions3:
     path: 04_conditions/conditions3
     test: true
+  quiz1:
+    path: quiz1.py
+    test: true
