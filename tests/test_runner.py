@@ -79,7 +79,7 @@ def test_run_exercises_done(runner):
 
     assert len(runner.completed_exercises) == 2
     runner.interface.print_progress.assert_called_once_with(
-        runner.exercises, runner.completed_exercises
+        2, 2
     )
     runner.interface.print_course_complete.assert_called_once()
 
@@ -103,12 +103,10 @@ def test_run(runner):
     runner.run()
 
     runner.interface.print_on_modify.assert_called_once_with(
-        compile_result=compile_result2,
-        all_exercises=runner.exercises,
-        completed_exercises=runner.completed_exercises,
+        compile_result=compile_result2
     )
     runner.interface.print_progress.assert_called_once_with(
-        runner.exercises, runner.completed_exercises
+        2, 2
     )
     runner.interface.print_course_complete.assert_called_once()
 

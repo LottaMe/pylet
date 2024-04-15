@@ -7,6 +7,8 @@ from components import CompileResult, Colors
 class Interface:
     def __init__(self) -> None:
         self.colors = Colors()
+        self.all_length = 0
+        self.completed_length = 0
 
     def print_success(self, output: str) -> None:
         print(self.colors.success, "Compiles Successfully!", self.colors.standard)
@@ -25,21 +27,21 @@ class Interface:
             self.print_error(compile_result.output)
 
     def print_progress(
-        self, all_exercises: List[str], completed_exercises: List[str]
+        self, all_length: int, completed_length: int
     ) -> None:
         progress = [self.colors.success]
-        progress.extend(["#" for _ in completed_exercises])
-        if len(completed_exercises) < len(all_exercises):
+        progress.extend(["#" for _ in range(completed_length)])
+        if completed_length < all_length:
             progress.append(f"{self.colors.neutral}>{self.colors.error}")
             progress.extend(
-                ["-" for _ in all_exercises[len(completed_exercises) + 1 :]]
+                ["-" for _ in range(all_length-completed_length)]
             )
         progress.append(self.colors.standard)
         print(
             "progress:",
             "".join(progress),
-            f"{len(completed_exercises)}/{len(all_exercises)}",
-            f"{round(((len(completed_exercises) / len(all_exercises)) * 100),1)}%",
+            f"{completed_length}/{all_length}",
+            f"{round(((completed_length / all_length) * 100),1)}%",
         )
 
     def print_course_complete(self) -> None:
@@ -51,9 +53,7 @@ class Interface:
     def print_on_modify(
         self,
         compile_result: CompileResult,
-        all_exercises: List[str],
-        completed_exercises: List[str],
     ):
         self.clear()
-        self.print_progress(all_exercises, completed_exercises)
+        self.print_progress(self.all_length, self.completed_length)
         self.print_output(compile_result)

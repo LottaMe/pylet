@@ -190,7 +190,7 @@ def test_on_modified_recheck_success(exercise, mock_interface):
         exercise.on_modified_recheck(event=None)
 
         mock_interface.clear.assert_called_once()
-        mock_interface.print_output.assert_called_once_with(mock_compile_result)
+        mock_interface.print_on_modify.assert_called_once_with(mock_compile_result)
 
 
 def test_on_modified_recheck_failure(exercise, mock_interface):
@@ -202,7 +202,7 @@ def test_on_modified_recheck_failure(exercise, mock_interface):
         exercise.on_modified_recheck(event=None)
 
         mock_interface.clear.assert_called_once()
-        mock_interface.print_output.assert_called_once_with(mock_compile_result)
+        mock_interface.print_on_modify.assert_called_once_with(mock_compile_result)
 
 
 def test_check_wait_result_failure(exercise):

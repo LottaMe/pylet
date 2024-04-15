@@ -52,8 +52,8 @@ def test_print_output_failure_result(interface) -> None:
 
 
 def test_print_progress_no_completed(interface, capsys) -> None:
-    all = ["1", "2", "3", "4", "5"]
-    completed = []
+    all = 5
+    completed = 0
 
     interface.print_progress(all, completed)
     captured = capsys.readouterr()
@@ -64,8 +64,8 @@ def test_print_progress_no_completed(interface, capsys) -> None:
     assert "0/5 0.0%" in captured.out
 
 def test_print_progress_half_completed(interface, capsys) -> None:
-    all = ["1", "2", "3", "4", "5"]
-    completed = ["1", "2"]
+    all = 5
+    completed = 2
 
     interface.print_progress(all, completed)
     captured = capsys.readouterr()
@@ -78,8 +78,8 @@ def test_print_progress_half_completed(interface, capsys) -> None:
 
 
 def test_print_progress_completed(interface, capsys) -> None:
-    all = ["1", "2"]
-    completed = ["1", "2"]
+    all = 2
+    completed = 2
     interface.print_progress(all, completed)
     captured = capsys.readouterr()
     assert "progress: " in captured.out
@@ -89,8 +89,8 @@ def test_print_progress_completed(interface, capsys) -> None:
 
 
 def test_print_progress_last_exercise(interface, capsys) -> None:
-    all = ["1", "2", "3"]
-    completed = ["1", "2"]
+    all = 3
+    completed = 2
     interface.print_progress(all, completed)
     captured = capsys.readouterr()
     assert "progress: " in captured.out
@@ -116,19 +116,17 @@ def test_print_on_modify(interface):
     interface.clear = MagicMock()
     interface.print_progress = MagicMock()
     interface.print_output = MagicMock()
+    interface.all_length = 3
+    interface.completed_length = 1
 
     mock_compile_result = CompileResult(success=True, output="We did it!!")
-    mock_all_exercises = ["1", "2", "3"]
-    mock_completed_exercises = ["1"]
 
     interface.print_on_modify(
-        compile_result=mock_compile_result,
-        all_exercises=mock_all_exercises,
-        completed_exercises=mock_completed_exercises,
+        compile_result=mock_compile_result
     )
 
     interface.clear.assert_called_once()
     interface.print_progress.assert_called_once_with(
-        mock_all_exercises, mock_completed_exercises
+        3, 1
     )
     interface.print_output.assert_called_once_with(mock_compile_result)
