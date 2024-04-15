@@ -49,7 +49,7 @@ class Exercise:
     def on_modified_recheck(self, event) -> None:
         self.interface.clear()
         result = self.run_compile_and_tests()
-        self.interface.print_output(result)
+        self.interface.print_on_modify(result)
 
     def check_wait(self, result: CompileResult) -> bool:
         if not result.success:
