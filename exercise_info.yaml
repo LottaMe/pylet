@@ -5,3 +5,57 @@ exercises:
   intro2:
     path: 00_intro/intro2
     test: false
+  intro3:
+    path: 00_intro/intro3
+    test: false
+  variables1:
+    path: 01_variables/variables1
+    test: false
+  variables2:
+    path: 01_variables/variables2
+    test: false
+  variables3:
+    path: 01_variables/variables3
+    test: true
+  basic_types1:
+    path: 02_basic_types/basic_types1
+    test: false
+  basic_types2:
+    path: 02_basic_types/basic_types2
+    test: false
+  basic_types3:
+    path: 02_basic_types/basic_types3
+    test: false
+  basic_types4:
+    path: 02_basic_types/basic_types4
+    test: false
+  basic_types5:
+    path: 02_basic_types/basic_types5
+    test: false
+  functions1:
+    path: 03_functions/functions1
+    test: false
+  functions2:
+    path: 03_functions/functions2
+    test: true
+  functions3:
+    path: 03_functions/functions3
+    test: false
+  functions4:
+    path: 03_functions/functions4
+    test: false
+  functions5:
+    path: 03_functions/functions5
+    test: true
+  conditions1:
+    path: 04_conditions/conditions1
+    test: false
+  conditions2:
+    path: 04_conditions/conditions2
+    test: false
+  conditions3:
+    path: 04_conditions/conditions3
+    test: true
+  quiz1:
+    path: quiz1.py
+    test: true
