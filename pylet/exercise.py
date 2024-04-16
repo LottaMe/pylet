@@ -1,6 +1,7 @@
 import subprocess
 import time
 from functools import partial
+import traceback
 
 from components import CompileResult
 from interface import Interface
@@ -15,12 +16,12 @@ class Exercise:
         self.interface = interface
         self.test = test
 
-    def compile(self) -> CompileResult:
-        result = subprocess.run(["python", self.path], capture_output=True, text=True)
-        if result.returncode == 0:
-            return CompileResult(True, result.stdout)
-        else:
-            return CompileResult(False, result.stderr)
+    def try_exec(self):
+        try:
+            exec(self.code)
+            return CompileResult(True, "")
+        except Exception:
+            return CompileResult(False, traceback.format_exc())
 
     def run_tests(self) -> CompileResult:
         result = subprocess.run(["pytest", self.path], capture_output=True, text=True)
@@ -31,9 +32,9 @@ class Exercise:
 
     def run_compile_and_tests(self) -> CompileResult:
         if not self.test:
-            return self.compile()
+            return self.try_exec()
         else:
-            compile_result = self.compile()
+            compile_result = self.try_exec()
             if compile_result.success:
                 return self.run_tests()
             else:

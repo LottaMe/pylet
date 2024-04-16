@@ -28,6 +28,7 @@ class Runner:
         code = self.get_exercise_code(path)
         return Exercise(
             path=path,
+            code=code,
             test=exercise_tuple[1]["test"],
             interface=self.interface,
         )
