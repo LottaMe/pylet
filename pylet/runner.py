@@ -44,7 +44,7 @@ class Runner:
         self.interface.all_length = len(self.exercises)
         for exercise in self.exercises:
             compile_result = exercise.run_compile_and_tests()
-            if exercise.check_wait(compile_result):
+            if exercise.wait:
                 self.interface.print_on_modify(
                     compile_result=compile_result,
                 )

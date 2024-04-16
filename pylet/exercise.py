@@ -16,6 +16,13 @@ class Exercise:
         self.interface = interface
         self.test = test
 
+        self.wait = True
+
+    def reread_code(self):
+        with open(self.path, "r") as f:
+            code = f.read()
+        self.code = str(code)
+    
     def try_exec(self):
         try:
             exec(self.code)
@@ -32,13 +39,13 @@ class Exercise:
 
     def run_compile_and_tests(self) -> CompileResult:
         if not self.test:
-            return self.try_exec()
+            compile_result = self.try_exec()
         else:
             compile_result = self.try_exec()
             if compile_result.success:
-                return self.run_tests()
-            else:
-                return compile_result
+                compile_result = self.run_tests()
+        self.wait = self.check_wait(compile_result)
+        return compile_result
 
     def check_done_comment(self) -> bool:
         with open(self.path, "r") as f:
@@ -50,6 +57,7 @@ class Exercise:
 
     def on_modified_recheck(self, event) -> None:
         self.interface.clear()
+        self.reread_code()
         result = self.run_compile_and_tests()
         self.interface.print_on_modify(result)
 
@@ -68,10 +76,9 @@ class Exercise:
         observer.start()
 
         try:
-            result = self.run_compile_and_tests()
-            while self.check_wait(result):
+            self.run_compile_and_tests()
+            while self.wait:
                 time.sleep(1)
-                result = self.run_compile_and_tests()
             else:
                 observer.stop()
                 observer.join()
