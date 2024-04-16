@@ -18,9 +18,16 @@ class Runner:
             exercises = yaml.safe_load(f)
         return list(exercises["exercises"].items())
 
+    def get_exercise_code(self, path: str) -> str:
+        with open(path, "r") as f:
+            code = f.read()
+        return str(code)
+    
     def parse_exercise(self, exercise_tuple: Tuple[str, Dict[str, bool]]) -> Exercise:
+        path = f"exercises/{exercise_tuple[1]['path']}.py"
+        code = self.get_exercise_code(path)
         return Exercise(
-            path=f"exercises/{exercise_tuple[1]['path']}.py",
+            path=path,
             test=exercise_tuple[1]["test"],
             interface=self.interface,
         )

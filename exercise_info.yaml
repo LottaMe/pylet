@@ -57,5 +57,5 @@ exercises:
     path: 04_conditions/conditions3
     test: true
   quiz1:
-    path: quiz1.py
+    path: quiz1
     test: true
