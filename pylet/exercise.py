@@ -9,8 +9,9 @@ from watchdog.observers import Observer
 
 
 class Exercise:
-    def __init__(self, path: str, test: bool, interface: Interface) -> None:
+    def __init__(self, path: str, code: str, test: bool, interface: Interface) -> None:
         self.path = path
+        self.code = code
         self.interface = interface
         self.test = test
 
