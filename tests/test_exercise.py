@@ -76,89 +76,45 @@ def test_run_tests_success(exercise):
 
 
 def test_run_compile_and_tests_success(exercise):
-    exercise.test = False
     exercise.run_compile = MagicMock()
+    exercise.run_compile.return_value = CompileResult(True, None, None)
     exercise.run_tests = MagicMock()
-    exercise.run_tests.return_value = ResultTests(True, "")
+    exercise.run_tests.return_value = ResultTests(True, "tests work")
 
     result = exercise.run_compile_and_tests()
 
     exercise.run_compile.assert_called_once()
     exercise.run_tests.assert_called_once()
     assert isinstance(result, ResultTests)
+    assert result.success == True
+    assert result.output == "tests work"
 
-# def test_run_compile_and_tests_no_tests_failure(exercise):
-#     exercise.test = False
-#     with patch("subprocess.run") as mock_run:
-#         mock_run.return_value.returncode = 1
-#         mock_run.return_value.stderr = "We failed!"
+def test_run_compile_and_tests_compile_failure(exercise):
+    exercise.run_compile = MagicMock()
+    exercise.run_compile.return_value = CompileResult(False, "error", None)
+    exercise.run_tests = MagicMock()
 
-#         result = exercise.run_compile_and_tests()
+    result = exercise.run_compile_and_tests()
 
-#         mock_run.assert_called_once_with(
-#             ["python", "mock_path"], capture_output=True, text=True
-#         )
-#         assert result.success == False
-#         assert result.output == "We failed!"
+    exercise.run_compile.assert_called_once()
+    exercise.run_tests.assert_not_called()
+    assert isinstance(result, CompileResult)
+    assert result.success == False
+    assert result.error_message == "error"
 
+def test_run_compile_and_tests_test_failure(exercise):
+    exercise.run_compile = MagicMock()
+    exercise.run_compile.return_value = CompileResult(True, None, None)
+    exercise.run_tests = MagicMock()
+    exercise.run_tests.return_value = ResultTests(False, "tests failed")
 
-# def test_run_compile_and_tests_with_tests_success(exercise):
-#     exercise.test = True
-#     with patch("subprocess.run") as mock_run:
-#         mock_run.side_effect = [
-#             MagicMock(returncode=0, stdout="We compiled!."),
-#             MagicMock(returncode=0, stdout="Tests succeeded :)"),
-#         ]
+    result = exercise.run_compile_and_tests()
 
-#         result = exercise.run_compile_and_tests()
-
-#         mock_run.assert_has_calls(
-#             [
-#                 call(["python", "mock_path"], capture_output=True, text=True),
-#                 call(["pytest", "mock_path"], capture_output=True, text=True),
-#             ]
-#         )
-#         assert result.success == True
-#         assert result.output == "Tests succeeded :)"
-
-
-# def test_run_compile_and_tests_with_tests_compile_fails(exercise):
-#     exercise.test = True
-#     with patch("subprocess.run") as mock_run:
-#         mock_run.side_effect = [
-#             MagicMock(returncode=1, stderr="We failed!"),
-#             MagicMock(returncode=0, stdout="Tests succeeded :)"),
-#         ]
-
-#         result = exercise.run_compile_and_tests()
-
-#         mock_run.assert_called_once_with(
-#             ["python", "mock_path"], capture_output=True, text=True
-#         )
-
-#         assert result.success == False
-#         assert result.output == "We failed!"
-
-
-# def test_run_compile_and_tests_with_tests_test_fails(exercise):
-#     exercise.test = True
-#     with patch("subprocess.run") as mock_run:
-#         mock_run.side_effect = [
-#             MagicMock(returncode=0, stdout="We compiled!."),
-#             MagicMock(returncode=0, stdout="oh no FAILURES 0 of 1 passed"),
-#         ]
-
-#         result = exercise.run_compile_and_tests()
-
-#         mock_run.assert_has_calls(
-#             [
-#                 call(["python", "mock_path"], capture_output=True, text=True),
-#                 call(["pytest", "mock_path"], capture_output=True, text=True),
-#             ]
-#         )
-#         assert result.success == False
-#         assert result.output == "oh no FAILURES 0 of 1 passed"
-
+    exercise.run_compile.assert_called_once()
+    exercise.run_tests.assert_called_once()
+    assert isinstance(result, ResultTests)
+    assert result.success == False
+    assert result.output == "tests failed"
 
 # def test_check_done_comment_present(exercise, tmp_path):
 #     exercise_file = tmp_path / "exercise_with_done_comment.py"
