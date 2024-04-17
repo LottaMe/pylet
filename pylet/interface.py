@@ -10,7 +10,7 @@ class Interface:
         self.all_length = 0
         self.completed_length = 0
 
-    def print_success(self, output: str) -> None:
+    def print_success(self, output: str = "") -> None:
         print(self.colors.success, "Running the code was successful!", self.colors.standard)
         print()
         print(output)
