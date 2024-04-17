@@ -116,49 +116,42 @@ def test_run_compile_and_tests_test_failure(exercise):
     assert result.success == False
     assert result.output == "tests failed"
 
-# def test_check_done_comment_present(exercise, tmp_path):
-#     exercise_file = tmp_path / "exercise_with_done_comment.py"
-#     with open(exercise_file, "w") as f:
-#         f.write("### Remove I AM NOT DONE COMMENT TO CONTINUE ###")
-#         f.write("### I AM NOT DONE ###")
-#         f.write("print('Hello World!')")
+## run_checks tests needed
 
-#     exercise.path = exercise_file
-#     assert exercise.check_done_comment() == True
+def test_check_done_comment_present(exercise, tmp_path):
+    exercise_file = tmp_path / "exercise_with_done_comment.py"
+    with open(exercise_file, "w") as f:
+        f.write("### Remove I AM NOT DONE COMMENT TO CONTINUE ###")
+        f.write("### I AM NOT DONE ###")
+        f.write("print('Hello World!')")
 
-
-# def test_check_done_comment_not_present(exercise, tmp_path):
-#     exercise_file = tmp_path / "exercise_with_done_comment.py"
-#     with open(exercise_file, "w") as f:
-#         f.write("### Remove I AM NOT DONE COMMENT TO CONTINUE ###")
-#         f.write("print('Hello World!')")
-
-#     exercise.path = exercise_file
-#     assert exercise.check_done_comment() == False
+    exercise.path = exercise_file
+    assert exercise.check_done_comment() == True
 
 
-# def test_on_modified_recheck_success(exercise, mock_interface):
-#     exercise.interface = mock_interface
-#     with patch.object(exercise, "run_compile_and_tests") as mock_run_compile_and_tests:
-#         mock_compile_result = CompileResult(success=True, output="We compiled!.")
-#         mock_run_compile_and_tests.return_value = mock_compile_result
+def test_check_done_comment_not_present(exercise, tmp_path):
+    exercise_file = tmp_path / "exercise_with_done_comment.py"
+    with open(exercise_file, "w") as f:
+        f.write("### Remove I AM NOT DONE COMMENT TO CONTINUE ###")
+        f.write("print('Hello World!')")
 
-#         exercise.on_modified_recheck(event=None)
-
-#         mock_interface.clear.assert_called_once()
-#         mock_interface.print_on_modify.assert_called_once_with(mock_compile_result)
+    exercise.path = exercise_file
+    assert exercise.check_done_comment() == False
 
 
-# def test_on_modified_recheck_failure(exercise, mock_interface):
-#     exercise.interface = mock_interface
-#     with patch.object(exercise, "run_compile_and_tests") as mock_run_compile_and_tests:
-#         mock_compile_result = CompileResult(False, "We failed!")
-#         mock_run_compile_and_tests.return_value = mock_compile_result
+def test_on_modified_recheck_success(exercise, mock_interface):
+    exercise.interface = mock_interface
+    with patch.object(exercise, "run_checks") as mock_run_checks, patch.object(exercise, "read_code") as mock_read_code:
+        mock_compile_result = ResultTests(success=True, output="We compiled!.")
+        mock_run_checks.return_value = mock_compile_result
 
-#         exercise.on_modified_recheck(event=None)
+        exercise.on_modified_recheck(event=None)
 
-#         mock_interface.clear.assert_called_once()
-#         mock_interface.print_on_modify.assert_called_once_with(mock_compile_result)
+        mock_interface.clear.assert_called_once()
+        mock_interface.print_on_modify.assert_called_once_with(mock_compile_result)
+        
+        mock_read_code.assert_called_once()
+        mock_run_checks.assert_called_once()
 
 
 # def test_check_wait_result_failure(exercise):
