@@ -17,18 +17,11 @@ class Runner:
         with open(self.exercise_info_path) as f:
             exercises = yaml.safe_load(f)
         return list(exercises["exercises"].items())
-
-    def get_exercise_code(self, path: str) -> str:
-        with open(path, "r") as f:
-            code = f.read()
-        return str(code)
     
     def parse_exercise(self, exercise_tuple: Tuple[str, Dict[str, bool]]) -> Exercise:
         path = f"exercises/{exercise_tuple[1]['path']}.py"
-        code = self.get_exercise_code(path)
         return Exercise(
             path=path,
-            code=code,
             test=exercise_tuple[1]["test"],
             interface=self.interface,
         )
@@ -43,9 +36,10 @@ class Runner:
     def run(self) -> None:
         self.interface.all_length = len(self.exercises)
         for exercise in self.exercises:
-            exercise.run_compile_and_tests()
+            exercise.read_code()
+            result = exercise.run_compile_and_tests()
             if exercise.wait:
-                self.interface.print_on_modify()
+                self.interface.print_on_modify(result)
                 self.completed_exercises.append(exercise.watch_till_pass())
                 self.interface.completed_length+=1
             else:

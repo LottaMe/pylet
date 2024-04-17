@@ -10,26 +10,25 @@ from watchdog.observers import Observer
 
 
 class Exercise:
-    def __init__(self, path: str, code: str, test: bool, interface: Interface) -> None:
+    def __init__(self, path: str, test: bool, interface: Interface) -> None:
         self.path = path
-        self.code = code
+        self.code = ""
         self.interface = interface
         self.test = test
 
         self.wait = True
 
-    def reread_code(self):
+    def read_code(self):
         with open(self.path, "r") as f:
             code = f.read()
         self.code = str(code)
     
-    def try_exec(self):
+    def try_compile(self):
         try:
-            exec(self.code)
-            return CompileResult(True, "")
+            compile_obj = compile(self.code, self.path, "exec")
+            return CompileResult(True, compile_obj)
         except Exception:
             error = traceback.format_exc()
-            print(error)
             return CompileResult(False, error)
 
     def run_tests(self) -> CompileResult:
@@ -41,11 +40,9 @@ class Exercise:
 
     def run_compile_and_tests(self) -> CompileResult:
         if not self.test:
-            self.interface.print_on_modify()
-            compile_result = self.try_exec()
+            compile_result = self.try_compile()
         else:
-            self.interface.print_on_modify()
-            compile_result = self.try_exec()
+            compile_result = self.try_compile()
             if compile_result.success:
                 compile_result = self.run_tests()
         self.wait = self.check_wait(compile_result)
@@ -61,9 +58,9 @@ class Exercise:
 
     def on_modified_recheck(self, event) -> None:
         self.interface.clear()
-        self.reread_code()
+        self.read_code()
         result = self.run_compile_and_tests()
-        # self.interface.print_on_modify(result)
+        self.interface.print_on_modify(result)
 
     def check_wait(self, result: CompileResult) -> bool:
         if not result.success:
