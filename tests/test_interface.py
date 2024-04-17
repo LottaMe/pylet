@@ -1,7 +1,7 @@
 from unittest.mock import MagicMock, patch
 
 import pytest
-from components import TestResult
+from components import ResultTests
 from interface import Interface
 
 
@@ -32,7 +32,7 @@ def test_print_output_success_result(interface) -> None:
     interface.print_success = MagicMock()
     interface.print_error = MagicMock()
 
-    mock_compile_result = TestResult(success=True, output="We did it!!")
+    mock_compile_result = ResultTests(success=True, output="We did it!!")
 
     interface.print_output(mock_compile_result)
     interface.print_success.assert_called_once_with(mock_compile_result.output)
@@ -43,7 +43,7 @@ def test_print_output_failure_result(interface) -> None:
     interface.print_success = MagicMock()
     interface.print_error = MagicMock()
 
-    mock_compile_result = TestResult(success=False, output="We failed!!")
+    mock_compile_result = ResultTests(success=False, output="We failed!!")
 
     interface.print_output(mock_compile_result)
     interface.print_success.assert_not_called()
@@ -119,7 +119,7 @@ def test_print_on_modify(interface):
     interface.all_length = 3
     interface.completed_length = 1
 
-    mock_compile_result = TestResult(success=True, output="We did it!!")
+    mock_compile_result = ResultTests(success=True, output="We did it!!")
 
     interface.print_on_modify(result=mock_compile_result)
 

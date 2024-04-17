@@ -1,10 +1,9 @@
 from types import CodeType
-from unittest.mock import MagicMock, call, patch
+from unittest.mock import MagicMock, patch
 
 import pytest
-from components import CompileResult
+from components import CompileResult, ResultTests
 from exercise import Exercise
-from watchdog.events import FileModifiedEvent
 
 
 @pytest.fixture
@@ -76,20 +75,17 @@ def test_run_tests_success(exercise):
         assert result.output == "oh no FAILURES 0 of 1 passed"
 
 
-# def test_run_compile_and_tests_no_tests_success(exercise):
-#     exercise.test = False
-#     with patch("subprocess.run") as mock_run:
-#         mock_run.return_value.returncode = 0
-#         mock_run.return_value.stdout = "We compiled!"
+def test_run_compile_and_tests_success(exercise):
+    exercise.test = False
+    exercise.run_compile = MagicMock()
+    exercise.run_tests = MagicMock()
+    exercise.run_tests.return_value = ResultTests(True, "")
 
-#         result = exercise.run_compile_and_tests()
+    result = exercise.run_compile_and_tests()
 
-#         mock_run.assert_called_once_with(
-#             ["python", "mock_path"], capture_output=True, text=True
-#         )
-#         assert result.success == True
-#         assert result.output == "We compiled!"
-
+    exercise.run_compile.assert_called_once()
+    exercise.run_tests.assert_called_once()
+    assert isinstance(result, ResultTests)
 
 # def test_run_compile_and_tests_no_tests_failure(exercise):
 #     exercise.test = False

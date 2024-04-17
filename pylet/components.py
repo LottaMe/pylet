@@ -6,7 +6,7 @@ class Result:
         self.success = success
 
 
-class TestResult(Result):
+class ResultTests(Result):
     def __init__(self, success: bool, output: str) -> None:
         super().__init__(success)
         self.output = output

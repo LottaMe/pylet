@@ -3,7 +3,7 @@ import time
 from functools import partial
 import traceback
 
-from components import CompileResult, Result, TestResult
+from components import CompileResult, Result, ResultTests
 from interface import Interface
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
@@ -31,14 +31,14 @@ class Exercise:
             error = traceback.format_exc()
             return CompileResult(success=False, error_message=error, code=None)
 
-    def run_tests(self) -> TestResult:
+    def run_tests(self) -> ResultTests:
         result = subprocess.run(["pytest", self.path], capture_output=True, text=True)
         if "FAILURES" in result.stdout:
-            return TestResult(False, result.stdout)
+            return ResultTests(False, result.stdout)
         else:
-            return TestResult(True, result.stdout)
+            return ResultTests(True, result.stdout)
 
-    def run_compile_and_tests(self) -> TestResult | CompileResult:
+    def run_compile_and_tests(self) -> ResultTests | CompileResult:
         compile_result = self.run_compile()
         if compile_result.success:
             return self.run_tests()

@@ -1,7 +1,7 @@
 import subprocess
 from typing import List
 
-from components import CompileResult, Colors, Result, TestResult
+from components import CompileResult, Colors, Result, ResultTests
 
 
 class Interface:
@@ -60,7 +60,7 @@ class Interface:
     ):
         self.clear()
         self.print_progress(self.all_length, self.completed_length)
-        if isinstance(result, TestResult):
+        if isinstance(result, ResultTests):
             self.print_output(result)
         elif isinstance(result, CompileResult) and result.success:
             self.print_success()
