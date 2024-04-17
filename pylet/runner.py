@@ -43,11 +43,9 @@ class Runner:
     def run(self) -> None:
         self.interface.all_length = len(self.exercises)
         for exercise in self.exercises:
-            compile_result = exercise.run_compile_and_tests()
+            exercise.run_compile_and_tests()
             if exercise.wait:
-                self.interface.print_on_modify(
-                    compile_result=compile_result,
-                )
+                self.interface.print_on_modify()
                 self.completed_exercises.append(exercise.watch_till_pass())
                 self.interface.completed_length+=1
             else:

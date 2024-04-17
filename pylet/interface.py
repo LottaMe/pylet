@@ -52,8 +52,8 @@ class Interface:
 
     def print_on_modify(
         self,
-        compile_result: CompileResult,
+        # compile_result: CompileResult,
     ):
         self.clear()
         self.print_progress(self.all_length, self.completed_length)
-        self.print_output(compile_result)
+        # self.print_output(compile_result)

@@ -28,7 +28,9 @@ class Exercise:
             exec(self.code)
             return CompileResult(True, "")
         except Exception:
-            return CompileResult(False, traceback.format_exc())
+            error = traceback.format_exc()
+            print(error)
+            return CompileResult(False, error)
 
     def run_tests(self) -> CompileResult:
         result = subprocess.run(["pytest", self.path], capture_output=True, text=True)
@@ -39,8 +41,10 @@ class Exercise:
 
     def run_compile_and_tests(self) -> CompileResult:
         if not self.test:
+            self.interface.print_on_modify()
             compile_result = self.try_exec()
         else:
+            self.interface.print_on_modify()
             compile_result = self.try_exec()
             if compile_result.success:
                 compile_result = self.run_tests()
@@ -59,7 +63,7 @@ class Exercise:
         self.interface.clear()
         self.reread_code()
         result = self.run_compile_and_tests()
-        self.interface.print_on_modify(result)
+        # self.interface.print_on_modify(result)
 
     def check_wait(self, result: CompileResult) -> bool:
         if not result.success:
