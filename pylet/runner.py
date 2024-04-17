@@ -17,7 +17,7 @@ class Runner:
         with open(self.exercise_info_path) as f:
             exercises = yaml.safe_load(f)
         return list(exercises["exercises"].items())
-    
+
     def parse_exercise(self, exercise_tuple: Tuple[str, Dict[str, bool]]) -> Exercise:
         path = f"exercises/{exercise_tuple[1]['path']}.py"
         return Exercise(
@@ -41,10 +41,12 @@ class Runner:
             if exercise.wait:
                 self.interface.print_on_modify(result)
                 self.completed_exercises.append(exercise.watch_till_pass())
-                self.interface.completed_length+=1
+                self.interface.completed_length += 1
             else:
                 self.completed_exercises.append(exercise.path)
-                self.interface.completed_length+=1
+                self.interface.completed_length += 1
 
-        self.interface.print_progress(len(self.exercises), len(self.completed_exercises))
+        self.interface.print_progress(
+            len(self.exercises), len(self.completed_exercises)
+        )
         self.interface.print_course_complete()

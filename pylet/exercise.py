@@ -22,7 +22,7 @@ class Exercise:
         with open(self.path, "r") as f:
             code = f.read()
         self.code = str(code)
-    
+
     def run_compile(self) -> CompileResult:
         try:
             compile_obj = compile(self.code, self.path, "exec")
@@ -43,7 +43,7 @@ class Exercise:
         if compile_result.success:
             return self.run_tests()
         return compile_result
-    
+
     def run_checks(self) -> Result:
         if self.test == True:
             test_result = self.run_compile_and_tests()
@@ -53,7 +53,7 @@ class Exercise:
             compile_result = self.run_compile()
             self.wait = self.check_wait(compile_result)
             return compile_result
-        
+
     def check_done_comment(self) -> bool:
         with open(self.path, "r") as f:
             lines = f.readlines()

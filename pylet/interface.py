@@ -11,12 +11,20 @@ class Interface:
         self.completed_length = 0
 
     def print_success(self, output: str = "") -> None:
-        print(self.colors.success, "Running the code was successful!", self.colors.standard)
+        print(
+            self.colors.success,
+            "Running the code was successful!",
+            self.colors.standard,
+        )
         print()
         print(output)
 
     def print_error(self, output: str) -> None:
-        print(self.colors.error, "Running the code failed! Please try again. Here's the output:", self.colors.standard)
+        print(
+            self.colors.error,
+            "Running the code failed! Please try again. Here's the output:",
+            self.colors.standard,
+        )
         print()
         print(output)
 
@@ -26,16 +34,12 @@ class Interface:
         else:
             self.print_error(compile_result.output)
 
-    def print_progress(
-        self, all_length: int, completed_length: int
-    ) -> None:
+    def print_progress(self, all_length: int, completed_length: int) -> None:
         progress = [self.colors.success]
         progress.extend(["#" for _ in range(completed_length)])
         if completed_length < all_length:
             progress.append(f"{self.colors.neutral}>{self.colors.error}")
-            progress.extend(
-                ["-" for _ in range(all_length-completed_length)]
-            )
+            progress.extend(["-" for _ in range(all_length - completed_length)])
         progress.append(self.colors.standard)
         print(
             "progress:",

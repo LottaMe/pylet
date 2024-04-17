@@ -19,7 +19,6 @@ def test_print_success(interface, capsys) -> None:
     assert "yay" in captured.out
 
 
-
 def test_print_error(interface, capsys) -> None:
     interface.print_error("nay")
     captured = capsys.readouterr()
@@ -62,6 +61,7 @@ def test_print_progress_no_completed(interface, capsys) -> None:
     assert f"{interface.colors.error}----" in captured.out
     assert f"{interface.colors.standard}" in captured.out
     assert "0/5 0.0%" in captured.out
+
 
 def test_print_progress_half_completed(interface, capsys) -> None:
     all = 5
@@ -121,12 +121,8 @@ def test_print_on_modify(interface):
 
     mock_compile_result = CompileResult(success=True, output="We did it!!")
 
-    interface.print_on_modify(
-        compile_result=mock_compile_result
-    )
+    interface.print_on_modify(compile_result=mock_compile_result)
 
     interface.clear.assert_called_once()
-    interface.print_progress.assert_called_once_with(
-        3, 1
-    )
+    interface.print_progress.assert_called_once_with(3, 1)
     interface.print_output.assert_called_once_with(mock_compile_result)
