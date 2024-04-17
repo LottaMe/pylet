@@ -83,7 +83,6 @@ class Exercise:
         observer.start()
 
         try:
-            self.run_compile_and_tests()
             while self.wait:
                 time.sleep(1)
             else:
@@ -94,3 +93,4 @@ class Exercise:
             observer.stop()
             observer.join()
             exit(0)
+    
