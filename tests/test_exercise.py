@@ -48,32 +48,32 @@ def test_run_compile_failure(exercise):
     assert "SyntaxError" in result.error_message
 
 
-# def test_run_tests_success(exercise):
-#     with patch("subprocess.run") as mock_run:
-#         mock_run.return_value.returncode = 1
-#         mock_run.return_value.stdout = "Tests succeeded :)"
+def test_run_tests_success(exercise):
+    with patch("subprocess.run") as mock_run:
+        mock_run.return_value.returncode = 1
+        mock_run.return_value.stdout = "Tests succeeded :)"
 
-#         result = exercise.run_tests()
+        result = exercise.run_tests()
 
-#         mock_run.assert_called_once_with(
-#             ["pytest", "mock_path"], capture_output=True, text=True
-#         )
-#         assert result.success == True
-#         assert result.output == "Tests succeeded :)"
+        mock_run.assert_called_once_with(
+            ["pytest", "mock_path"], capture_output=True, text=True
+        )
+        assert result.success == True
+        assert result.output == "Tests succeeded :)"
 
 
-# def test_run_tests_success(exercise):
-#     with patch("subprocess.run") as mock_run:
-#         mock_run.return_value.returncode = 1
-#         mock_run.return_value.stdout = "oh no FAILURES 0 of 1 passed"
+def test_run_tests_success(exercise):
+    with patch("subprocess.run") as mock_run:
+        mock_run.return_value.returncode = 1
+        mock_run.return_value.stdout = "oh no FAILURES 0 of 1 passed"
 
-#         result = exercise.run_tests()
+        result = exercise.run_tests()
 
-#         mock_run.assert_called_once_with(
-#             ["pytest", "mock_path"], capture_output=True, text=True
-#         )
-#         assert result.success == False
-#         assert result.output == "oh no FAILURES 0 of 1 passed"
+        mock_run.assert_called_once_with(
+            ["pytest", "mock_path"], capture_output=True, text=True
+        )
+        assert result.success == False
+        assert result.output == "oh no FAILURES 0 of 1 passed"
 
 
 # def test_run_compile_and_tests_no_tests_success(exercise):
