@@ -1,3 +1,4 @@
+from types import CodeType
 from unittest.mock import MagicMock, call, patch
 
 import pytest
@@ -28,32 +29,23 @@ def test_read_code(temp_file, exercise):
     exercise.read_code()
     assert exercise.code == "print('Hello, world!')"
 
-# def test_compile_success(exercise):
-#     with patch("subprocess.run") as mock_run:
-#         mock_run.return_value.returncode = 0
-#         mock_run.return_value.stdout = "We compiled!"
-
-#         result = exercise.compile()
-
-#         mock_run.assert_called_once_with(
-#             ["python", "mock_path"], capture_output=True, text=True
-#         )
-#         assert result.success == True
-#         assert result.output == "We compiled!"
+def test_run_compile_success(exercise):
+    exercise.code = "print('Hello, world!')"
+    result = exercise.run_compile()
+    assert result.success == True
+    assert result.error_message == None
+    assert result.code != None
+    assert isinstance(result.code, CodeType)
 
 
-# def test_compile_failure(exercise):
-#     with patch("subprocess.run") as mock_run:
-#         mock_run.return_value.returncode = 1
-#         mock_run.return_value.stderr = "We failed!"
+def test_run_compile_failure(exercise):
+    exercise.code = "print('Hello, world!)"
+    result = exercise.run_compile()
+    assert result.success == False
+    assert result.error_message != None
+    assert result.code == None
 
-#         result = exercise.compile()
-
-#         mock_run.assert_called_once_with(
-#             ["python", "mock_path"], capture_output=True, text=True
-#         )
-#         assert result.success == False
-#         assert result.output == "We failed!"
+    assert "SyntaxError" in result.error_message
 
 
 # def test_run_tests_success(exercise):
