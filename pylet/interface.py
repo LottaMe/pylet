@@ -11,12 +11,12 @@ class Interface:
         self.completed_length = 0
 
     def print_success(self, output: str) -> None:
-        print(self.colors.success, "Compiles Successfully!", self.colors.standard)
+        print(self.colors.success, "Running the code was successful!", self.colors.standard)
         print()
         print(output)
 
     def print_error(self, output: str) -> None:
-        print(self.colors.error, "Compiling failed! Please try again. Here's the output:", self.colors.standard)
+        print(self.colors.error, "Running the code failed! Please try again. Here's the output:", self.colors.standard)
         print()
         print(output)
 
