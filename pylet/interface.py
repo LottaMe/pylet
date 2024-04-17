@@ -1,7 +1,7 @@
 import subprocess
 from typing import List
 
-from components import CompileResult, Colors
+from components import CompileResult, Colors, Result, TestResult
 
 
 class Interface:
@@ -52,10 +52,14 @@ class Interface:
 
     def print_on_modify(
         self,
-        compile_result: CompileResult,
+        result: Result,
     ):
         self.clear()
         self.print_progress(self.all_length, self.completed_length)
-        self.print_output(compile_result)
-        if compile_result.success:
-            exec(compile_result.output)
+        if isinstance(result, TestResult):
+            self.print_output(result)
+        elif isinstance(result, CompileResult) and result.success:
+            self.print_success()
+            exec(result.code)
+        else:
+            self.print_error(result.error_message)

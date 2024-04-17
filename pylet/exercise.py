@@ -3,7 +3,7 @@ import time
 from functools import partial
 import traceback
 
-from components import CompileResult
+from components import CompileResult, Result, TestResult
 from interface import Interface
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
@@ -23,31 +23,37 @@ class Exercise:
             code = f.read()
         self.code = str(code)
     
-    def try_compile(self):
+    def run_compile(self) -> CompileResult:
         try:
             compile_obj = compile(self.code, self.path, "exec")
-            return CompileResult(True, compile_obj)
+            return CompileResult(success=True, error_message=None, code=compile_obj)
         except Exception:
             error = traceback.format_exc()
-            return CompileResult(False, error)
+            return CompileResult(success=False, error_message=error, code=None)
 
-    def run_tests(self) -> CompileResult:
+    def run_tests(self) -> TestResult:
         result = subprocess.run(["pytest", self.path], capture_output=True, text=True)
         if "FAILURES" in result.stdout:
-            return CompileResult(False, result.stdout)
+            return TestResult(False, result.stdout)
         else:
-            return CompileResult(True, result.stdout)
+            return TestResult(True, result.stdout)
 
-    def run_compile_and_tests(self) -> CompileResult:
-        if not self.test:
-            compile_result = self.try_compile()
-        else:
-            compile_result = self.try_compile()
-            if compile_result.success:
-                compile_result = self.run_tests()
-        self.wait = self.check_wait(compile_result)
+    def run_compile_and_tests(self) -> TestResult | CompileResult:
+        compile_result = self.run_compile()
+        if compile_result.success:
+            return self.run_tests()
         return compile_result
-
+    
+    def run_checks(self) -> Result:
+        if self.test == True:
+            test_result = self.run_compile_and_tests()
+            self.wait = self.check_wait(test_result)
+            return test_result
+        else:
+            compile_result = self.run_compile()
+            self.wait = self.check_wait(compile_result)
+            return compile_result
+        
     def check_done_comment(self) -> bool:
         with open(self.path, "r") as f:
             lines = f.readlines()
@@ -59,7 +65,7 @@ class Exercise:
     def on_modified_recheck(self, event) -> None:
         self.interface.clear()
         self.read_code()
-        result = self.run_compile_and_tests()
+        result = self.run_checks()
         self.interface.print_on_modify(result)
 
     def check_wait(self, result: CompileResult) -> bool:
