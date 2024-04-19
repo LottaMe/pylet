@@ -117,6 +117,63 @@ def test_run_compile_and_tests_test_failure(exercise):
     assert result.output == "tests failed"
 
 ## run_checks tests needed
+def test_run_checks_test_true(exercise):
+    exercise.test = True
+    exercise.run_compile = MagicMock()
+    exercise.run_compile_and_tests = MagicMock()
+    exercise.run_compile_and_tests.return_value = ResultTests(True, "success")
+    exercise.check_wait = MagicMock()
+    exercise.check_wait.return_value = False
+
+    assert exercise.wait == True
+
+    result = exercise.run_checks()
+
+    exercise.run_compile_and_tests.assert_called_once()
+    exercise.check_wait.assert_called_once_with(result)
+    assert exercise.wait == False
+    assert isinstance(result, ResultTests)
+    assert result.success == True
+    assert result.output == "success"
+    exercise.run_compile.assert_not_called()
+    
+def test_run_checks_test_false(exercise):
+    exercise.test = False
+    exercise.run_compile = MagicMock()
+    exercise.run_compile.return_value = CompileResult(True, None, None)
+    exercise.run_compile_and_tests = MagicMock()
+    exercise.check_wait = MagicMock()
+    exercise.check_wait.return_value = False
+
+    assert exercise.wait == True
+
+    result = exercise.run_checks()
+
+    exercise.run_compile_and_tests.assert_not_called()
+    exercise.check_wait.assert_called_once_with(result)
+    assert exercise.wait == False
+    assert isinstance(result, CompileResult)
+    assert result.success == True
+    exercise.run_compile.assert_called_once()
+
+def test_run_checks_test_false_wait_true(exercise):
+    exercise.test = False
+    exercise.run_compile = MagicMock()
+    exercise.run_compile.return_value = CompileResult(True, None, None)
+    exercise.run_compile_and_tests = MagicMock()
+    exercise.check_wait = MagicMock()
+    exercise.check_wait.return_value = True
+
+    assert exercise.wait == True
+
+    result = exercise.run_checks()
+
+    exercise.run_compile_and_tests.assert_not_called()
+    exercise.check_wait.assert_called_once_with(result)
+    assert exercise.wait == True
+    assert isinstance(result, CompileResult)
+    assert result.success == True
+    exercise.run_compile.assert_called_once()
 
 def test_check_done_comment_present(exercise, tmp_path):
     exercise_file = tmp_path / "exercise_with_done_comment.py"
