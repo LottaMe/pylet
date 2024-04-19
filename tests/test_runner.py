@@ -1,12 +1,12 @@
 # # test_runner.py
 
-# from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
-# import pytest
-# import yaml
-# from components import CompileResult
-# from exercise import Exercise
-# from runner import Runner
+import pytest
+import yaml
+from components import CompileResult
+from exercise import Exercise
+from runner import Runner
 
 # EXERCISE_DATA = {
 #     "exercises": {
@@ -16,29 +16,38 @@
 # }
 
 
-# @pytest.fixture
-# def mock_interface():
-#     return MagicMock()
+@pytest.fixture
+def mock_interface():
+    return MagicMock()
+
+@pytest.fixture
+def mock_exercise_yaml(tmp_path):
+    EXERCISE_DATA = {
+        "exercises": {
+            "exercise1": {"path": "exercise1", "test": False},
+            "exercise2": {"path": "exercise2", "test": True},
+        }
+    }
+    exercise_info_path = tmp_path / "exercise_info.yaml"
+    with open(exercise_info_path, "w") as f:
+        yaml.dump(EXERCISE_DATA, f)
+
+    return exercise_info_path
+
+@pytest.fixture
+def runner(mock_interface, mock_exercise_yaml):
+    return Runner(mock_exercise_yaml, mock_interface)
 
 
-# @pytest.fixture
-# def runner(tmp_path, mock_interface):
-#     exercise_info_path = tmp_path / "exercise_info.yaml"
-#     with open(exercise_info_path, "w") as f:
-#         yaml.dump(EXERCISE_DATA, f)
+def test_load_exercises_from_yaml(runner):
+    exercises = runner.load_exercises_from_yaml()
 
-#     return Runner(str(exercise_info_path), mock_interface)
-
-
-# def test_load_exercises_from_yaml(runner):
-#     exercises = runner.load_exercises_from_yaml()
-
-#     assert len(exercises) == 2
-#     assert all(isinstance(exercise, tuple) for exercise in exercises)
-#     assert exercises[0][0] == "exercise1"
-#     assert exercises[0][1] == {"path": "exercise1", "test": False}
-#     assert exercises[1][0] == "exercise2"
-#     assert exercises[1][1] == {"path": "exercise2", "test": True}
+    assert len(exercises) == 2
+    assert all(isinstance(exercise, tuple) for exercise in exercises)
+    assert exercises[0][0] == "exercise1"
+    assert exercises[0][1] == {"path": "exercise1", "test": False}
+    assert exercises[1][0] == "exercise2"
+    assert exercises[1][1] == {"path": "exercise2", "test": True}
 
 
 # def test_parse_exercise(runner):
