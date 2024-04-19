@@ -58,16 +58,16 @@ def test_parse_exercise(runner):
     assert exercise.interface == runner.interface
 
 
-# def test_get_exercises(runner):
-#     exercises = runner.get_exercises()
+def test_get_exercises(runner):
+    exercises = runner.get_exercises()
 
-#     assert len(exercises) == 2
-#     assert all(isinstance(exercise, Exercise) for exercise in exercises)
+    assert len(exercises) == 2
+    assert all(isinstance(exercise, Exercise) for exercise in exercises)
 
-#     assert exercises[0].path == "exercises/exercise1.py"
-#     assert exercises[0].test == False
-#     assert exercises[1].path == "exercises/exercise2.py"
-#     assert exercises[1].test == True
+    assert exercises[0].path == "exercises/exercise1.py"
+    assert exercises[0].test == False
+    assert exercises[1].path == "exercises/exercise2.py"
+    assert exercises[1].test == True
 
 
 # def test_run_exercises_done(runner):
