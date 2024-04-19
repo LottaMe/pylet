@@ -10,7 +10,6 @@ class Runner:
         self.exercise_info_path = exercise_info_path
         self.interface = interface
 
-        self.exercises = self.get_exercises()
         self.completed_exercises = []
 
     def load_exercises_from_yaml(self) -> List[Tuple[str, Dict[str, bool]]]:
@@ -34,8 +33,9 @@ class Runner:
         return final_list
 
     def run(self) -> None:
-        self.interface.all_length = len(self.exercises)
-        for exercise in self.exercises:
+        all_exercises = self.get_exercises()
+        self.interface.all_length = len(all_exercises)
+        for exercise in all_exercises:
             exercise.read_code()
             result = exercise.run_checks()
             if exercise.wait:
@@ -47,6 +47,6 @@ class Runner:
                 self.interface.completed_length += 1
 
         self.interface.print_progress(
-            len(self.exercises), len(self.completed_exercises)
+            len(all_exercises), len(self.completed_exercises)
         )
         self.interface.print_course_complete()
