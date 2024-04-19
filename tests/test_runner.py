@@ -4,7 +4,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 import yaml
-from components import CompileResult
+from components import CompileResult, ResultTests
 from exercise import Exercise
 from runner import Runner
 
@@ -70,27 +70,28 @@ def test_get_exercises(runner):
     assert exercises[1].test == True
 
 
-# def test_run_exercises_done(runner):
-#     exercise1 = MagicMock()
-#     exercise2 = MagicMock()
-#     runner.exercises = [exercise1, exercise2]
+def test_run_exercises_done(runner):
+    exercise1 = MagicMock()
+    exercise2 = MagicMock()
+    runner.get_exercises = MagicMock()
+    runner.get_exercises.return_value = [exercise1, exercise2]
 
-#     exercise1.run_compile_and_tests.return_value = CompileResult(
-#         success=True, output="yay"
-#     )
-#     exercise1.check_wait.return_value = False
-#     exercise2.run_compile_and_tests.return_value = CompileResult(
-#         success=True, output="yay"
-#     )
-#     exercise2.check_wait.return_value = False
+    exercise1.run_compile_and_tests.return_value = ResultTests(
+        success=True, output="yay"
+    )
+    exercise1.check_wait.return_value = False
+    exercise2.run_compile_and_tests.return_value = ResultTests(
+        success=True, output="yay"
+    )
+    exercise2.check_wait.return_value = False
 
-#     runner.run()
+    runner.run()
 
-#     assert len(runner.completed_exercises) == 2
-#     runner.interface.print_progress.assert_called_once_with(
-#         2, 2
-#     )
-#     runner.interface.print_course_complete.assert_called_once()
+    assert len(runner.completed_exercises) == 2
+    runner.interface.print_progress.assert_called_once_with(
+        2, 2
+    )
+    runner.interface.print_course_complete.assert_called_once()
 
 
 # def test_run(runner):
