@@ -4,6 +4,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 from components import CompileResult, ResultTests
 from exercise import Exercise
+from watchdog.events import FileModifiedEvent
 
 
 @pytest.fixture
@@ -116,7 +117,6 @@ def test_run_compile_and_tests_test_failure(exercise):
     assert result.success == False
     assert result.output == "tests failed"
 
-## run_checks tests needed
 def test_run_checks_test_true(exercise):
     exercise.test = True
     exercise.run_compile = MagicMock()
@@ -233,4 +233,29 @@ def test_check_wait_result_success_and_done(exercise):
     exercise.check_done_comment.assert_called_once()
 
 
-# watch_till_pass tests needed
+def test_watch_till_pass_succeeds(exercise):
+    exercise.path = "fake_path3"
+    exercise.wait = False
+    with patch("exercise.time.sleep"), patch("exercise.Observer"), patch(
+        "exercise.FileSystemEventHandler"
+    ):
+            result = exercise.watch_till_pass()
+
+            assert result == "fake_path3"
+
+def test_watch_till_pass_modify(exercise):
+    exercise.on_modified_recheck = MagicMock()
+        
+    with patch("exercise.time.sleep"), patch("exercise.Observer"), patch(
+        "exercise.FileSystemEventHandler"
+    ) as mock_file_system_event_handler:
+        mock_event_handler_instance = mock_file_system_event_handler.return_value
+
+        exercise.on_modified_recheck.side_effect = [setattr(exercise, "wait", False)]
+        
+        exercise.watch_till_pass()
+
+        event = FileModifiedEvent("mock_path")
+        mock_event_handler_instance.on_modified(event)
+
+        exercise.on_modified_recheck.assert_called_once()
