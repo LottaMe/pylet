@@ -16,6 +16,7 @@ def mock_interface():
 def exercise(mock_interface):
     return Exercise("mock_path", False, mock_interface)
 
+
 @pytest.fixture
 def temp_file(tmp_path):
     file_content = "print('Hello, world!')"
@@ -24,10 +25,12 @@ def temp_file(tmp_path):
         f.write(file_content)
     return file_path
 
+
 def test_read_code(temp_file, exercise):
     exercise.path = temp_file
     exercise.read_code()
     assert exercise.code == "print('Hello, world!')"
+
 
 def test_run_compile_success(exercise):
     exercise.code = "print('Hello, world!')"
@@ -90,6 +93,7 @@ def test_run_compile_and_tests_success(exercise):
     assert result.success == True
     assert result.output == "tests work"
 
+
 def test_run_compile_and_tests_compile_failure(exercise):
     exercise.run_compile = MagicMock()
     exercise.run_compile.return_value = CompileResult(False, "error", None)
@@ -102,6 +106,7 @@ def test_run_compile_and_tests_compile_failure(exercise):
     assert isinstance(result, CompileResult)
     assert result.success == False
     assert result.error_message == "error"
+
 
 def test_run_compile_and_tests_test_failure(exercise):
     exercise.run_compile = MagicMock()
@@ -116,6 +121,7 @@ def test_run_compile_and_tests_test_failure(exercise):
     assert isinstance(result, ResultTests)
     assert result.success == False
     assert result.output == "tests failed"
+
 
 def test_run_checks_test_true(exercise):
     exercise.test = True
@@ -136,7 +142,8 @@ def test_run_checks_test_true(exercise):
     assert result.success == True
     assert result.output == "success"
     exercise.run_compile.assert_not_called()
-    
+
+
 def test_run_checks_test_false(exercise):
     exercise.test = False
     exercise.run_compile = MagicMock()
@@ -156,6 +163,7 @@ def test_run_checks_test_false(exercise):
     assert result.success == True
     exercise.run_compile.assert_called_once()
 
+
 def test_run_checks_test_false_wait_true(exercise):
     exercise.test = False
     exercise.run_compile = MagicMock()
@@ -174,6 +182,7 @@ def test_run_checks_test_false_wait_true(exercise):
     assert isinstance(result, CompileResult)
     assert result.success == True
     exercise.run_compile.assert_called_once()
+
 
 def test_check_done_comment_present(exercise, tmp_path):
     exercise_file = tmp_path / "exercise_with_done_comment.py"
@@ -198,7 +207,9 @@ def test_check_done_comment_not_present(exercise, tmp_path):
 
 def test_on_modified_recheck_success(exercise, mock_interface):
     exercise.interface = mock_interface
-    with patch.object(exercise, "run_checks") as mock_run_checks, patch.object(exercise, "read_code") as mock_read_code:
+    with patch.object(exercise, "run_checks") as mock_run_checks, patch.object(
+        exercise, "read_code"
+    ) as mock_read_code:
         mock_compile_result = ResultTests(success=True, output="We compiled!.")
         mock_run_checks.return_value = mock_compile_result
 
@@ -206,7 +217,7 @@ def test_on_modified_recheck_success(exercise, mock_interface):
 
         mock_interface.clear.assert_called_once()
         mock_interface.print_on_modify.assert_called_once_with(mock_compile_result)
-        
+
         mock_read_code.assert_called_once()
         mock_run_checks.assert_called_once()
 
@@ -239,20 +250,21 @@ def test_watch_till_pass_succeeds(exercise):
     with patch("exercise.time.sleep"), patch("exercise.Observer"), patch(
         "exercise.FileSystemEventHandler"
     ):
-            result = exercise.watch_till_pass()
+        result = exercise.watch_till_pass()
 
-            assert result == "fake_path3"
+        assert result == "fake_path3"
+
 
 def test_watch_till_pass_modify(exercise):
     exercise.on_modified_recheck = MagicMock()
-        
+
     with patch("exercise.time.sleep"), patch("exercise.Observer"), patch(
         "exercise.FileSystemEventHandler"
     ) as mock_file_system_event_handler:
         mock_event_handler_instance = mock_file_system_event_handler.return_value
 
         exercise.on_modified_recheck.side_effect = [setattr(exercise, "wait", False)]
-        
+
         exercise.watch_till_pass()
 
         event = FileModifiedEvent("mock_path")

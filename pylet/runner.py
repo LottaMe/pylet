@@ -46,7 +46,5 @@ class Runner:
                 self.completed_exercises.append(exercise.path)
                 self.interface.completed_length += 1
 
-        self.interface.print_progress(
-            len(all_exercises), len(self.completed_exercises)
-        )
+        self.interface.print_progress(len(all_exercises), len(self.completed_exercises))
         self.interface.print_course_complete()

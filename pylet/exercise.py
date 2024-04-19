@@ -93,4 +93,3 @@ class Exercise:
             observer.stop()
             observer.join()
             exit(0)
-    
