@@ -1,5 +1,3 @@
-# # test_runner.py
-
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -7,13 +5,6 @@ import yaml
 from components import CompileResult, ResultTests
 from exercise import Exercise
 from runner import Runner
-
-# EXERCISE_DATA = {
-#     "exercises": {
-#         "exercise1": {"path": "exercise1", "test": False},
-#         "exercise2": {"path": "exercise2", "test": True},
-#     }
-# }
 
 
 @pytest.fixture
