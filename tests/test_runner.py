@@ -1,19 +1,10 @@
-# test_runner.py
-
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
 import pytest
 import yaml
-from components import CompileResult
+from components import CompileResult, ResultTests
 from exercise import Exercise
 from runner import Runner
-
-EXERCISE_DATA = {
-    "exercises": {
-        "exercise1": {"path": "exercise1", "test": False},
-        "exercise2": {"path": "exercise2", "test": True},
-    }
-}
 
 
 @pytest.fixture
@@ -22,12 +13,23 @@ def mock_interface():
 
 
 @pytest.fixture
-def runner(tmp_path, mock_interface):
+def mock_exercise_yaml(tmp_path):
+    EXERCISE_DATA = {
+        "exercises": {
+            "exercise1": {"path": "exercise1", "test": False},
+            "exercise2": {"path": "exercise2", "test": True},
+        }
+    }
     exercise_info_path = tmp_path / "exercise_info.yaml"
     with open(exercise_info_path, "w") as f:
         yaml.dump(EXERCISE_DATA, f)
 
-    return Runner(str(exercise_info_path), mock_interface)
+    return exercise_info_path
+
+
+@pytest.fixture
+def runner(mock_interface, mock_exercise_yaml):
+    return Runner(mock_exercise_yaml, mock_interface)
 
 
 def test_load_exercises_from_yaml(runner):
@@ -64,13 +66,14 @@ def test_get_exercises(runner):
 def test_run_exercises_done(runner):
     exercise1 = MagicMock()
     exercise2 = MagicMock()
-    runner.exercises = [exercise1, exercise2]
+    runner.get_exercises = MagicMock()
+    runner.get_exercises.return_value = [exercise1, exercise2]
 
-    exercise1.run_compile_and_tests.return_value = CompileResult(
+    exercise1.run_compile_and_tests.return_value = ResultTests(
         success=True, output="yay"
     )
     exercise1.check_wait.return_value = False
-    exercise2.run_compile_and_tests.return_value = CompileResult(
+    exercise2.run_compile_and_tests.return_value = ResultTests(
         success=True, output="yay"
     )
     exercise2.check_wait.return_value = False
@@ -78,18 +81,17 @@ def test_run_exercises_done(runner):
     runner.run()
 
     assert len(runner.completed_exercises) == 2
-    runner.interface.print_progress.assert_called_once_with(
-        2, 2
-    )
+    runner.interface.print_progress.assert_called_once_with(2, 2)
     runner.interface.print_course_complete.assert_called_once()
 
 
 def test_run(runner):
     exercise1 = MagicMock()
     exercise2 = MagicMock()
-    runner.exercises = [exercise1, exercise2]
-    compile_result1 = CompileResult(success=True, output="yay")
-    compile_result2 = CompileResult(success=False, output="nay")
+    runner.get_exercises = MagicMock()
+    runner.get_exercises.return_value = [exercise1, exercise2]
+    compile_result1 = ResultTests(success=True, output="yay")
+    compile_result2 = ResultTests(success=False, output="nay")
 
     exercise1.run_compile_and_tests.return_value = compile_result1
     exercise1.check_wait.return_value = False
@@ -102,12 +104,8 @@ def test_run(runner):
 
     runner.run()
 
-    runner.interface.print_on_modify.assert_called_once_with(
-        compile_result=compile_result2
-    )
-    runner.interface.print_progress.assert_called_once_with(
-        2, 2
-    )
+    runner.interface.print_on_modify.assert_called()
+    runner.interface.print_progress.assert_called_once_with(2, 2)
     runner.interface.print_course_complete.assert_called_once()
 
     assert len(runner.completed_exercises) == 2

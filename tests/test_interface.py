@@ -1,7 +1,7 @@
 from unittest.mock import MagicMock, patch
 
 import pytest
-from components import CompileResult
+from components import ResultTests
 from interface import Interface
 
 
@@ -14,17 +14,18 @@ def test_print_success(interface, capsys) -> None:
     interface.print_success("yay")
     captured = capsys.readouterr()
     assert "\033[1;32m" in captured.out
-    assert "Compiles Successfully!" in captured.out
+    assert "Running the code was successful!" in captured.out
     assert "\033[0;0m" in captured.out
     assert "yay" in captured.out
-
 
 
 def test_print_error(interface, capsys) -> None:
     interface.print_error("nay")
     captured = capsys.readouterr()
     assert "\033[1;31m" in captured.out
-    assert "Compiling failed! Please try again. Here's the output:" in captured.out
+    assert (
+        "Running the code failed! Please try again. Here's the output:" in captured.out
+    )
     assert "\033[0;0m" in captured.out
     assert "nay" in captured.out
 
@@ -33,7 +34,7 @@ def test_print_output_success_result(interface) -> None:
     interface.print_success = MagicMock()
     interface.print_error = MagicMock()
 
-    mock_compile_result = CompileResult(success=True, output="We did it!!")
+    mock_compile_result = ResultTests(success=True, output="We did it!!")
 
     interface.print_output(mock_compile_result)
     interface.print_success.assert_called_once_with(mock_compile_result.output)
@@ -44,7 +45,7 @@ def test_print_output_failure_result(interface) -> None:
     interface.print_success = MagicMock()
     interface.print_error = MagicMock()
 
-    mock_compile_result = CompileResult(success=False, output="We failed!!")
+    mock_compile_result = ResultTests(success=False, output="We failed!!")
 
     interface.print_output(mock_compile_result)
     interface.print_success.assert_not_called()
@@ -62,6 +63,7 @@ def test_print_progress_no_completed(interface, capsys) -> None:
     assert f"{interface.colors.error}----" in captured.out
     assert f"{interface.colors.standard}" in captured.out
     assert "0/5 0.0%" in captured.out
+
 
 def test_print_progress_half_completed(interface, capsys) -> None:
     all = 5
@@ -119,14 +121,10 @@ def test_print_on_modify(interface):
     interface.all_length = 3
     interface.completed_length = 1
 
-    mock_compile_result = CompileResult(success=True, output="We did it!!")
+    mock_compile_result = ResultTests(success=True, output="We did it!!")
 
-    interface.print_on_modify(
-        compile_result=mock_compile_result
-    )
+    interface.print_on_modify(result=mock_compile_result)
 
     interface.clear.assert_called_once()
-    interface.print_progress.assert_called_once_with(
-        3, 1
-    )
+    interface.print_progress.assert_called_once_with(3, 1)
     interface.print_output.assert_called_once_with(mock_compile_result)

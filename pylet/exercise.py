@@ -1,8 +1,9 @@
 import subprocess
 import time
 from functools import partial
+import traceback
 
-from components import CompileResult
+from components import CompileResult, Result, ResultTests
 from interface import Interface
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
@@ -11,32 +12,47 @@ from watchdog.observers import Observer
 class Exercise:
     def __init__(self, path: str, test: bool, interface: Interface) -> None:
         self.path = path
+        self.code = ""
         self.interface = interface
         self.test = test
 
-    def compile(self) -> CompileResult:
-        result = subprocess.run(["python", self.path], capture_output=True, text=True)
-        if result.returncode == 0:
-            return CompileResult(True, result.stdout)
-        else:
-            return CompileResult(False, result.stderr)
+        self.wait = True
 
-    def run_tests(self) -> CompileResult:
+    def read_code(self):
+        with open(self.path, "r") as f:
+            code = f.read()
+        self.code = str(code)
+
+    def run_compile(self) -> CompileResult:
+        try:
+            compile_obj = compile(self.code, self.path, "exec")
+            return CompileResult(success=True, error_message=None, code=compile_obj)
+        except Exception:
+            error = traceback.format_exc()
+            return CompileResult(success=False, error_message=error, code=None)
+
+    def run_tests(self) -> ResultTests:
         result = subprocess.run(["pytest", self.path], capture_output=True, text=True)
         if "FAILURES" in result.stdout:
-            return CompileResult(False, result.stdout)
+            return ResultTests(False, result.stdout)
         else:
-            return CompileResult(True, result.stdout)
+            return ResultTests(True, result.stdout)
 
-    def run_compile_and_tests(self) -> CompileResult:
-        if not self.test:
-            return self.compile()
+    def run_compile_and_tests(self) -> ResultTests | CompileResult:
+        compile_result = self.run_compile()
+        if compile_result.success:
+            return self.run_tests()
+        return compile_result
+
+    def run_checks(self) -> Result:
+        if self.test == True:
+            test_result = self.run_compile_and_tests()
+            self.wait = self.check_wait(test_result)
+            return test_result
         else:
-            compile_result = self.compile()
-            if compile_result.success:
-                return self.run_tests()
-            else:
-                return compile_result
+            compile_result = self.run_compile()
+            self.wait = self.check_wait(compile_result)
+            return compile_result
 
     def check_done_comment(self) -> bool:
         with open(self.path, "r") as f:
@@ -48,7 +64,8 @@ class Exercise:
 
     def on_modified_recheck(self, event) -> None:
         self.interface.clear()
-        result = self.run_compile_and_tests()
+        self.read_code()
+        result = self.run_checks()
         self.interface.print_on_modify(result)
 
     def check_wait(self, result: CompileResult) -> bool:
@@ -66,10 +83,8 @@ class Exercise:
         observer.start()
 
         try:
-            result = self.run_compile_and_tests()
-            while self.check_wait(result):
+            while self.wait:
                 time.sleep(1)
-                result = self.run_compile_and_tests()
             else:
                 observer.stop()
                 observer.join()
