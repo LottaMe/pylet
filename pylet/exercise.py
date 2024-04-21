@@ -17,6 +17,7 @@ class Exercise:
         self.test = test
 
         self.wait = True
+        self.result = None
 
     def read_code(self):
         with open(self.path, "r") as f:
@@ -48,11 +49,11 @@ class Exercise:
         if self.test == True:
             test_result = self.run_compile_and_tests()
             self.wait = self.check_wait(test_result)
-            return test_result
+            self.result = test_result
         else:
             compile_result = self.run_compile()
             self.wait = self.check_wait(compile_result)
-            return compile_result
+            self.result = compile_result
 
     def check_done_comment(self) -> bool:
         with open(self.path, "r") as f:
@@ -65,8 +66,8 @@ class Exercise:
     def on_modified_recheck(self, event) -> None:
         self.interface.clear()
         self.read_code()
-        result = self.run_checks()
-        self.interface.print_on_modify(result)
+        self.run_checks()
+        self.interface.print_on_modify(self.result)
 
     def check_wait(self, result: CompileResult) -> bool:
         if not result.success:

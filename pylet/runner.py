@@ -37,9 +37,9 @@ class Runner:
         self.interface.all_length = len(all_exercises)
         for exercise in all_exercises:
             exercise.read_code()
-            result = exercise.run_checks()
+            exercise.run_checks()
             if exercise.wait:
-                self.interface.print_on_modify(result)
+                self.interface.print_on_modify(exercise.result)
                 self.completed_exercises.append(exercise.watch_till_pass())
                 self.interface.completed_length += 1
             else:
