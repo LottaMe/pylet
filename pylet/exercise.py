@@ -1,7 +1,8 @@
+import multiprocessing as mp
 import subprocess
 import time
-from functools import partial
 import traceback
+from functools import partial
 
 from components import CompileResult, Result, ResultTests
 from interface import Interface
@@ -12,7 +13,7 @@ from watchdog.observers import Observer
 class Exercise:
     def __init__(self, path: str, test: bool, interface: Interface) -> None:
         self.path = path
-        self.code = ""
+        self.code_str = ""
         self.interface = interface
         self.test = test
 
@@ -21,16 +22,22 @@ class Exercise:
 
     def read_code(self):
         with open(self.path, "r") as f:
-            code = f.read()
-        self.code = str(code)
+            code_str = f.read()
+        self.code_str = str(code_str)
 
     def run_compile(self) -> CompileResult:
         try:
-            compile_obj = compile(self.code, self.path, "exec")
-            return CompileResult(success=True, error_message=None, code=compile_obj)
+            compile_obj = compile(self.code_str, self.path, "exec")
+            exec_process = mp.Process(target=exec, args=(self.code_str,))
+            return CompileResult(
+                success=True,
+                error_message=None,
+                code_obj=compile_obj,
+                exec_process=exec_process,
+            )
         except Exception:
             error = traceback.format_exc()
-            return CompileResult(success=False, error_message=error, code=None)
+            return CompileResult(success=False, error_message=error, code_obj=None)
 
     def run_tests(self) -> ResultTests:
         result = subprocess.run(["pytest", self.path], capture_output=True, text=True)
@@ -64,6 +71,9 @@ class Exercise:
         return False
 
     def on_modified_recheck(self, event) -> None:
+        if self.result.exec_process.is_alive():
+            self.result.exec_process.terminate()
+            self.result.exec_process.join()
         self.interface.clear()
         self.read_code()
         self.run_checks()

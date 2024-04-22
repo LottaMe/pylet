@@ -1,7 +1,7 @@
 import subprocess
 from typing import List
 
-from components import CompileResult, Colors, Result, ResultTests
+from components import Colors, CompileResult, Result, ResultTests
 
 
 class Interface:
@@ -64,6 +64,9 @@ class Interface:
             self.print_output(result)
         elif isinstance(result, CompileResult) and result.success:
             self.print_success()
-            exec(result.code)
+            # exec(result.code)
+            result.exec_process.start()
+            # result.exec_process.start()
+            # result.exec_process.join()
         else:
             self.print_error(result.error_message)
