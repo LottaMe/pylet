@@ -4,7 +4,7 @@ import time
 import traceback
 from functools import partial
 
-from components import CompileResult, Result, ResultTests
+from components import CompileResult, ResultTests
 from interface import Interface
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
@@ -18,9 +18,9 @@ class Exercise:
         self.test = test
 
         self.wait = True
-        self.result = None
+        self.result: ResultTests | CompileResult | None = None
 
-    def read_code(self):
+    def read_code(self) -> None:
         with open(self.path, "r") as f:
             code_str = f.read()
         self.code_str = str(code_str)
@@ -50,7 +50,7 @@ class Exercise:
             return self.run_tests()
         return compile_result
 
-    def run_checks(self) -> Result:
+    def run_checks(self) -> ResultTests | CompileResult:
         if self.test == True:
             test_result = self.run_compile_and_tests()
             self.wait = self.check_wait(test_result)
