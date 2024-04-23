@@ -17,7 +17,6 @@ class Exercise:
         self.interface = interface
         self.test = test
 
-        self.wait = True
         self.result: ResultTests | CompileResult = CompileResult(success=False)
 
     def run(self):
@@ -32,7 +31,7 @@ class Exercise:
                 self.execute()
             else:
                 self.interface.print_error(self.result.error_message)
-        print("self.wait is", self.check_wait())
+        print("check_wait is", self.check_wait())
         while self.check_wait():
             print("enter check wait while loop")
             time.sleep(1)

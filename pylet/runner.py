@@ -52,15 +52,15 @@ class Runner:
             try:
                 executor_process.start()
                 executor_process.join()
-                time.sleep(1)
+                time.sleep(3) ## This is somehow the problem
             except KeyboardInterrupt:
                 observer.stop()
                 observer.join()
                 exit(0)
             print("finished process", exercise.path)
-            print("check wait", exercise.check_wait())
-            if exercise.check_wait():
-                raise ValueError("noooo")
+            # print("check wait", exercise.check_wait())
+            # if exercise.check_wait():
+            #     raise ValueError("noooo")
             self.interface.completed_length += 1
             observer.stop()
             observer.join()
