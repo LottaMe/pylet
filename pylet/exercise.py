@@ -17,16 +17,15 @@ class Exercise:
         self.interface = interface
         self.test = test
 
-        # self.wait = True
+        self.wait = True
         self.result: ResultTests | CompileResult | None = None
 
     def run(self):
         self.read_code()
         self.result = self.run_compile()
-        if self.check_wait():
-            print(self.result.error_message)
-        else:
-            return
+        self.wait = self.check_wait()
+        while self.wait:
+            continue
     
     def read_code(self) -> None:
         with open(self.path, "r") as f:
