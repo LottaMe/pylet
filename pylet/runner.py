@@ -46,7 +46,7 @@ class Runner:
             print("start exercise", exercise.path)
             observer = Observer()
             executor_process = PyletProcess(exercise)
-            observer.schedule(FileChangeHandler(exercise, executor_process), "./exercises", recursive=True)
+            observer.schedule(FileChangeHandler(exercise, executor_process), exercise.path, recursive=True)
             observer.start()
             
             try:
