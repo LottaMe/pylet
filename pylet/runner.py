@@ -41,6 +41,8 @@ class Runner:
         all_exercises = self.get_exercises()
         self.interface.all_length = len(all_exercises)
         for exercise in all_exercises:
+            self.interface.clear()
+            self.interface.print_progress(self.interface.all_length, self.interface.completed_length)
             print("start exercise", exercise.path)
             observer = Observer()
             executor_process = PyletProcess(exercise)
@@ -56,6 +58,7 @@ class Runner:
                 observer.join()
                 exit(0)
             print("finished process", exercise.path)
+            self.interface.completed_length += 1
             observer.stop()
             observer.join()
 
