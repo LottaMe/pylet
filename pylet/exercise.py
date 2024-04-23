@@ -24,11 +24,17 @@ class Exercise:
         with open(self.path, "r") as f:
             code_str = f.read()
         self.code_str = str(code_str)
-
+    def execute(self) -> None:
+        try:
+            exec(self.code_str)
+        except Exception:
+            error = traceback.format_exc()
+            self.result = CompileResult(success=False, error_message=error)
+            self.interface.print_on_modify(self.result)
     def run_compile(self) -> CompileResult:
         try:
             compile(self.code_str, self.path, "exec")
-            exec_process = mp.Process(target=exec, args=(self.code_str,))
+            exec_process = mp.Process(target=self.execute)
             return CompileResult(
                 success=True,
                 exec_process=exec_process,
