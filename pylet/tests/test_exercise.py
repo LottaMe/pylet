@@ -5,7 +5,7 @@ import pytest
 from components import CompileResult, ResultTests
 from exercise import Exercise
 from watchdog.events import FileModifiedEvent
-
+import multiprocessing as mp
 
 @pytest.fixture
 def mock_interface():
@@ -29,24 +29,24 @@ def temp_file(tmp_path):
 def test_read_code(temp_file, exercise):
     exercise.path = temp_file
     exercise.read_code()
-    assert exercise.code == "print('Hello, world!')"
+    assert exercise.code_str == "print('Hello, world!')"
 
 
 def test_run_compile_success(exercise):
-    exercise.code = "print('Hello, world!')"
+    exercise.code_str = "print('Hello, world!')"
     result = exercise.run_compile()
     assert result.success == True
     assert result.error_message == None
-    assert result.code != None
-    assert isinstance(result.code, CodeType)
+    assert result.exec_process != None
+    assert isinstance(result.exec_process, mp.Process)
 
 
 def test_run_compile_failure(exercise):
-    exercise.code = "print('Hello, world!)"
+    exercise.code_str = "print('Hello, world!)"
     result = exercise.run_compile()
     assert result.success == False
     assert result.error_message != None
-    assert result.code == None
+    assert result.exec_process == None
 
     assert "SyntaxError" in result.error_message
 
@@ -133,14 +133,14 @@ def test_run_checks_test_true(exercise):
 
     assert exercise.wait == True
 
-    result = exercise.run_checks()
+    exercise.run_checks()
 
     exercise.run_compile_and_tests.assert_called_once()
-    exercise.check_wait.assert_called_once_with(result)
+    exercise.check_wait.assert_called_once_with(exercise.result)
     assert exercise.wait == False
-    assert isinstance(result, ResultTests)
-    assert result.success == True
-    assert result.output == "success"
+    assert isinstance(exercise.result, ResultTests)
+    assert exercise.result.success == True
+    assert exercise.result.output == "success"
     exercise.run_compile.assert_not_called()
 
 
@@ -154,13 +154,13 @@ def test_run_checks_test_false(exercise):
 
     assert exercise.wait == True
 
-    result = exercise.run_checks()
+    exercise.run_checks()
 
     exercise.run_compile_and_tests.assert_not_called()
-    exercise.check_wait.assert_called_once_with(result)
+    exercise.check_wait.assert_called_once_with(exercise.result)
     assert exercise.wait == False
-    assert isinstance(result, CompileResult)
-    assert result.success == True
+    assert isinstance(exercise.result, CompileResult)
+    assert exercise.result.success == True
     exercise.run_compile.assert_called_once()
 
 
@@ -174,13 +174,13 @@ def test_run_checks_test_false_wait_true(exercise):
 
     assert exercise.wait == True
 
-    result = exercise.run_checks()
+    exercise.run_checks()
 
     exercise.run_compile_and_tests.assert_not_called()
-    exercise.check_wait.assert_called_once_with(result)
+    exercise.check_wait.assert_called_once_with(exercise.result)
     assert exercise.wait == True
-    assert isinstance(result, CompileResult)
-    assert result.success == True
+    assert isinstance(exercise.result, CompileResult)
+    assert exercise.result.success == True
     exercise.run_compile.assert_called_once()
 
 
@@ -211,7 +211,7 @@ def test_on_modified_recheck_success(exercise, mock_interface):
         exercise, "read_code"
     ) as mock_read_code:
         mock_compile_result = ResultTests(success=True, output="We compiled!.")
-        mock_run_checks.return_value = mock_compile_result
+        mock_run_checks.side_effect = setattr(exercise, "result", mock_compile_result)
 
         exercise.on_modified_recheck(event=None)
 

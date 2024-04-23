@@ -1,3 +1,4 @@
+import multiprocessing as mp
 from types import CodeType
 
 
@@ -13,10 +14,15 @@ class ResultTests(Result):
 
 
 class CompileResult(Result):
-    def __init__(self, success: bool, error_message: str, code: CodeType) -> None:
+    def __init__(
+        self,
+        success: bool,
+        error_message: str = None,
+        exec_process: mp.Process = None,
+    ) -> None:
         super().__init__(success)
         self.error_message = error_message
-        self.code = code
+        self.exec_process = exec_process
 
 
 class Colors:
