@@ -22,6 +22,9 @@ class Exercise:
 
     def run(self):
         self.read_code()
+        if self.test:
+            self.run_compile_and_tests()
+            self.interface.print_output(self.result)
         self.result = self.run_compile()
         self.wait = self.check_wait()
         while self.wait:
@@ -52,18 +55,18 @@ class Exercise:
             error = traceback.format_exc()
             return CompileResult(success=False, error_message=error)
 
-    # def run_tests(self) -> ResultTests:
-        # result = subprocess.run(["pytest", self.path], capture_output=True, text=True)
-        # if "FAILURES" in result.stdout:
-        #     return ResultTests(False, result.stdout)
-        # else:
-        #     return ResultTests(True, result.stdout)
+    def run_tests(self) -> ResultTests:
+        result = subprocess.run(["pytest", self.path], capture_output=True, text=True)
+        if "FAILURES" in result.stdout:
+            return ResultTests(False, result.stdout)
+        else:
+            return ResultTests(True, result.stdout)
 
-    # def run_compile_and_tests(self) -> ResultTests | CompileResult:
-        # compile_result = self.run_compile()
-        # if compile_result.success:
-        #     return self.run_tests()
-        # return compile_result
+    def run_compile_and_tests(self) -> ResultTests | CompileResult:
+        compile_result = self.run_compile()
+        if compile_result.success:
+            return self.run_tests()
+        return compile_result
 
     # def run_checks(self) -> ResultTests | CompileResult:
         # if self.test == True:
