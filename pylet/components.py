@@ -18,12 +18,10 @@ class CompileResult(Result):
         self,
         success: bool,
         error_message: str = None,
-        code_obj: CodeType = None,
         exec_process: mp.Process = None,
     ) -> None:
         super().__init__(success)
         self.error_message = error_message
-        self.code_obj = code_obj
         self.exec_process = exec_process
 
 

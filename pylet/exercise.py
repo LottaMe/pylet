@@ -27,17 +27,15 @@ class Exercise:
 
     def run_compile(self) -> CompileResult:
         try:
-            compile_obj = compile(self.code_str, self.path, "exec")
+            compile(self.code_str, self.path, "exec")
             exec_process = mp.Process(target=exec, args=(self.code_str,))
             return CompileResult(
                 success=True,
-                error_message=None,
-                code_obj=compile_obj,
                 exec_process=exec_process,
             )
         except Exception:
             error = traceback.format_exc()
-            return CompileResult(success=False, error_message=error, code_obj=None)
+            return CompileResult(success=False, error_message=error)
 
     def run_tests(self) -> ResultTests:
         result = subprocess.run(["pytest", self.path], capture_output=True, text=True)
@@ -71,7 +69,7 @@ class Exercise:
         return False
 
     def on_modified_recheck(self, event) -> None:
-        if self.result.exec_process.is_alive():
+        if isinstance(self.result, CompileResult) and self.result.success and self.result.exec_process.is_alive():
             self.result.exec_process.terminate()
             self.result.exec_process.join()
         self.interface.clear()
