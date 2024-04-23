@@ -5,7 +5,7 @@ import pytest
 from components import CompileResult, ResultTests
 from exercise import Exercise
 from watchdog.events import FileModifiedEvent
-
+import multiprocessing as mp
 
 @pytest.fixture
 def mock_interface():
@@ -29,24 +29,24 @@ def temp_file(tmp_path):
 def test_read_code(temp_file, exercise):
     exercise.path = temp_file
     exercise.read_code()
-    assert exercise.code == "print('Hello, world!')"
+    assert exercise.code_str == "print('Hello, world!')"
 
 
 def test_run_compile_success(exercise):
-    exercise.code = "print('Hello, world!')"
+    exercise.code_str = "print('Hello, world!')"
     result = exercise.run_compile()
     assert result.success == True
     assert result.error_message == None
-    assert result.code != None
-    assert isinstance(result.code, CodeType)
+    assert result.exec_process != None
+    assert isinstance(result.exec_process, mp.Process)
 
 
 def test_run_compile_failure(exercise):
-    exercise.code = "print('Hello, world!)"
+    exercise.code_str = "print('Hello, world!)"
     result = exercise.run_compile()
     assert result.success == False
     assert result.error_message != None
-    assert result.code == None
+    assert result.exec_process == None
 
     assert "SyntaxError" in result.error_message
 
