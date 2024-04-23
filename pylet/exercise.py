@@ -25,9 +25,14 @@ class Exercise:
         if self.test:
             self.run_compile_and_tests()
             self.interface.print_output(self.result)
-        self.result = self.run_compile()
-        self.wait = self.check_wait()
-        while self.wait:
+        else:
+            self.result = self.run_compile()
+            if self.result.success:
+                self.interface.print_success()
+                self.execute()
+            else:
+                self.interface.print_error(self.result.error_message)
+        while self.check_wait():
             continue
     
     def read_code(self) -> None:
@@ -41,15 +46,13 @@ class Exercise:
         except Exception:
             error = traceback.format_exc()
             self.result = CompileResult(success=False, error_message=error)
+            self.interface.print_error(error)
 
     def run_compile(self) -> CompileResult:
         try:
             compile(self.code_str, self.path, "exec")
-            self.execute()
-            # exec_process = mp.Process(target=self.execute)
             return CompileResult(
                 success=True,
-                # exec_process=exec_process,
             )
         except Exception:
             error = traceback.format_exc()
