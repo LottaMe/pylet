@@ -18,7 +18,7 @@ class Exercise:
         self.test = test
 
         self.wait = True
-        self.result: ResultTests | CompileResult | None = None
+        self.result: ResultTests | CompileResult = CompileResult(success=False)
 
     def run(self):
         self.read_code()
@@ -26,14 +26,18 @@ class Exercise:
             self.run_compile_and_tests()
             self.interface.print_output(self.result)
         else:
-            self.result = self.run_compile()
+            self.run_compile()
             if self.result.success:
                 self.interface.print_success()
                 self.execute()
             else:
                 self.interface.print_error(self.result.error_message)
+        print("self.wait is", self.check_wait())
         while self.check_wait():
+            print("enter check wait while loop")
+            time.sleep(1)
             continue
+        print("exiting while loop")
     
     def read_code(self) -> None:
         with open(self.path, "r") as f:
@@ -48,28 +52,27 @@ class Exercise:
             self.result = CompileResult(success=False, error_message=error)
             self.interface.print_error(error)
 
-    def run_compile(self) -> CompileResult:
+    def run_compile(self) -> None:
         try:
             compile(self.code_str, self.path, "exec")
-            return CompileResult(
+            self.result = CompileResult(
                 success=True,
             )
         except Exception:
             error = traceback.format_exc()
-            return CompileResult(success=False, error_message=error)
+            self.result = CompileResult(success=False, error_message=error)
 
     def run_tests(self) -> ResultTests:
         result = subprocess.run(["pytest", self.path], capture_output=True, text=True)
         if "FAILURES" in result.stdout:
-            return ResultTests(False, result.stdout)
+            self.result = ResultTests(False, result.stdout)
         else:
-            return ResultTests(True, result.stdout)
+            self.result = ResultTests(True, result.stdout)
 
     def run_compile_and_tests(self) -> ResultTests | CompileResult:
-        compile_result = self.run_compile()
-        if compile_result.success:
-            return self.run_tests()
-        return compile_result
+        self.run_compile()
+        if self.result.success:
+            self.run_tests()
 
     # def run_checks(self) -> ResultTests | CompileResult:
         # if self.test == True:
