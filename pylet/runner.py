@@ -52,16 +52,11 @@ class Runner:
             try:
                 filechangehandler.process.start()
                 filechangehandler.process.join()
-                time.sleep(3) ## This is somehow the problem
-                ## on_modified, the process is finished, so it automatically joins it...
             except KeyboardInterrupt:
                 observer.stop()
                 observer.join()
                 exit(0)
             print("finished process", exercise.path)
-            # print("check wait", exercise.check_wait())
-            # if exercise.check_wait():
-            #     raise ValueError("noooo")
             self.interface.completed_length += 1
             observer.stop()
             observer.join()

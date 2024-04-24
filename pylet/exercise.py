@@ -31,12 +31,9 @@ class Exercise:
                 self.execute()
             else:
                 self.interface.print_error(self.result.error_message)
-        print("check_wait is", self.check_wait())
         while self.check_wait():
-            print("enter check wait while loop")
             time.sleep(1)
             continue
-        print("exiting while loop")
     
     def read_code(self) -> None:
         with open(self.path, "r") as f:
