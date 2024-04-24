@@ -53,6 +53,7 @@ class Runner:
                 executor_process.start()
                 executor_process.join()
                 time.sleep(3) ## This is somehow the problem
+                ## on_modified, the process is finished, so it automatically joins it...
             except KeyboardInterrupt:
                 observer.stop()
                 observer.join()
