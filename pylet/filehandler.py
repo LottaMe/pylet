@@ -17,3 +17,4 @@ class FileChangeHandler(FileSystemEventHandler):
             self.process.join()
         self.process = PyletProcess(self.exercise)
         self.process.start()
+        self.process.join()
