@@ -45,13 +45,13 @@ class Runner:
             self.interface.print_progress(self.interface.all_length, self.interface.completed_length)
             print("start exercise", exercise.path)
             observer = Observer()
-            executor_process = PyletProcess(exercise)
-            observer.schedule(FileChangeHandler(exercise, executor_process), exercise.path, recursive=True)
+            filechangehandler = FileChangeHandler(exercise, PyletProcess(exercise))
+            observer.schedule(filechangehandler, exercise.path, recursive=True)
             observer.start()
             
             try:
-                executor_process.start()
-                executor_process.join()
+                filechangehandler.process.start()
+                filechangehandler.process.join()
                 time.sleep(3) ## This is somehow the problem
                 ## on_modified, the process is finished, so it automatically joins it...
             except KeyboardInterrupt:
@@ -65,18 +65,4 @@ class Runner:
             self.interface.completed_length += 1
             observer.stop()
             observer.join()
-
-
-
-            # exercise.read_code()
-            # exercise.run_checks()
-            # if exercise.wait:
-            #     self.interface.print_on_modify(exercise.result)
-            #     self.completed_exercises.append(exercise.watch_till_pass())
-            #     self.interface.completed_length += 1
-            # else:
-            #     self.completed_exercises.append(exercise.path)
-            #     self.interface.completed_length += 1
-
-        # self.interface.print_progress(len(all_exercises), len(self.completed_exercises))
-        # self.interface.print_course_complete()
+    
