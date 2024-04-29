@@ -68,3 +68,15 @@ exercises:
   while3:
     path: 05_while_loops/while_loops3
     test: false
+  strings1:
+    path: 06_strings/strings1
+    test: true
+  strings2:
+    path: 06_strings/strings2
+    test: false
+  strings3:
+    path: 06_strings/strings3
+    test: true
+  strings4:
+    path: 06_strings/strings4
+    test: false
