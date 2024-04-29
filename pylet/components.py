@@ -18,11 +18,9 @@ class CompileResult(Result):
         self,
         success: bool,
         error_message: str = None,
-        exec_process: mp.Process = None,
     ) -> None:
         super().__init__(success)
         self.error_message = error_message
-        self.exec_process = exec_process
 
 
 class Colors:

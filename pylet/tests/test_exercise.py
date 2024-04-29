@@ -1,11 +1,8 @@
-from types import CodeType
 from unittest.mock import MagicMock, patch
 
 import pytest
 from components import CompileResult, ResultTests
 from exercise import Exercise
-from watchdog.events import FileModifiedEvent
-import multiprocessing as mp
 
 @pytest.fixture
 def mock_interface():
@@ -204,7 +201,7 @@ def test_check_done_comment_not_present(exercise, tmp_path):
 
 
 def test_check_wait_result_failure(exercise):
-    exercise.result = CompileResult(False, "We failed!", None)
+    exercise.result = CompileResult(False, "We failed!")
 
     assert exercise.check_wait() == True
 
