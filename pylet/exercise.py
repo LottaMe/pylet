@@ -30,7 +30,7 @@ class Exercise:
                 self.interface.print_success()
                 self.execute()
             else:
-                self.interface.print_error(self.result.error_message)
+                self.interface.print_error(self.result.output)
         while self.check_wait():
             time.sleep(1)
             continue
