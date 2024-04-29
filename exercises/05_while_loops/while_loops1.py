@@ -3,7 +3,7 @@
 
 # We've written a countdown for new years for you.
 # Try it out.
-# What happens if you remove line 19?
+# What happens if you add line 19, that is currently commented out?
 
 ### I AM NOT DONE
 
@@ -16,6 +16,6 @@ while counter > 0:
 
   time.sleep(1)
   
-  counter = counter - 1
+  # counter = counter - 1
 
 print("Happy New Year!!")
