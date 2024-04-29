@@ -25,6 +25,7 @@ def count_word(text: str, word: str) -> int:
 
 
 # Don't modify code below
+
 def test_count_word():
     assert count_word(example_text, "florida") == 6
     assert count_word(example_text, "bury") == 2
