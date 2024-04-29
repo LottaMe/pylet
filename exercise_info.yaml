@@ -65,6 +65,6 @@ exercises:
   while2:
     path: 05_while_loops/while_loops2
     test: false
-  while2:
+  while3:
     path: 05_while_loops/while_loops3
     test: false
