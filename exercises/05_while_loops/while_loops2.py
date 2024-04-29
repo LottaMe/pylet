@@ -15,7 +15,6 @@ counter = 13
 
 while counter > 0:
     if counter == 7:
-        counter = counter - 1
         raise ValueError("continue here")
 
     print(counter)
