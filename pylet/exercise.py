@@ -4,7 +4,7 @@ import time
 import traceback
 from functools import partial
 
-from components import CompileResult, ResultTests
+from components import Result
 from interface import Interface
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
@@ -17,7 +17,7 @@ class Exercise:
         self.interface = interface
         self.test = test
 
-        self.result: ResultTests | CompileResult = CompileResult(success=False)
+        self.result: Result = Result(success=False)
 
     def run(self):
         self.read_code()
@@ -45,32 +45,32 @@ class Exercise:
             exec(self.code_str)
         except Exception:
             error = traceback.format_exc()
-            self.result = CompileResult(success=False, error_message=error)
+            self.result = Result(success=False, output=error)
             self.interface.print_error(error)
 
     def run_compile(self) -> None:
         try:
             compile(self.code_str, self.path, "exec")
-            self.result = CompileResult(
+            self.result = Result(
                 success=True,
             )
         except Exception:
             error = traceback.format_exc()
-            self.result = CompileResult(success=False, error_message=error)
+            self.result = Result(success=False, output=error)
 
-    def run_tests(self) -> ResultTests:
+    def run_tests(self) -> Result:
         result = subprocess.run(["pytest", self.path], capture_output=True, text=True)
         if "FAILURES" in result.stdout:
-            self.result = ResultTests(False, result.stdout)
+            self.result = Result(False, result.stdout)
         else:
-            self.result = ResultTests(True, result.stdout)
+            self.result = Result(True, result.stdout)
 
-    def run_compile_and_tests(self) -> ResultTests | CompileResult:
+    def run_compile_and_tests(self) -> Result:
         self.run_compile()
         if self.result.success:
             self.run_tests()
 
-    # def run_checks(self) -> ResultTests | CompileResult:
+    # def run_checks(self) -> Result:
         # if self.test == True:
         #     test_result = self.run_compile_and_tests()
         #     self.wait = self.check_wait(test_result)
@@ -88,14 +88,6 @@ class Exercise:
                     return True
         return False
 
-    # def on_modified_recheck(self, event) -> None:
-        # if isinstance(self.result, CompileResult) and self.result.success and self.result.exec_process.is_alive():
-        #     self.result.exec_process.terminate()
-        #     self.result.exec_process.join()
-        # self.interface.clear()
-        # self.read_code()
-        # self.run_checks()
-        # self.interface.print_on_modify(self.result)
 
     def check_wait(self) -> bool:
         if not self.result.success:
@@ -104,21 +96,3 @@ class Exercise:
             return True
         return False
 
-    # def watch_till_pass(self) -> str:
-    #     event_handler = FileSystemEventHandler()
-    #     event_handler.on_modified = partial(self.on_modified_recheck)
-    #     observer = Observer()
-    #     observer.schedule(event_handler, self.path, recursive=True)
-    #     observer.start()
-
-    #     try:
-    #         while self.wait:
-    #             time.sleep(1)
-    #         else:
-    #             observer.stop()
-    #             observer.join()
-    #             return self.path
-    #     except KeyboardInterrupt:
-    #         observer.stop()
-    #         observer.join()
-    #         exit(0)

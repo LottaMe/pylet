@@ -3,25 +3,9 @@ from types import CodeType
 
 
 class Result:
-    def __init__(self, success: bool) -> None:
+    def __init__(self, success: bool, output: str | None = None) -> None:
         self.success = success
-
-
-class ResultTests(Result):
-    def __init__(self, success: bool, output: str) -> None:
-        super().__init__(success)
         self.output = output
-
-
-class CompileResult(Result):
-    def __init__(
-        self,
-        success: bool,
-        error_message: str = None,
-    ) -> None:
-        super().__init__(success)
-        self.error_message = error_message
-
 
 class Colors:
     def __init__(self) -> None:

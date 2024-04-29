@@ -1,7 +1,7 @@
 from unittest.mock import MagicMock, patch
 
 import pytest
-from components import CompileResult, ResultTests
+from components import Result
 from exercise import Exercise
 
 @pytest.fixture
@@ -33,16 +33,16 @@ def test_run_compile_success(exercise):
     exercise.code_str = "print('Hello, world!')"
     exercise.run_compile()
     assert exercise.result.success == True
-    assert exercise.result.error_message == None
+    assert exercise.result.output == None
 
 
 def test_run_compile_failure(exercise):
     exercise.code_str = "print('Hello, world!)"
     exercise.run_compile()
     assert exercise.result.success == False
-    assert exercise.result.error_message != None
+    assert exercise.result.output != None
 
-    assert "SyntaxError" in exercise.result.error_message
+    assert "SyntaxError" in exercise.result.output
 
 
 def test_run_tests_success(exercise):
@@ -75,45 +75,44 @@ def test_run_tests_failures(exercise):
 
 def test_run_compile_and_tests_success(exercise):
     exercise.run_compile = MagicMock()
-    exercise.run_compile.side_effect = setattr(exercise, "result", CompileResult(True))
+    exercise.run_compile.side_effect = setattr(exercise, "result", Result(True))
     exercise.run_tests = MagicMock()
 
     exercise.run_compile_and_tests()
-    exercise.run_tests.side_effect = setattr(exercise, "result", ResultTests(True, "tests work"))
+    exercise.run_tests.side_effect = setattr(exercise, "result", Result(True, "tests work"))
 
     exercise.run_compile.assert_called_once()
     exercise.run_tests.assert_called_once()
-    assert isinstance(exercise.result, ResultTests)
+    assert isinstance(exercise.result, Result)
     assert exercise.result.success == True
     assert exercise.result.output == "tests work"
 
 
 def test_run_compile_and_tests_compile_failure(exercise):
     exercise.run_compile = MagicMock()
-    exercise.run_compile.side_effect = setattr(exercise, "result", CompileResult(False, "error"))
+    exercise.run_compile.side_effect = setattr(exercise, "result", Result(False, "error"))
     exercise.run_tests = MagicMock()
 
     exercise.run_compile_and_tests()
 
     exercise.run_compile.assert_called_once()
     exercise.run_tests.assert_not_called()
-    assert isinstance(exercise.result, CompileResult)
+    assert isinstance(exercise.result, Result)
     assert exercise.result.success == False
-    assert exercise.result.error_message == "error"
+    assert exercise.result.output == "error"
 
 
 def test_run_compile_and_tests_test_failure(exercise):
     exercise.run_compile = MagicMock()
-    exercise.run_compile.side_effect = setattr(exercise, "result", CompileResult(True))
+    exercise.run_compile.side_effect = setattr(exercise, "result", Result(True))
     exercise.run_tests = MagicMock()
-    # exercise.run_tests.side_effect = setattr(exercise, "result", ResultTests(False, "tests work"))
 
     exercise.run_compile_and_tests()
-    exercise.run_tests.side_effect = setattr(exercise, "result", ResultTests(False, "tests failed"))
+    exercise.run_tests.side_effect = setattr(exercise, "result", Result(False, "tests failed"))
 
     exercise.run_compile.assert_called_once()
     exercise.run_tests.assert_called_once()
-    assert isinstance(exercise.result, ResultTests)
+    assert isinstance(exercise.result, Result)
     assert exercise.result.success == False
     assert exercise.result.output == "tests failed"
 
@@ -201,13 +200,13 @@ def test_check_done_comment_not_present(exercise, tmp_path):
 
 
 def test_check_wait_result_failure(exercise):
-    exercise.result = CompileResult(False, "We failed!")
+    exercise.result = Result(False, "We failed!")
 
     assert exercise.check_wait() == True
 
 
 def test_check_wait_not_done_comment(exercise):
-    exercise.result = ResultTests(True, "We compiled!")
+    exercise.result = Result(True, "We compiled!")
     exercise.check_done_comment = MagicMock(return_value=True)
 
     assert exercise.check_wait() == True
@@ -215,7 +214,7 @@ def test_check_wait_not_done_comment(exercise):
 
 
 def test_check_wait_result_success_and_done(exercise):
-    exercise.result = ResultTests(True, "We compiled!")
+    exercise.result = Result(True, "We compiled!")
     exercise.check_done_comment = MagicMock(return_value=False)
 
     assert exercise.check_wait() == False

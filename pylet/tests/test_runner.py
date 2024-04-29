@@ -2,7 +2,6 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 import yaml
-from components import CompileResult, ResultTests
 from exercise import Exercise
 from runner import Runner
 

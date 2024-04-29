@@ -1,7 +1,7 @@
 import subprocess
 from typing import List
 
-from components import Colors, CompileResult, Result, ResultTests
+from components import Colors, Result
 
 
 class Interface:
@@ -28,11 +28,11 @@ class Interface:
         print()
         print(output)
 
-    def print_output(self, compile_result: CompileResult) -> None:
-        if compile_result.success:
-            self.print_success(compile_result.output)
+    def print_output(self, result: Result) -> None:
+        if result.success:
+            self.print_success(result.output)
         else:
-            self.print_error(compile_result.output)
+            self.print_error(result.output)
 
     def print_progress(self, all_length: int, completed_length: int) -> None:
         progress = [self.colors.success]
