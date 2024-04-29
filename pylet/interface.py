@@ -1,7 +1,7 @@
 import subprocess
 from typing import List
 
-from components import Colors, CompileResult, Result, ResultTests
+from components import Colors, Result
 
 
 class Interface:
@@ -28,11 +28,11 @@ class Interface:
         print()
         print(output)
 
-    def print_output(self, compile_result: CompileResult) -> None:
-        if compile_result.success:
-            self.print_success(compile_result.output)
+    def print_output(self, result: Result) -> None:
+        if result.success:
+            self.print_success(result.output)
         else:
-            self.print_error(compile_result.output)
+            self.print_error(result.output)
 
     def print_progress(self, all_length: int, completed_length: int) -> None:
         progress = [self.colors.success]
@@ -53,18 +53,3 @@ class Interface:
 
     def clear(self) -> None:
         subprocess.run(["clear"])
-
-    def print_on_modify(
-        self,
-        result: Result,
-    ) -> None:
-        self.clear()
-        self.print_progress(self.all_length, self.completed_length)
-        if isinstance(result, ResultTests):
-            self.print_output(result)
-        elif isinstance(result, CompileResult) and result.success:
-            self.print_success()
-            result.exec_process.start()
-            result.exec_process.join()
-        else:
-            self.print_error(result.error_message)

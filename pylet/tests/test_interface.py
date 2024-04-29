@@ -1,7 +1,7 @@
 from unittest.mock import MagicMock, patch
 
 import pytest
-from components import ResultTests
+from components import Result
 from interface import Interface
 
 
@@ -34,7 +34,7 @@ def test_print_output_success_result(interface) -> None:
     interface.print_success = MagicMock()
     interface.print_error = MagicMock()
 
-    mock_compile_result = ResultTests(success=True, output="We did it!!")
+    mock_compile_result = Result(success=True, output="We did it!!")
 
     interface.print_output(mock_compile_result)
     interface.print_success.assert_called_once_with(mock_compile_result.output)
@@ -45,7 +45,7 @@ def test_print_output_failure_result(interface) -> None:
     interface.print_success = MagicMock()
     interface.print_error = MagicMock()
 
-    mock_compile_result = ResultTests(success=False, output="We failed!!")
+    mock_compile_result = Result(success=False, output="We failed!!")
 
     interface.print_output(mock_compile_result)
     interface.print_success.assert_not_called()
@@ -112,19 +112,3 @@ def test_print_course_complete(interface, capsys) -> None:
 def test_clear(mock_subprocess, interface):
     interface.clear()
     mock_subprocess.assert_called_once_with(["clear"])
-
-
-def test_print_on_modify(interface):
-    interface.clear = MagicMock()
-    interface.print_progress = MagicMock()
-    interface.print_output = MagicMock()
-    interface.all_length = 3
-    interface.completed_length = 1
-
-    mock_compile_result = ResultTests(success=True, output="We did it!!")
-
-    interface.print_on_modify(result=mock_compile_result)
-
-    interface.clear.assert_called_once()
-    interface.print_progress.assert_called_once_with(3, 1)
-    interface.print_output.assert_called_once_with(mock_compile_result)

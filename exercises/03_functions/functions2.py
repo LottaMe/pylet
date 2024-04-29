@@ -19,5 +19,5 @@ def hours_to_minutes(hours: int) -> int:
 def test_hours_to_minutes():
     assert hours_to_minutes(1) == 60
     assert hours_to_minutes(5) == 300
-    assert hours_to_minutes(5) == 360
+    assert hours_to_minutes(6) == 360
 

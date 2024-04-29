@@ -1,8 +1,13 @@
+import time
 from typing import Dict, List, Tuple
 
 import yaml
 from exercise import Exercise
 from interface import Interface
+from watchdog.observers import Observer
+
+from filehandler import FileChangeHandler
+from process import PyletProcess
 
 
 class Runner:
@@ -36,15 +41,25 @@ class Runner:
         all_exercises = self.get_exercises()
         self.interface.all_length = len(all_exercises)
         for exercise in all_exercises:
-            exercise.read_code()
-            exercise.run_checks()
-            if exercise.wait:
-                self.interface.print_on_modify(exercise.result)
-                self.completed_exercises.append(exercise.watch_till_pass())
-                self.interface.completed_length += 1
-            else:
-                self.completed_exercises.append(exercise.path)
-                self.interface.completed_length += 1
-
-        self.interface.print_progress(len(all_exercises), len(self.completed_exercises))
+            self.interface.clear()
+            self.interface.print_progress(self.interface.all_length, self.interface.completed_length)
+            print("start exercise", exercise.path)
+            observer = Observer()
+            filechangehandler = FileChangeHandler(exercise, PyletProcess(exercise))
+            observer.schedule(filechangehandler, exercise.path, recursive=True)
+            observer.start()
+            
+            try:
+                filechangehandler.process.start()
+                filechangehandler.process.join()
+            except KeyboardInterrupt:
+                observer.stop()
+                observer.join()
+                exit(0)
+            print("finished process", exercise.path)
+            self.interface.completed_length += 1
+            observer.stop()
+            observer.join()
+        self.interface.print_progress(self.interface.all_length, self.interface.completed_length)
         self.interface.print_course_complete()
+    
