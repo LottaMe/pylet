@@ -59,3 +59,60 @@ exercises:
   quiz1:
     path: quiz1
     test: true
+  while1:
+    path: 05_while_loops/while_loops1
+    test: false
+  while2:
+    path: 05_while_loops/while_loops2
+    test: false
+  while3:
+    path: 05_while_loops/while_loops3
+    test: false
+  strings1:
+    path: 06_strings/strings1
+    test: true
+  strings2:
+    path: 06_strings/strings2
+    test: false
+  strings3:
+    path: 06_strings/strings3
+    test: true
+  strings4:
+    path: 06_strings/strings4
+    test: false
+  lists1:
+    path: 07_lists/lists1
+    test: false
+  lists2:
+    path: 07_lists/lists2
+    test: false
+  lists3:
+    path: 07_lists/lists3
+    test: false
+  lists4:
+    path: 07_lists/lists4
+    test: false
+  lists5:
+    path: 07_lists/lists5
+    test: false
+  lists6:
+    path: 07_lists/lists6
+    test: false
+  for_loops1:
+    path: 08_for_loops/for_loops1
+    test: false
+  for_loops2:
+    path: 08_for_loops/for_loops2
+    test: false
+  for_loops3:
+    path: 08_for_loops/for_loops3
+    test: false
+  for_loops4:
+    path: 08_for_loops/for_loops4
+    test: true
+  for_loops5:
+    path: 08_for_loops/for_loops5
+    test: false
+  quiz2:
+    path: quiz2
+    test: false
