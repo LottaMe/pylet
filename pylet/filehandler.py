@@ -1,6 +1,5 @@
-from watchdog.events import FileSystemEvent, FileSystemEventHandler
-
 from process import PyletProcess
+from watchdog.events import FileSystemEvent, FileSystemEventHandler
 
 
 class FileChangeHandler(FileSystemEventHandler):

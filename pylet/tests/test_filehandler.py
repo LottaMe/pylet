@@ -1,4 +1,5 @@
 from unittest.mock import MagicMock, patch
+
 import pytest
 from filehandler import FileChangeHandler
 from watchdog.events import FileModifiedEvent

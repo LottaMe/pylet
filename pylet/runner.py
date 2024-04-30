@@ -3,11 +3,10 @@ from typing import Dict, List, Tuple
 
 import yaml
 from exercise import Exercise
-from interface import Interface
-from watchdog.observers import Observer
-
 from filehandler import FileChangeHandler
+from interface import Interface
 from process import PyletProcess
+from watchdog.observers import Observer
 
 
 class Runner:
