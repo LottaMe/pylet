@@ -22,7 +22,7 @@ number_list
 higher_numbers = [7, 8, 9]
 number_list
 
-# Don't modify code below, 
+# Don't modify code below 
 
 if number_list != [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]:
     raise ValueError("number_list should be [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]")
