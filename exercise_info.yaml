@@ -98,3 +98,18 @@ exercises:
   lists6:
     path: 07_lists/lists6
     test: false
+  for_loops1:
+    path: 08_for_loops/for_loops1
+    test: false
+  for_loops2:
+    path: 08_for_loops/for_loops2
+    test: false
+  for_loops3:
+    path: 08_for_loops/for_loops3
+    test: false
+  for_loops4:
+    path: 08_for_loops/for_loops4
+    test: true
+  for_loops5:
+    path: 08_for_loops/for_loops5
+    test: false
