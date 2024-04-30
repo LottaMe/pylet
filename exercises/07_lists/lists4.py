@@ -7,16 +7,21 @@
 ### I AM NOT DONE
 
 remove_example = ["apple", "banana", "pear", "banana"]
-assert remove_example.remove("banana") == ["apple", "banana", "pear", "banana"]
+remove_example.remove("banana")
+assert remove_example == ["apple","banana", "pear", "banana"]
 
 pop_example_1 = ["apple", "banana", "pear", "banana"]
-assert pop_example_1.pop() == ["apple", "banana", "pear", "banana"]
+assert pop_example_1.pop() == ""
+assert pop_example_1 == ["apple", "banana", "pear", "banana"]
+
 
 pop_example_2 = ["apple", "banana", "pear", "banana"]
-assert pop_example_2.pop(0) == ["apple", "banana", "pear", "banana"]
+assert pop_example_2.pop(0) == ""
+assert pop_example_2 == ["apple", "banana", "pear", "banana"]
 
 clear_example = ["apple", "banana", "pear", "banana"]
-assert clear_example.clear() == ["apple", "banana", "pear", "banana"]
+clear_example.clear() 
+assert clear_example == ["apple", "banana", "pear", "banana"]
 
 del_example_1 = ["apple", "banana", "pear", "banana"]
 del del_example_1[0] 
