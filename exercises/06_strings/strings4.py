@@ -19,3 +19,4 @@ modified_order =
 # Don't modify code below
 
 assert modified_order == "I want three apples and one banana"
+print(modified_order)
