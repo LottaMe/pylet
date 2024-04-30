@@ -42,13 +42,15 @@ class Runner:
         self.interface.all_length = len(all_exercises)
         for exercise in all_exercises:
             self.interface.clear()
-            self.interface.print_progress(self.interface.all_length, self.interface.completed_length)
+            self.interface.print_progress(
+                self.interface.all_length, self.interface.completed_length
+            )
             print("start exercise", exercise.path)
             observer = Observer()
             filechangehandler = FileChangeHandler(exercise, PyletProcess(exercise))
             observer.schedule(filechangehandler, exercise.path, recursive=True)
             observer.start()
-            
+
             try:
                 filechangehandler.process.start()
                 filechangehandler.process.join()
@@ -60,6 +62,7 @@ class Runner:
             self.interface.completed_length += 1
             observer.stop()
             observer.join()
-        self.interface.print_progress(self.interface.all_length, self.interface.completed_length)
+        self.interface.print_progress(
+            self.interface.all_length, self.interface.completed_length
+        )
         self.interface.print_course_complete()
-    

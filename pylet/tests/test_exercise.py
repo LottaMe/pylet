@@ -4,6 +4,7 @@ import pytest
 from components import Result
 from exercise import Exercise
 
+
 @pytest.fixture
 def mock_interface():
     return MagicMock()
@@ -79,7 +80,9 @@ def test_run_compile_and_tests_success(exercise):
     exercise.run_tests = MagicMock()
 
     exercise.run_compile_and_tests()
-    exercise.run_tests.side_effect = setattr(exercise, "result", Result(True, "tests work"))
+    exercise.run_tests.side_effect = setattr(
+        exercise, "result", Result(True, "tests work")
+    )
 
     exercise.run_compile.assert_called_once()
     exercise.run_tests.assert_called_once()
@@ -90,7 +93,9 @@ def test_run_compile_and_tests_success(exercise):
 
 def test_run_compile_and_tests_compile_failure(exercise):
     exercise.run_compile = MagicMock()
-    exercise.run_compile.side_effect = setattr(exercise, "result", Result(False, "error"))
+    exercise.run_compile.side_effect = setattr(
+        exercise, "result", Result(False, "error")
+    )
     exercise.run_tests = MagicMock()
 
     exercise.run_compile_and_tests()
@@ -108,7 +113,9 @@ def test_run_compile_and_tests_test_failure(exercise):
     exercise.run_tests = MagicMock()
 
     exercise.run_compile_and_tests()
-    exercise.run_tests.side_effect = setattr(exercise, "result", Result(False, "tests failed"))
+    exercise.run_tests.side_effect = setattr(
+        exercise, "result", Result(False, "tests failed")
+    )
 
     exercise.run_compile.assert_called_once()
     exercise.run_tests.assert_called_once()

@@ -34,7 +34,7 @@ class Exercise:
         while self.check_wait():
             time.sleep(1)
             continue
-    
+
     def read_code(self) -> None:
         with open(self.path, "r") as f:
             code_str = f.read()
@@ -80,11 +80,9 @@ class Exercise:
                     return True
         return False
 
-
     def check_wait(self) -> bool:
         if not self.result.success:
             return True
         if self.result.success and self.check_done_comment():
             return True
         return False
-

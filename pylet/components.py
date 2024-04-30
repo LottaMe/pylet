@@ -7,6 +7,7 @@ class Result:
         self.success = success
         self.output = output
 
+
 class Colors:
     def __init__(self) -> None:
         self.standard = "\033[0;0m"

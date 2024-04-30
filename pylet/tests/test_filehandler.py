@@ -1,7 +1,8 @@
 from unittest.mock import MagicMock, patch
 import pytest
-from filehandler import FileChangeHandler 
+from filehandler import FileChangeHandler
 from watchdog.events import FileModifiedEvent
+
 
 def test_on_modified_process_dead():
     exercise = MagicMock()
@@ -22,6 +23,7 @@ def test_on_modified_process_dead():
         assert file_handler.exercise != process
         file_handler.process.start.assert_called_once()
         file_handler.process.join.assert_called_once()
+
 
 def test_on_modified_process_alive():
     exercise = MagicMock()
