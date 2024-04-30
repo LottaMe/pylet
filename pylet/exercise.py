@@ -1,14 +1,10 @@
-import multiprocessing as mp
-import random
+import random   # needed for quiz2 to work
 import subprocess
 import time
 import traceback
-from functools import partial
 
 from components import Result
 from interface import Interface
-from watchdog.events import FileSystemEventHandler
-from watchdog.observers import Observer
 
 
 class Exercise:
