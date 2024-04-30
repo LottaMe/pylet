@@ -39,6 +39,6 @@ while index < len(quiz_questions):
         raise ValueError("answer should be an integer")
     
     print(question)
-    time.sleep(1)
+    time.sleep(0.5)     # when you're done, remove this line 
     print(answer)
     index+=1

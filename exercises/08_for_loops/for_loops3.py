@@ -18,4 +18,4 @@ for count in range:
 
     print(count)
 
-    time.sleep(1)
+    time.sleep(0.5)     # when you're done, remove this line 

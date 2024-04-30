@@ -18,6 +18,6 @@ counter = 1
 while True:         # DON'T CHANGE THIS LINE
     print(counter)
 
-    time.sleep(1)
+    time.sleep(0.5)     # when you're done, remove this line 
   
     counter = counter + 1

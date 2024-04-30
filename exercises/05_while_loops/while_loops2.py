@@ -19,6 +19,6 @@ while counter > 0:
 
     print(counter)
 
-    time.sleep(1)
+    time.sleep(0.5)     # when you're done, remove this line 
   
     counter = counter - 1

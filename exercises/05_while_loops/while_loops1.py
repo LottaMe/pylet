@@ -14,8 +14,8 @@ counter =
 while counter > 0:
   print(counter)
 
-  time.sleep(1)
+  time.sleep(0.5)     # when you're done, remove this line 
   
-  # counter = counter - 1
+  counter = counter - 1 # ask yourself why this line is here
 
 print("Happy New Year!!")
