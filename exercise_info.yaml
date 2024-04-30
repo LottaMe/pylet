@@ -80,3 +80,21 @@ exercises:
   strings4:
     path: 06_strings/strings4
     test: false
+  lists1:
+    path: 07_lists/lists1
+    test: false
+  lists2:
+    path: 07_lists/lists2
+    test: false
+  lists3:
+    path: 07_lists/lists3
+    test: false
+  lists4:
+    path: 07_lists/lists4
+    test: false
+  lists5:
+    path: 07_lists/lists5
+    test: false
+  lists6:
+    path: 07_lists/lists6
+    test: false
