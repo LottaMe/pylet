@@ -1,7 +1,9 @@
 # strings1.py
 
 
-# 
+# We have a function called generate_lyrics, which takes a name
+# and returns the lyrics with the name inserted in the lyrics.
+# It does not work currently, can you fix it?
 
 ### I AM NOT DONE
 
