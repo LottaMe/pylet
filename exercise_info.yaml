@@ -113,3 +113,6 @@ exercises:
   for_loops5:
     path: 08_for_loops/for_loops5
     test: false
+  quiz2:
+    path: quiz2
+    test: false
