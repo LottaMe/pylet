@@ -1,4 +1,4 @@
-# lists1.py
+# lists2.py
 
 # Below we have defined two lists: quiz_questions and quiz_answers.
 # You should write a function get_question_and_answer that takes a list of questions,
