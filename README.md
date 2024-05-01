@@ -74,22 +74,3 @@ python pylet
 You can always exit it, with a KeyboardInterrupt (control + c).
 
 As this is an early version, `pylet` may hang at times. Try exiting it and running pylet again.
-
-## Test the application
-
-To test the application enter:
-
-```
-pytest
-```
-
-## Keep code formatting consistent
-
-I am using black to keep the code formatting consistent.
-The exercise folder should be excluded from formatting.
-To do this run:
-
-```
-black . --extend-exclude exercises
-isort pylet
-```
