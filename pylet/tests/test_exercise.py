@@ -24,6 +24,64 @@ def temp_file(tmp_path):
     return file_path
 
 
+def test_run_with_tests(exercise):
+    mock_interface = MagicMock()
+    exercise.interface = mock_interface
+    exercise.test = True
+
+    exercise.read_code = MagicMock()
+    exercise.run_compile_and_tests = MagicMock()
+    exercise.run_compile = MagicMock()
+
+    exercise.check_wait = MagicMock(return_value=False)
+
+    exercise.run()
+
+    exercise.read_code.assert_called_once()
+    exercise.run_compile_and_tests.assert_called_once()
+    exercise.run_compile.assert_not_called()
+
+
+def test_run_without_tests(exercise):
+    mock_interface = MagicMock()
+    exercise.interface = mock_interface
+    exercise.test = False
+
+    exercise.read_code = MagicMock()
+    exercise.run_compile_and_tests = MagicMock()
+    exercise.run_compile = MagicMock()
+
+    exercise.check_wait = MagicMock(return_value=False)
+
+    exercise.run()
+
+    exercise.read_code.assert_called_once()
+    exercise.run_compile_and_tests.assert_not_called()
+    exercise.run_compile.assert_called_once()
+
+
+def test_run_with_check_wait(exercise):
+    with patch("time.sleep") as mock_sleep:
+
+        mock_interface = MagicMock()
+        exercise.interface = mock_interface
+        exercise.test = False
+
+        exercise.read_code = MagicMock()
+        exercise.run_compile_and_tests = MagicMock()
+        exercise.run_compile = MagicMock()
+
+        exercise.check_wait = MagicMock(side_effect=[True, False])
+
+        exercise.run()
+
+        exercise.read_code.assert_called_once()
+        exercise.run_compile_and_tests.assert_not_called()
+        exercise.run_compile.assert_called_once()
+
+        mock_sleep.assert_called_once()
+
+
 def test_read_code(temp_file, exercise):
     exercise.path = temp_file
     exercise.read_code()

@@ -61,6 +61,7 @@ def test_get_exercises(runner):
     assert exercises[1].path == "exercises/exercise2.py"
     assert exercises[1].test == True
 
+
 @patch("runner.Observer")
 @patch("runner.FileChangeHandler")
 def test_run(mock_file_change_handler, mock_observer, runner):
@@ -80,12 +81,16 @@ def test_run(mock_file_change_handler, mock_observer, runner):
 
     # Assert expected methods were called
     mock_interface.clear.assert_called()
-    mock_interface.print_progress.assert_called_with(mock_interface.all_length, mock_interface.completed_length)
+    mock_interface.print_progress.assert_called_with(
+        mock_interface.all_length, mock_interface.completed_length
+    )
     mock_file_change_handler.assert_called()
     mock_observer.assert_called()
 
     mock_file_change_handler_instance.process.start.assert_called()
     mock_join.assert_called()
 
-    mock_interface.print_progress.assert_called_with(mock_interface.all_length, mock_interface.completed_length)
+    mock_interface.print_progress.assert_called_with(
+        mock_interface.all_length, mock_interface.completed_length
+    )
     mock_interface.print_course_complete.assert_called()

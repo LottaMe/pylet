@@ -1,4 +1,4 @@
-import random   # needed for quiz2 to work
+import random  # needed for quiz2 to work
 import subprocess
 import time
 import traceback
