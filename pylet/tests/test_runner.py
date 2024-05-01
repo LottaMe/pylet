@@ -62,50 +62,35 @@ def test_get_exercises(runner):
     assert exercises[1].test == True
 
 
-# def test_run_exercises_done(runner):
-#     exercise1 = MagicMock()
-#     exercise2 = MagicMock()
-#     runner.get_exercises = MagicMock()
-#     runner.get_exercises.return_value = [exercise1, exercise2]
+@patch("runner.Observer")
+@patch("runner.FileChangeHandler")
+def test_run(mock_file_change_handler, mock_observer, runner):
+    # Setup Mocks for test
+    mock_interface = MagicMock()
+    runner.interface = mock_interface
 
-#     exercise1.run_compile_and_tests.return_value = ResultTests(
-#         success=True, output="yay"
-#     )
-#     exercise1.check_wait.return_value = False
-#     exercise2.run_compile_and_tests.return_value = ResultTests(
-#         success=True, output="yay"
-#     )
-#     exercise2.check_wait.return_value = False
+    mock_exercises = [MagicMock(), MagicMock()]
+    runner.get_exercises = MagicMock(return_value=mock_exercises)
 
-#     runner.run()
+    mock_join = MagicMock()
+    mock_file_change_handler_instance = mock_file_change_handler.return_value
+    mock_file_change_handler_instance.process.join = mock_join
 
-#     assert len(runner.completed_exercises) == 2
-#     runner.interface.print_progress.assert_called_once_with(2, 2)
-#     runner.interface.print_course_complete.assert_called_once()
+    # Call method that is being tested
+    runner.run()
 
+    # Assert expected methods were called
+    mock_interface.clear.assert_called()
+    mock_interface.print_progress.assert_called_with(
+        mock_interface.all_length, mock_interface.completed_length
+    )
+    mock_file_change_handler.assert_called()
+    mock_observer.assert_called()
 
-# def test_run(runner):
-#     exercise1 = MagicMock()
-#     exercise2 = MagicMock()
-#     runner.get_exercises = MagicMock()
-#     runner.get_exercises.return_value = [exercise1, exercise2]
-#     compile_result1 = ResultTests(success=True, output="yay")
-#     compile_result2 = ResultTests(success=False, output="nay")
+    mock_file_change_handler_instance.process.start.assert_called()
+    mock_join.assert_called()
 
-#     exercise1.run_compile_and_tests.return_value = compile_result1
-#     exercise1.check_wait.return_value = False
-
-#     exercise2.run_compile_and_tests.return_value = compile_result2
-#     exercise2.check_wait.return_value = True
-#     exercise2.watch_till_pass.return_value = "path2"
-
-#     assert len(runner.completed_exercises) == 0
-
-#     runner.run()
-
-#     runner.interface.print_on_modify.assert_called()
-#     runner.interface.print_progress.assert_called_once_with(2, 2)
-#     runner.interface.print_course_complete.assert_called_once()
-
-#     assert len(runner.completed_exercises) == 2
-#     assert runner.completed_exercises.pop() == "path2"
+    mock_interface.print_progress.assert_called_with(
+        mock_interface.all_length, mock_interface.completed_length
+    )
+    mock_interface.print_course_complete.assert_called()

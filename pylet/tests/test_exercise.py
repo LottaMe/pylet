@@ -4,6 +4,7 @@ import pytest
 from components import Result
 from exercise import Exercise
 
+
 @pytest.fixture
 def mock_interface():
     return MagicMock()
@@ -21,6 +22,64 @@ def temp_file(tmp_path):
     with open(file_path, "w") as f:
         f.write(file_content)
     return file_path
+
+
+def test_run_with_tests(exercise):
+    mock_interface = MagicMock()
+    exercise.interface = mock_interface
+    exercise.test = True
+
+    exercise.read_code = MagicMock()
+    exercise.run_compile_and_tests = MagicMock()
+    exercise.run_compile = MagicMock()
+
+    exercise.check_wait = MagicMock(return_value=False)
+
+    exercise.run()
+
+    exercise.read_code.assert_called_once()
+    exercise.run_compile_and_tests.assert_called_once()
+    exercise.run_compile.assert_not_called()
+
+
+def test_run_without_tests(exercise):
+    mock_interface = MagicMock()
+    exercise.interface = mock_interface
+    exercise.test = False
+
+    exercise.read_code = MagicMock()
+    exercise.run_compile_and_tests = MagicMock()
+    exercise.run_compile = MagicMock()
+
+    exercise.check_wait = MagicMock(return_value=False)
+
+    exercise.run()
+
+    exercise.read_code.assert_called_once()
+    exercise.run_compile_and_tests.assert_not_called()
+    exercise.run_compile.assert_called_once()
+
+
+def test_run_with_check_wait(exercise):
+    with patch("time.sleep") as mock_sleep:
+
+        mock_interface = MagicMock()
+        exercise.interface = mock_interface
+        exercise.test = False
+
+        exercise.read_code = MagicMock()
+        exercise.run_compile_and_tests = MagicMock()
+        exercise.run_compile = MagicMock()
+
+        exercise.check_wait = MagicMock(side_effect=[True, False])
+
+        exercise.run()
+
+        exercise.read_code.assert_called_once()
+        exercise.run_compile_and_tests.assert_not_called()
+        exercise.run_compile.assert_called_once()
+
+        mock_sleep.assert_called_once()
 
 
 def test_read_code(temp_file, exercise):
@@ -79,7 +138,9 @@ def test_run_compile_and_tests_success(exercise):
     exercise.run_tests = MagicMock()
 
     exercise.run_compile_and_tests()
-    exercise.run_tests.side_effect = setattr(exercise, "result", Result(True, "tests work"))
+    exercise.run_tests.side_effect = setattr(
+        exercise, "result", Result(True, "tests work")
+    )
 
     exercise.run_compile.assert_called_once()
     exercise.run_tests.assert_called_once()
@@ -90,7 +151,9 @@ def test_run_compile_and_tests_success(exercise):
 
 def test_run_compile_and_tests_compile_failure(exercise):
     exercise.run_compile = MagicMock()
-    exercise.run_compile.side_effect = setattr(exercise, "result", Result(False, "error"))
+    exercise.run_compile.side_effect = setattr(
+        exercise, "result", Result(False, "error")
+    )
     exercise.run_tests = MagicMock()
 
     exercise.run_compile_and_tests()
@@ -108,74 +171,15 @@ def test_run_compile_and_tests_test_failure(exercise):
     exercise.run_tests = MagicMock()
 
     exercise.run_compile_and_tests()
-    exercise.run_tests.side_effect = setattr(exercise, "result", Result(False, "tests failed"))
+    exercise.run_tests.side_effect = setattr(
+        exercise, "result", Result(False, "tests failed")
+    )
 
     exercise.run_compile.assert_called_once()
     exercise.run_tests.assert_called_once()
     assert isinstance(exercise.result, Result)
     assert exercise.result.success == False
     assert exercise.result.output == "tests failed"
-
-
-# # def test_run_checks_test_true(exercise):
-# #     exercise.test = True
-# #     exercise.run_compile = MagicMock()
-# #     exercise.run_compile_and_tests = MagicMock()
-# #     exercise.run_compile_and_tests.return_value = ResultTests(True, "success")
-# #     exercise.check_wait = MagicMock()
-# #     exercise.check_wait.return_value = False
-
-# #     assert exercise.wait == True
-
-# #     exercise.run_checks()
-
-# #     exercise.run_compile_and_tests.assert_called_once()
-# #     exercise.check_wait.assert_called_once_with(exercise.result)
-# #     assert exercise.wait == False
-# #     assert isinstance(exercise.result, ResultTests)
-# #     assert exercise.result.success == True
-# #     assert exercise.result.output == "success"
-# #     exercise.run_compile.assert_not_called()
-
-
-# # def test_run_checks_test_false(exercise):
-# #     exercise.test = False
-# #     exercise.run_compile = MagicMock()
-# #     exercise.run_compile.return_value = CompileResult(True, None, None)
-# #     exercise.run_compile_and_tests = MagicMock()
-# #     exercise.check_wait = MagicMock()
-# #     exercise.check_wait.return_value = False
-
-# #     assert exercise.wait == True
-
-# #     exercise.run_checks()
-
-# #     exercise.run_compile_and_tests.assert_not_called()
-# #     exercise.check_wait.assert_called_once_with(exercise.result)
-# #     assert exercise.wait == False
-# #     assert isinstance(exercise.result, CompileResult)
-# #     assert exercise.result.success == True
-# #     exercise.run_compile.assert_called_once()
-
-
-# # def test_run_checks_test_false_wait_true(exercise):
-# #     exercise.test = False
-# #     exercise.run_compile = MagicMock()
-# #     exercise.run_compile.return_value = CompileResult(True, None, None)
-# #     exercise.run_compile_and_tests = MagicMock()
-# #     exercise.check_wait = MagicMock()
-# #     exercise.check_wait.return_value = True
-
-# #     assert exercise.wait == True
-
-# #     exercise.run_checks()
-
-# #     exercise.run_compile_and_tests.assert_not_called()
-# #     exercise.check_wait.assert_called_once_with(exercise.result)
-# #     assert exercise.wait == True
-# #     assert isinstance(exercise.result, CompileResult)
-# #     assert exercise.result.success == True
-# #     exercise.run_compile.assert_called_once()
 
 
 def test_check_done_comment_present(exercise, tmp_path):

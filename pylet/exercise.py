@@ -1,14 +1,10 @@
-import multiprocessing as mp
+import random  # needed for quiz2 to work
 import subprocess
 import time
-import random
 import traceback
-from functools import partial
 
 from components import Result
 from interface import Interface
-from watchdog.events import FileSystemEventHandler
-from watchdog.observers import Observer
 
 
 class Exercise:
@@ -28,14 +24,13 @@ class Exercise:
         else:
             self.run_compile()
             if self.result.success:
-                self.interface.print_success()
                 self.execute()
             else:
                 self.interface.print_error(self.result.output)
         while self.check_wait():
             time.sleep(1)
             continue
-    
+
     def read_code(self) -> None:
         with open(self.path, "r") as f:
             code_str = f.read()
@@ -44,6 +39,7 @@ class Exercise:
     def execute(self) -> None:
         try:
             exec(self.code_str)
+            self.interface.print_success()
         except Exception:
             error = traceback.format_exc()
             self.result = Result(success=False, output=error)
@@ -68,18 +64,9 @@ class Exercise:
 
     def run_compile_and_tests(self) -> Result:
         self.run_compile()
+        self.execute()
         if self.result.success:
             self.run_tests()
-
-    # def run_checks(self) -> Result:
-        # if self.test == True:
-        #     test_result = self.run_compile_and_tests()
-        #     self.wait = self.check_wait(test_result)
-        #     self.result = test_result
-        # else:
-        #     compile_result = self.run_compile()
-        #     self.wait = self.check_wait(compile_result)
-        #     self.result = compile_result
 
     def check_done_comment(self) -> bool:
         with open(self.path, "r") as f:
@@ -89,11 +76,9 @@ class Exercise:
                     return True
         return False
 
-
     def check_wait(self) -> bool:
         if not self.result.success:
             return True
         if self.result.success and self.check_done_comment():
             return True
         return False
-
