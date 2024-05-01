@@ -1,6 +1,11 @@
-# pylet
+# pylet 🐍🤍
 
-A tool to learn python that is inspired by rustlings.
+Greetingsss. Welcome to `pylet`, the hands-on way to learn python.
+
+It is encouraged to do your own research while using pylet. Here are some sources recommended by us:
+
+- [python docs tutorial](https://docs.python.org/3/tutorial/index.html)
+- [w3school python tutorial](https://www.w3schools.com/python/)
 
 ## First Setup
 
