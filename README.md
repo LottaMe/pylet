@@ -1,13 +1,47 @@
-# pylet
+# pylet 🐍🤍
 
-A tool to learn python that is inspired by rustlings.
+Greetingsss. Welcome to `pylet`, the hands-on way to learn python.
 
-## First Setup
+It is encouraged to do your own research while using `pylet`. Here are some sources recommended by us:
 
-First create a virtual environment for the project, activate it and install the requirements:
+- [python docs tutorial](https://docs.python.org/3/tutorial/index.html)
+- [w3school python tutorial](https://www.w3schools.com/python/)
+
+## Prerequisites
+
+To use `pylet`, you need to have python3 installed.
+You can look up how to download python [here](https://www.python.org/downloads/).
+
+## Getting Started
+
+_This is a very early version of `pylet` and currently only tested on mac._
+
+### Manually
+
+#### Get Repository
+
+First you need to get the repository locally.
+You can either clone the repository:
+
+```
+git clone git@github.com:LottaMe/pylet.git
+```
+
+Or you download the repository as a .zip and unpack it locally.
+
+#### Create virtual environment
+
+When you have the repository, open a terminal in the root folder of the repository.
+
+First you need to create a virtual environment for the project. You do this with this command in the terminal:
 
 ```
 python3 -m venv env
+```
+
+Next, enter the virtual environment:
+
+```
 source env/bin/activate
 ```
 
@@ -17,15 +51,19 @@ Now that you are in the environment, you should install the dependencies in the 
 pip install -r requirements.txt
 ```
 
-Now the requirements are installed in the virtual environment env.
+Now the requirements are installed in the virtual environment env and you are ready to start with the exercises
 
-In the future don't forget to activate the virtual environment before running the program with. If it is not active, the program won't run.
+## Run `pylet`
+
+Before running pylet, be sure that you are in the created virtual environment. You should see a little (env) at the left side of your terminal.
+
+If you are not in the environment, the following command will simply fail.
+
+You can enter the environment with this command:
 
 ```
 source env/bin/activate
 ```
-
-## Run pylet
 
 To run pylet enter:
 
@@ -33,21 +71,24 @@ To run pylet enter:
 python pylet
 ```
 
-## Test the application
+You can always exit it, with a KeyboardInterrupt (control c).
 
-To test the application enter:
+As this is an early version, `pylet` may hang at times. Try exiting it and running pylet again.
 
-```
-pytest
-```
+## Continuing on
 
-## Keep code formatting consistent
+After completing all the exercises in `pylet`, you should have a good understanding of the basics of python.
 
-I am using black to keep the code formatting consistent.
-The exercise folder should be excluded from formatting.
-To do this run:
+Now the important thing to do, is practice on real problems.
 
-```
-black . --extend-exclude exercises
-isort pylet
-```
+Python is a general-purpose programming language, meaning you can go in many different directions with it. A few examples:
+
+- web development
+- data science
+- artificial intelligence
+
+For all of these purposes there exist good (free) tutorials to start out with, just look them up, get started and have fun.
+
+## Contributing
+
+If you want to contribute to `pylet`, check out the [CONTRIBUTING.md](/CONTRIBUTING.MD)
