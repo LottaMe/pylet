@@ -71,6 +71,6 @@ To run pylet enter:
 python pylet
 ```
 
-You can always exit it, with a KeyboardInterrupt (control + c).
+You can always exit it, with a KeyboardInterrupt (control c).
 
 As this is an early version, `pylet` may hang at times. Try exiting it and running pylet again.
