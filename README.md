@@ -88,3 +88,7 @@ Python is a general-purpose programming language, meaning you can go in many dif
 - artificial intelligence
 
 For all of these purposes there exist good (free) tutorials to start out with, just look them up, get started and have fun.
+
+## Contributing
+
+If you want to contribute to `pylet`, check out the [CONTRIBUTING.md](/CONTRIBUTING.MD)
