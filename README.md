@@ -74,3 +74,17 @@ python pylet
 You can always exit it, with a KeyboardInterrupt (control c).
 
 As this is an early version, `pylet` may hang at times. Try exiting it and running pylet again.
+
+## Continuing on
+
+After completing all the exercises in `pylet`, you should have a good understanding of the basics of python.
+
+Now the important thing to do, is practice on real problems.
+
+Python is a general-purpose programming language, meaning you can go in many different directions with it. A few examples:
+
+- web development
+- data science
+- artificial intelligence
+
+For all of these purposes there exist good (free) tutorials to start out with, just look them up, get started and have fun.
