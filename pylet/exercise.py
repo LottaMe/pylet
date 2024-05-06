@@ -17,8 +17,6 @@ class Exercise:
         self.result: Result = Result(success=False)
 
     def run(self, queue):
-        wait = queue.get()
-
         self.interface.clear()
         self.interface.print_progress(
             self.interface.all_length, self.interface.completed_length

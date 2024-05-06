@@ -8,5 +8,4 @@ class PyletProcess(mp.Process):
         self.queue = queue
 
     def run(self) -> None:
-        self.queue.put(True)
         self.exercise.run(self.queue)
