@@ -2,9 +2,10 @@ import multiprocessing as mp
 
 
 class PyletProcess(mp.Process):
-    def __init__(self, exercise) -> None:
+    def __init__(self, exercise, queue: mp.Queue) -> None:
         super().__init__()
         self.exercise = exercise
+        self.queue = queue
 
     def run(self) -> None:
-        self.exercise.run()
+        self.exercise.run(self.queue)

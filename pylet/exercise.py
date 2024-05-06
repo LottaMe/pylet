@@ -16,7 +16,13 @@ class Exercise:
 
         self.result: Result = Result(success=False)
 
-    def run(self):
+    def run(self, queue):
+        self.interface.clear()
+        self.interface.print_progress(
+            self.interface.all_length, self.interface.completed_length
+        )
+        print("Running exercise", self.path)
+
         self.read_code()
         if self.test:
             self.run_compile_and_tests()
@@ -27,9 +33,8 @@ class Exercise:
                 self.execute()
             else:
                 self.interface.print_error(self.result.output)
-        while self.check_wait():
-            time.sleep(1)
-            continue
+        wait = self.check_wait()
+        queue.put(wait)
 
     def read_code(self) -> None:
         with open(self.path, "r") as f:
@@ -69,12 +74,10 @@ class Exercise:
             self.run_tests()
 
     def check_done_comment(self) -> bool:
-        with open(self.path, "r") as f:
-            lines = f.readlines()
-            for line in lines:
-                if line.find("# I AM NOT DONE") != -1:
-                    return True
-        return False
+        if "# I AM NOT DONE" in self.code_str:
+            return True
+        else:
+            return False
 
     def check_wait(self) -> bool:
         if not self.result.success:

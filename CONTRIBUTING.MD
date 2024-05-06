@@ -49,6 +49,6 @@ The exercise folder should be excluded from formatting.
 To do this run:
 
 ```
-black . --extend-exclude exercises
+black pylet
 isort pylet
 ```

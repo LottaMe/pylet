@@ -64,7 +64,8 @@ def test_get_exercises(runner):
 
 @patch("runner.Observer")
 @patch("runner.FileChangeHandler")
-def test_run(mock_file_change_handler, mock_observer, runner):
+@patch("runner.Queue")
+def test_run(mock_queue, mock_file_change_handler, mock_observer, runner):
     # Setup Mocks for test
     mock_interface = MagicMock()
     runner.interface = mock_interface
@@ -72,18 +73,28 @@ def test_run(mock_file_change_handler, mock_observer, runner):
     mock_exercises = [MagicMock(), MagicMock()]
     runner.get_exercises = MagicMock(return_value=mock_exercises)
 
+    mock_queue_instance = mock_queue.return_value
+    mock_queue_instance.empty.side_effect = [False, False]
+    mock_queue_instance.get.side_effect = [False, False]
+
     mock_join = MagicMock()
     mock_file_change_handler_instance = mock_file_change_handler.return_value
     mock_file_change_handler_instance.process.join = mock_join
+
+    def mock_process_start():
+        mock_queue_instance.put(False)
+
+    mock_file_change_handler_instance.process.start.side_effect = mock_process_start
+
+    def mock_process_join():
+        pass
+
+    mock_file_change_handler_instance.process.join.side_effect = mock_process_join
 
     # Call method that is being tested
     runner.run()
 
     # Assert expected methods were called
-    mock_interface.clear.assert_called()
-    mock_interface.print_progress.assert_called_with(
-        mock_interface.all_length, mock_interface.completed_length
-    )
     mock_file_change_handler.assert_called()
     mock_observer.assert_called()
 

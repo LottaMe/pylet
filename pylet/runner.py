@@ -1,3 +1,5 @@
+import time
+from multiprocessing import Queue
 from typing import Dict, List, Tuple
 
 import yaml
@@ -39,24 +41,26 @@ class Runner:
         all_exercises = self.get_exercises()
         self.interface.all_length = len(all_exercises)
         for exercise in all_exercises:
-            self.interface.clear()
-            self.interface.print_progress(
-                self.interface.all_length, self.interface.completed_length
-            )
-            print("start exercise", exercise.path)
             observer = Observer()
-            filechangehandler = FileChangeHandler(exercise, PyletProcess(exercise))
+            queue = Queue()
+            filechangehandler = FileChangeHandler(
+                exercise, PyletProcess(exercise, queue), queue
+            )
             observer.schedule(filechangehandler, exercise.path, recursive=True)
             observer.start()
 
             try:
                 filechangehandler.process.start()
                 filechangehandler.process.join()
+                wait = True
+                while wait:
+                    if not queue.empty():
+                        wait = queue.get()
+
             except KeyboardInterrupt:
                 observer.stop()
                 observer.join()
                 exit(0)
-            print("finished process", exercise.path)
             self.interface.completed_length += 1
             observer.stop()
             observer.join()

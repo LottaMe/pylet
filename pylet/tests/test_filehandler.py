@@ -8,9 +8,11 @@ from watchdog.events import FileModifiedEvent
 def test_on_modified_process_dead():
     exercise = MagicMock()
     process = MagicMock()
+    queue = MagicMock()
+
     process.is_alive.return_value = False
 
-    file_handler = FileChangeHandler(exercise, process)
+    file_handler = FileChangeHandler(exercise, process, queue)
 
     with patch("filehandler.PyletProcess"):
         event = FileModifiedEvent("mock_path")
@@ -29,8 +31,10 @@ def test_on_modified_process_dead():
 def test_on_modified_process_alive():
     exercise = MagicMock()
     process = MagicMock()
+    queue = MagicMock()
+
     process.is_alive.return_value = True
-    file_handler = FileChangeHandler(exercise, process)
+    file_handler = FileChangeHandler(exercise, process, queue)
 
     with patch("filehandler.PyletProcess"):
         event = FileModifiedEvent("mock_path")

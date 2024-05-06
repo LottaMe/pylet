@@ -8,8 +8,6 @@
 
 ### I AM NOT DONE
 
-import time
-
 
 quiz_questions = [
   "How tall is Mount Everest (in meters)?",
@@ -39,6 +37,5 @@ while index < len(quiz_questions):
         raise ValueError("answer should be an integer")
     
     print(question)
-    time.sleep(0.5)     # when you're done, remove this line 
     print(answer)
     index+=1

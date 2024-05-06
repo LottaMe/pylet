@@ -20,10 +20,10 @@
 
 ## I AM NOT DONE
 
-from random import randint
+import random
 
 def random_number() -> int:
-    return randint(0, 2)
+    return random.randint(0, 2)
 
 def fight(number: int, players: list) -> str | None:
     return
@@ -36,6 +36,5 @@ while True:
     fight(random_number(), players)
 
 
-print(players[0], players)
-print(players[1], players)
-
+print(players[0], winners.count(players[0]))
+print(players[1], winners.count(players[1]))
