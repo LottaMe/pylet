@@ -35,7 +35,7 @@ def test_run_with_tests(exercise):
 
     exercise.check_wait = MagicMock(return_value=False)
 
-    exercise.run()
+    exercise.run(MagicMock())
 
     exercise.read_code.assert_called_once()
     exercise.run_compile_and_tests.assert_called_once()
@@ -53,33 +53,11 @@ def test_run_without_tests(exercise):
 
     exercise.check_wait = MagicMock(return_value=False)
 
-    exercise.run()
+    exercise.run(MagicMock())
 
     exercise.read_code.assert_called_once()
     exercise.run_compile_and_tests.assert_not_called()
     exercise.run_compile.assert_called_once()
-
-
-def test_run_with_check_wait(exercise):
-    with patch("time.sleep") as mock_sleep:
-
-        mock_interface = MagicMock()
-        exercise.interface = mock_interface
-        exercise.test = False
-
-        exercise.read_code = MagicMock()
-        exercise.run_compile_and_tests = MagicMock()
-        exercise.run_compile = MagicMock()
-
-        exercise.check_wait = MagicMock(side_effect=[True, False])
-
-        exercise.run()
-
-        exercise.read_code.assert_called_once()
-        exercise.run_compile_and_tests.assert_not_called()
-        exercise.run_compile.assert_called_once()
-
-        mock_sleep.assert_called_once()
 
 
 def test_read_code(temp_file, exercise):
@@ -182,24 +160,20 @@ def test_run_compile_and_tests_test_failure(exercise):
     assert exercise.result.output == "tests failed"
 
 
-def test_check_done_comment_present(exercise, tmp_path):
-    exercise_file = tmp_path / "exercise_with_done_comment.py"
-    with open(exercise_file, "w") as f:
-        f.write("### Remove I AM NOT DONE COMMENT TO CONTINUE ###")
-        f.write("### I AM NOT DONE ###")
-        f.write("print('Hello World!')")
-
-    exercise.path = exercise_file
+def test_check_done_comment_present(exercise):
+    exercise.code_str = """
+### Remove I AM NOT DONE COMMENT TO CONTINUE ###
+### I AM NOT DONE
+print('Hello World!')
+"""
     assert exercise.check_done_comment() == True
 
 
-def test_check_done_comment_not_present(exercise, tmp_path):
-    exercise_file = tmp_path / "exercise_with_done_comment.py"
-    with open(exercise_file, "w") as f:
-        f.write("### Remove I AM NOT DONE COMMENT TO CONTINUE ###")
-        f.write("print('Hello World!')")
-
-    exercise.path = exercise_file
+def test_check_done_comment_not_present(exercise):
+    exercise.code_str = """
+### Remove I AM NOT DONE COMMENT TO CONTINUE ###
+print('Hello World!')
+"""
     assert exercise.check_done_comment() == False
 
 
