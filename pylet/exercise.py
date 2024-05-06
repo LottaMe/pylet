@@ -74,12 +74,16 @@ class Exercise:
             self.run_tests()
 
     def check_done_comment(self) -> bool:
-        with open(self.path, "r") as f:
-            lines = f.readlines()
-            for line in lines:
-                if line.find("# I AM NOT DONE") != -1:
-                    return True
-        return False
+        if "# I AM NOT DONE" in self.code_str:
+            return True
+        else:
+            return False
+        # with open(self.path, "r") as f:
+        #     lines = f.readlines()
+        #     for line in lines:
+        #         if line.find("# I AM NOT DONE") != -1:
+        #             return True
+        # return False
 
     def check_wait(self) -> bool:
         if not self.result.success:
