@@ -22,7 +22,7 @@ class Exercise:
         self.interface.clear()
         self.interface.print_progress(self.interface.all_length, self.interface.completed_length)
         print("Running exercise", self.path)
-        
+
         self.read_code()
         if self.test:
             self.run_compile_and_tests()
@@ -33,7 +33,7 @@ class Exercise:
                 self.execute()
             else:
                 self.interface.print_error(self.result.output)
-        wait["wait"] = self.check_wait()
+        wait = self.check_wait()
         queue.put(wait)
 
     def read_code(self) -> None:

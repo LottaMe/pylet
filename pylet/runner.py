@@ -53,8 +53,8 @@ class Runner:
                 wait = True
                 while wait:
                     if not queue.empty():
-                        wait_dict = queue.get()
-                        wait = wait_dict["wait"]
+                        wait = queue.get()
+                        # wait = wait_dict
 
             except KeyboardInterrupt:
                 observer.stop()
