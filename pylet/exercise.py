@@ -17,7 +17,6 @@ class Exercise:
         self.result: Result = Result(success=False)
 
     def run(self, queue):
-        print("run exercise")
         wait = queue.get()
         self.read_code()
         if self.test:

@@ -65,7 +65,6 @@ class Runner:
                 observer.stop()
                 observer.join()
                 exit(0)
-            print("finished process", exercise.path)
             self.interface.completed_length += 1
             observer.stop()
             observer.join()
