@@ -83,10 +83,12 @@ def test_run(mock_queue, mock_file_change_handler, mock_observer, runner):
 
     def mock_process_start():
         mock_queue_instance.put(False)
+
     mock_file_change_handler_instance.process.start.side_effect = mock_process_start
 
     def mock_process_join():
         pass
+
     mock_file_change_handler_instance.process.join.side_effect = mock_process_join
 
     # Call method that is being tested

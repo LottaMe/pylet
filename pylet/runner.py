@@ -1,5 +1,5 @@
-from multiprocessing import Queue
 import time
+from multiprocessing import Queue
 from typing import Dict, List, Tuple
 
 import yaml
@@ -43,7 +43,9 @@ class Runner:
         for exercise in all_exercises:
             observer = Observer()
             queue = Queue()
-            filechangehandler = FileChangeHandler(exercise, PyletProcess(exercise, queue), queue)
+            filechangehandler = FileChangeHandler(
+                exercise, PyletProcess(exercise, queue), queue
+            )
             observer.schedule(filechangehandler, exercise.path, recursive=True)
             observer.start()
 

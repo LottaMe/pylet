@@ -20,7 +20,9 @@ class Exercise:
         wait = queue.get()
 
         self.interface.clear()
-        self.interface.print_progress(self.interface.all_length, self.interface.completed_length)
+        self.interface.print_progress(
+            self.interface.all_length, self.interface.completed_length
+        )
         print("Running exercise", self.path)
 
         self.read_code()
