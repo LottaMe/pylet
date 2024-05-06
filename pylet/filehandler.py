@@ -17,4 +17,3 @@ class FileChangeHandler(FileSystemEventHandler):
         self.process = PyletProcess(self.exercise, self.queue)
         self.process.start()
         self.process.join()
-        # print(self.queue.get())

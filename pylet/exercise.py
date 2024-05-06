@@ -19,7 +19,6 @@ class Exercise:
     def run(self, queue):
         print("run exercise")
         wait = queue.get()
-        print("wait", wait)
         self.read_code()
         if self.test:
             self.run_compile_and_tests()
@@ -31,11 +30,7 @@ class Exercise:
             else:
                 self.interface.print_error(self.result.output)
         wait["wait"] = self.check_wait()
-        print(wait)
         queue.put(wait)
-        # while self.check_wait():
-        #     time.sleep(1)
-        #     continue
 
     def read_code(self) -> None:
         with open(self.path, "r") as f:
