@@ -7,11 +7,17 @@
 
 ### I AM NOT DONE
 
+import time
+
+
 ingredients = ["beans", "teriyaki sauce", "apricot jam", "plum jam", "coconut milk"]
 ingredientsABC = []
 
 for ingredient in ingredients:
     print(ingredient)
+    time.sleep(0.5)     # when you're done, remove this line 
+
+    # your code below here
 
 
 # Don't modify code below
