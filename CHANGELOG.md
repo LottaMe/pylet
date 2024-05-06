@@ -7,6 +7,15 @@ This will be written with the newest changes at the top, but I will create a few
   - [First Solution - Subprocess](#first-solution---subprocess)
   - [First Major Change - compile & exec](#first-major-change---compile--exec)
   - [Introducing: Multiprocessing](#introducing-multiprocessing)
+- [1.0.0 Adding Queue](#100-adding-queue)
+
+## 1.0.0 Adding Queue
+
+There was a percistent bug after introducing multiprocessing, that is explained in [this issue](https://github.com/LottaMe/pylet/issues/44).
+
+This bug was fixed, by introducing another feature of the multiprocessing package -> Queue.
+We are adding a boolean to the queue that gives informaion about whether to move on to the next exercise.
+It is set every time the exercise.run function is called and is gotten from the queue whenever the queue is not empty in the runner.run function.
 
 ## Subprocess, compile/exec and multiprocessing
 
