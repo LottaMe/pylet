@@ -18,6 +18,11 @@ class Exercise:
 
     def run(self, queue):
         wait = queue.get()
+
+        self.interface.clear()
+        self.interface.print_progress(self.interface.all_length, self.interface.completed_length)
+        print("Running exercise", self.path)
+        
         self.read_code()
         if self.test:
             self.run_compile_and_tests()

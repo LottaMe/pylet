@@ -41,11 +41,6 @@ class Runner:
         all_exercises = self.get_exercises()
         self.interface.all_length = len(all_exercises)
         for exercise in all_exercises:
-            self.interface.clear()
-            self.interface.print_progress(
-                self.interface.all_length, self.interface.completed_length
-            )
-            print("start exercise", exercise.path)
             observer = Observer()
             queue = multiprocessing.Queue()
             filechangehandler = FileChangeHandler(exercise, PyletProcess(exercise, queue), queue)
