@@ -1,4 +1,4 @@
-import multiprocessing
+from multiprocessing import Queue
 import time
 from typing import Dict, List, Tuple
 
@@ -42,7 +42,7 @@ class Runner:
         self.interface.all_length = len(all_exercises)
         for exercise in all_exercises:
             observer = Observer()
-            queue = multiprocessing.Queue()
+            queue = Queue()
             filechangehandler = FileChangeHandler(exercise, PyletProcess(exercise, queue), queue)
             observer.schedule(filechangehandler, exercise.path, recursive=True)
             observer.start()
@@ -54,7 +54,6 @@ class Runner:
                 while wait:
                     if not queue.empty():
                         wait = queue.get()
-                        # wait = wait_dict
 
             except KeyboardInterrupt:
                 observer.stop()
