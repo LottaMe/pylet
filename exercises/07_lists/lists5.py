@@ -7,7 +7,6 @@
 
 ### I AM NOT DONE
 
-import time
 
 my_list = [1, 4, 2, 3, 5]   # don't edit this line
 
@@ -23,8 +22,6 @@ index = 0
 
 while index < len(my_list):
   print(my_list[index])
-
-  time.sleep(0.5)
   
   index +=1
 
@@ -32,8 +29,3 @@ if my_list != [5, 4, 3, 2, 1]:
   raise ValueError("my_list should be [5, 4, 3, 2, 1]")
 
 print("Happy New Year!!")
-
-
-
-# Don't modify code below, 
-# but you can take a look and try to understand it
