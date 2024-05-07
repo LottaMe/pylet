@@ -24,4 +24,4 @@ def have_birthday(person: dict) -> dict:
 hanna = have_birthday(hanna)
 
 if hanna["age"] < 18:
-    ValueError("Hanna isn't old enough!")
+    raise ValueError("Hanna isn't old enough!")
