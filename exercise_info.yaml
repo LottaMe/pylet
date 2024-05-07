@@ -131,3 +131,12 @@ exercises:
   dictionaries5:
     path: 09_dictionaries/dictionaries5
     test: true
+  classes1:
+    path: 10_classes/classes1
+    test: false
+  classes2:
+    path: 10_classes/classes2
+    test: false
+  classes3:
+    path: 10_classes/classes3
+    test: false
