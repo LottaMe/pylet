@@ -140,3 +140,12 @@ exercises:
   classes3:
     path: 10_classes/classes3
     test: false
+  error_handling1:
+    path: 11_error_handling/error_handling1
+    test: false
+  error_handling2:
+    path: 11_error_handling/error_handling2
+    test: true
+  error_handling3:
+    path: 11_error_handling/error_handling3
+    test: false
