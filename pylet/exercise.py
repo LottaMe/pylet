@@ -1,6 +1,7 @@
-import random  # needed for quiz2 to work
+import math  # needed for exercises to work
+import random  # needed for exercises to work
 import subprocess
-import time
+import time  # needed for exercises to work
 import traceback
 
 from components import Result

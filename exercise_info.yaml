@@ -116,3 +116,45 @@ exercises:
   quiz2:
     path: quiz2
     test: false
+  dictionaries1:
+    path: 09_dictionaries/dictionaries1
+    test: false
+  dictionaries2:
+    path: 09_dictionaries/dictionaries2
+    test: false
+  dictionaries3:
+    path: 09_dictionaries/dictionaries3
+    test: false
+  dictionaries4:
+    path: 09_dictionaries/dictionaries4
+    test: false
+  dictionaries5:
+    path: 09_dictionaries/dictionaries5
+    test: true
+  classes1:
+    path: 10_classes/classes1
+    test: false
+  classes2:
+    path: 10_classes/classes2
+    test: false
+  classes3:
+    path: 10_classes/classes3
+    test: false
+  error_handling1:
+    path: 11_error_handling/error_handling1
+    test: false
+  error_handling2:
+    path: 11_error_handling/error_handling2
+    test: true
+  error_handling3:
+    path: 11_error_handling/error_handling3
+    test: false
+  standard_library1:
+    path: 12_standard_library/standard_library1
+    test: false
+  standard_library2:
+    path: 12_standard_library/standard_library2
+    test: false
+  quiz3:
+    path: quiz3
+    test: true
