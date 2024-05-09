@@ -23,8 +23,8 @@ assert add_example == {
 }
 
 pop_example = contacts.copy()
-add_example.pop("Sam")
-assert add_example == {
+pop_example.pop("Sam")
+assert pop_example == {
     "Chloe": "123-456-7890",
     "Sam": "124-876-7400",
     "Sophia": "135-098-8360",
