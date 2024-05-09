@@ -139,7 +139,7 @@ def test_count_albums_of_the_year_swift():
             "release_year": 2024
         }
     ]
-    assert count_albums_of_the_year(albums) == 3
+    assert count_albums_of_the_year(albums) == 4
 
 def test_count_albums_of_the_year_2():
     albums = [
@@ -154,4 +154,4 @@ def test_count_albums_of_the_year_2():
             "album_of_the_year": True
         },
     ]
-    assert count_albums_of_the_year(albums) == 2
+    assert count_albums_of_the_year(albums) == 1
