@@ -23,8 +23,8 @@ for x in my_dict:
 # Don't modify code below
 # Feel free to look at it and understand what the keys and values methods do.
 
-if names != my_dict.keys():
+if names != list(my_dict.keys()):
     raise ValueError("names are supposed to be", list(my_dict.keys()))
 
-if phonenumbers != my_dict.values():
+if phonenumbers != list(my_dict.values()):
     raise ValueError("phonenumbers are supposed to be", list(my_dict.values()))
