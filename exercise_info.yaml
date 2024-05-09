@@ -149,3 +149,12 @@ exercises:
   error_handling3:
     path: 11_error_handling/error_handling3
     test: false
+  standard_library1:
+    path: 12_standard_library/standard_library1
+    test: false
+  standard_library2:
+    path: 12_standard_library/standard_library2
+    test: false
+  quiz3:
+    path: quiz3
+    test: true
