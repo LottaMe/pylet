@@ -1,6 +1,9 @@
 # dictionaries5.py
 
-# 
+# We have a complex dictionary about a person (Taylor Swift).
+# Part of the dictionary is a list of the persons albums.
+# Please finish writing a function to go through the persons albums and 
+# return a count of their album of the year wins.
 
 ### I AM NOT DONE
 
