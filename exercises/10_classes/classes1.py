@@ -25,3 +25,13 @@ person2 =
 
 print(person1)
 print(person2)
+
+# don't modify this code:
+
+assert isinstance(person1.firstname, str)
+assert isinstance(person1.lastname, str)
+assert isinstance(person1.age, int)
+
+assert isinstance(person2.firstname, str)
+assert isinstance(person2.lastname, str)
+assert isinstance(person2.age, int)
