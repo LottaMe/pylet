@@ -18,10 +18,12 @@ hanna = {
 def have_birthday(person: dict) -> dict:
     return person
 
-
+print(hanna)
 # Don't modify code below
 
 hanna = have_birthday(hanna)
+print("they had their birthday")
+print(hanna)
 
 if hanna["age"] < 18:
     raise ValueError("Hanna isn't old enough!")
