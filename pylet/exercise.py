@@ -31,7 +31,7 @@ class Exercise:
 
         self.read_code()
         if self.test:
-            self.run_compile_and_tests()
+            self.run_code_str_and_tests()
             self.interface.print_output(self.result)
         else:
             self.run_code_str()
@@ -71,9 +71,9 @@ class Exercise:
         else:
             self.result = Result(True, result.stdout)
 
-    def run_compile_and_tests(self) -> Result:
+    def run_code_str_and_tests(self) -> Result:
         """
-        Run compile and execute. If successful, also run tests.
+        Run code_str. If successful, also run tests.
         """
         self.run_code_str()
         if self.result.success:

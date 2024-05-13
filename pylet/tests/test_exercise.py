@@ -30,7 +30,7 @@ def test_run_with_tests(exercise):
     exercise.test = True
 
     exercise.read_code = MagicMock()
-    exercise.run_compile_and_tests = MagicMock()
+    exercise.run_code_str_and_tests = MagicMock()
     exercise.run_code_str = MagicMock()
 
     exercise.check_done = MagicMock(return_value=True)
@@ -38,7 +38,7 @@ def test_run_with_tests(exercise):
     exercise.run(MagicMock())
 
     exercise.read_code.assert_called_once()
-    exercise.run_compile_and_tests.assert_called_once()
+    exercise.run_code_str_and_tests.assert_called_once()
     exercise.run_code_str.assert_not_called()
 
 
@@ -48,7 +48,7 @@ def test_run_without_tests(exercise):
     exercise.test = False
 
     exercise.read_code = MagicMock()
-    exercise.run_compile_and_tests = MagicMock()
+    exercise.run_code_str_and_tests = MagicMock()
     exercise.run_code_str = MagicMock()
 
     exercise.check_done = MagicMock(return_value=True)
@@ -56,7 +56,7 @@ def test_run_without_tests(exercise):
     exercise.run(MagicMock())
 
     exercise.read_code.assert_called_once()
-    exercise.run_compile_and_tests.assert_not_called()
+    exercise.run_code_str_and_tests.assert_not_called()
     exercise.run_code_str.assert_called_once()
 
 
@@ -113,12 +113,12 @@ def test_run_tests_failures(exercise):
         assert exercise.result.output == "oh no FAILURES 0 of 1 passed"
 
 
-def test_run_compile_and_tests_success(exercise):
+def test_run_code_str_and_tests_success(exercise):
     exercise.run_code_str = MagicMock()
     exercise.run_code_str.side_effect = setattr(exercise, "result", Result(True))
     exercise.run_tests = MagicMock()
 
-    exercise.run_compile_and_tests()
+    exercise.run_code_str_and_tests()
     exercise.run_tests.side_effect = setattr(
         exercise, "result", Result(True, "tests work")
     )
@@ -130,14 +130,14 @@ def test_run_compile_and_tests_success(exercise):
     assert exercise.result.output == "tests work"
 
 
-def test_run_compile_and_tests_compile_failure(exercise):
+def test_run_code_str_and_tests_compile_failure(exercise):
     exercise.run_code_str = MagicMock()
     exercise.run_code_str.side_effect = setattr(
         exercise, "result", Result(False, "error")
     )
     exercise.run_tests = MagicMock()
 
-    exercise.run_compile_and_tests()
+    exercise.run_code_str_and_tests()
 
     exercise.run_code_str.assert_called_once()
     exercise.run_tests.assert_not_called()
@@ -146,12 +146,12 @@ def test_run_compile_and_tests_compile_failure(exercise):
     assert exercise.result.output == "error"
 
 
-def test_run_compile_and_tests_test_failure(exercise):
+def test_run_code_str_and_tests_test_failure(exercise):
     exercise.run_code_str = MagicMock()
     exercise.run_code_str.side_effect = setattr(exercise, "result", Result(True))
     exercise.run_tests = MagicMock()
 
-    exercise.run_compile_and_tests()
+    exercise.run_code_str_and_tests()
     exercise.run_tests.side_effect = setattr(
         exercise, "result", Result(False, "tests failed")
     )
