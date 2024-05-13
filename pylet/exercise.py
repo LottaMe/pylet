@@ -34,11 +34,7 @@ class Exercise:
             self.run_compile_and_tests()
             self.interface.print_output(self.result)
         else:
-            self.run_compile()
-            if self.result.success:
-                self.execute()
-            else:
-                self.interface.print_error(self.result.output)
+            self.run_code_str()
         queue.put(self.check_done())
 
     def read_code(self) -> None:
@@ -49,32 +45,22 @@ class Exercise:
             code_str = f.read()
         self.code_str = str(code_str)
 
-    def execute(self) -> None:
+    def run_code_str(self) -> None:
         """
-        Try executing code_str and printing success.
-        If there is an Exception, get full message, save the result
-        and print error.
-        """
-        try:
-            exec(self.code_str)
-            self.interface.print_success()
-        except Exception:
-            error = traceback.format_exc()
-            self.result = Result(success=False, output=error)
-            self.interface.print_error(error)
-
-    def run_compile(self) -> None:
-        """
-        Try compiling code_str. Save result in self.result.
+        Try compiling and executing code_str. Set self.result to corresonding result and output
+        success or error message.
         """
         try:
             compile(self.code_str, self.path, "exec")
-            self.result = Result(
-                success=True,
-            )
+            exec(self.code_str)
+            
+            self.result = Result(success=True, output="")
+            self.interface.print_success()
         except Exception:
             error = traceback.format_exc()
+            
             self.result = Result(success=False, output=error)
+            self.interface.print_error(error)
 
     def run_tests(self) -> Result:
         """
@@ -91,8 +77,7 @@ class Exercise:
         """
         Run compile and execute. If successful, also run tests.
         """
-        self.run_compile()
-        self.execute()
+        self.run_code_str()
         if self.result.success:
             self.run_tests()
 

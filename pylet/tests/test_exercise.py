@@ -31,7 +31,7 @@ def test_run_with_tests(exercise):
 
     exercise.read_code = MagicMock()
     exercise.run_compile_and_tests = MagicMock()
-    exercise.run_compile = MagicMock()
+    exercise.run_code_str = MagicMock()
 
     exercise.check_done = MagicMock(return_value=True)
 
@@ -39,7 +39,7 @@ def test_run_with_tests(exercise):
 
     exercise.read_code.assert_called_once()
     exercise.run_compile_and_tests.assert_called_once()
-    exercise.run_compile.assert_not_called()
+    exercise.run_code_str.assert_not_called()
 
 
 def test_run_without_tests(exercise):
@@ -49,7 +49,7 @@ def test_run_without_tests(exercise):
 
     exercise.read_code = MagicMock()
     exercise.run_compile_and_tests = MagicMock()
-    exercise.run_compile = MagicMock()
+    exercise.run_code_str = MagicMock()
 
     exercise.check_done = MagicMock(return_value=True)
 
@@ -57,7 +57,7 @@ def test_run_without_tests(exercise):
 
     exercise.read_code.assert_called_once()
     exercise.run_compile_and_tests.assert_not_called()
-    exercise.run_compile.assert_called_once()
+    exercise.run_code_str.assert_called_once()
 
 
 def test_read_code(temp_file, exercise):
@@ -66,16 +66,19 @@ def test_read_code(temp_file, exercise):
     assert exercise.code_str == "print('Hello, world!')"
 
 
-def test_run_compile_success(exercise):
+def test_run_code_str_success(exercise, capsys):
     exercise.code_str = "print('Hello, world!')"
-    exercise.run_compile()
+    exercise.run_code_str()
     assert exercise.result.success == True
-    assert exercise.result.output == None
+    assert exercise.result.output == ""
+
+    captured = capsys.readouterr()
+    assert captured.out.strip() == "Hello, world!"
 
 
-def test_run_compile_failure(exercise):
+def test_run_code_str_failure(exercise):
     exercise.code_str = "print('Hello, world!)"
-    exercise.run_compile()
+    exercise.run_code_str()
     assert exercise.result.success == False
     assert exercise.result.output != None
 
@@ -111,8 +114,8 @@ def test_run_tests_failures(exercise):
 
 
 def test_run_compile_and_tests_success(exercise):
-    exercise.run_compile = MagicMock()
-    exercise.run_compile.side_effect = setattr(exercise, "result", Result(True))
+    exercise.run_code_str = MagicMock()
+    exercise.run_code_str.side_effect = setattr(exercise, "result", Result(True))
     exercise.run_tests = MagicMock()
 
     exercise.run_compile_and_tests()
@@ -120,7 +123,7 @@ def test_run_compile_and_tests_success(exercise):
         exercise, "result", Result(True, "tests work")
     )
 
-    exercise.run_compile.assert_called_once()
+    exercise.run_code_str.assert_called_once()
     exercise.run_tests.assert_called_once()
     assert isinstance(exercise.result, Result)
     assert exercise.result.success == True
@@ -128,15 +131,15 @@ def test_run_compile_and_tests_success(exercise):
 
 
 def test_run_compile_and_tests_compile_failure(exercise):
-    exercise.run_compile = MagicMock()
-    exercise.run_compile.side_effect = setattr(
+    exercise.run_code_str = MagicMock()
+    exercise.run_code_str.side_effect = setattr(
         exercise, "result", Result(False, "error")
     )
     exercise.run_tests = MagicMock()
 
     exercise.run_compile_and_tests()
 
-    exercise.run_compile.assert_called_once()
+    exercise.run_code_str.assert_called_once()
     exercise.run_tests.assert_not_called()
     assert isinstance(exercise.result, Result)
     assert exercise.result.success == False
@@ -144,8 +147,8 @@ def test_run_compile_and_tests_compile_failure(exercise):
 
 
 def test_run_compile_and_tests_test_failure(exercise):
-    exercise.run_compile = MagicMock()
-    exercise.run_compile.side_effect = setattr(exercise, "result", Result(True))
+    exercise.run_code_str = MagicMock()
+    exercise.run_code_str.side_effect = setattr(exercise, "result", Result(True))
     exercise.run_tests = MagicMock()
 
     exercise.run_compile_and_tests()
@@ -153,7 +156,7 @@ def test_run_compile_and_tests_test_failure(exercise):
         exercise, "result", Result(False, "tests failed")
     )
 
-    exercise.run_compile.assert_called_once()
+    exercise.run_code_str.assert_called_once()
     exercise.run_tests.assert_called_once()
     assert isinstance(exercise.result, Result)
     assert exercise.result.success == False
