@@ -18,6 +18,11 @@ class Exercise:
         self.result: Result = Result(success=False)
 
     def run(self, queue):
+        """
+        Clear terminal & print progress.
+        Read code, execute code and tests, check wait and put
+        result in queue.
+        """
         self.interface.clear()
         self.interface.print_progress(
             self.interface.all_length, self.interface.completed_length
@@ -38,11 +43,19 @@ class Exercise:
         queue.put(wait)
 
     def read_code(self) -> None:
+        """
+        Open file at path and save it in attribute code_str.
+        """
         with open(self.path, "r") as f:
             code_str = f.read()
         self.code_str = str(code_str)
 
     def execute(self) -> None:
+        """
+        Try executing code_str and printing success.
+        If there is an Exception, get full message, save the result
+        and print error.
+        """
         try:
             exec(self.code_str)
             self.interface.print_success()
@@ -52,6 +65,9 @@ class Exercise:
             self.interface.print_error(error)
 
     def run_compile(self) -> None:
+        """
+        Try compiling code_str. Save result in self.result.
+        """
         try:
             compile(self.code_str, self.path, "exec")
             self.result = Result(
@@ -62,6 +78,10 @@ class Exercise:
             self.result = Result(success=False, output=error)
 
     def run_tests(self) -> Result:
+        """
+        Run tests on file at self.path.
+        Save result as self.result.
+        """
         result = subprocess.run(["pytest", self.path], capture_output=True, text=True)
         if "FAILURES" in result.stdout:
             self.result = Result(False, result.stdout)
@@ -69,18 +89,27 @@ class Exercise:
             self.result = Result(True, result.stdout)
 
     def run_compile_and_tests(self) -> Result:
+        """
+        Run compile and execute. If successful, also run tests.
+        """
         self.run_compile()
         self.execute()
         if self.result.success:
             self.run_tests()
 
     def check_done_comment(self) -> bool:
+        """
+        Check code_str for # I AM NOT DONE comment, return True if its there and False if it isn't.
+        """
         if "# I AM NOT DONE" in self.code_str:
             return True
         else:
             return False
 
     def check_wait(self) -> bool:
+        """
+        Check if exercise has to wait, and return corresponding bool.
+        """
         if not self.result.success:
             return True
         if self.result.success and self.check_done_comment():
