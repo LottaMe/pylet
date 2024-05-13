@@ -72,10 +72,10 @@ class Runner:
             try:
                 filechangehandler.process.start()
                 filechangehandler.process.join()
-                wait = True
-                while wait:
+                done = False
+                while not done:
                     if not queue.empty():
-                        wait = queue.get()
+                        done = queue.get()
 
             except KeyboardInterrupt:
                 observer.stop()

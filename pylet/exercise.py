@@ -39,8 +39,7 @@ class Exercise:
                 self.execute()
             else:
                 self.interface.print_error(self.result.output)
-        wait = self.check_wait()
-        queue.put(wait)
+        queue.put(self.check_done())
 
     def read_code(self) -> None:
         """
@@ -106,12 +105,12 @@ class Exercise:
         else:
             return False
 
-    def check_wait(self) -> bool:
+    def check_done(self) -> bool:
         """
-        Check if exercise has to wait, and return corresponding bool.
+        Check if exercise is done, and return corresponding bool.
         """
         if not self.result.success:
-            return True
+            return False
         if self.result.success and self.check_done_comment():
-            return True
-        return False
+            return False
+        return True

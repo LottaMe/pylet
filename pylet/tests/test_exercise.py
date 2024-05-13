@@ -33,7 +33,7 @@ def test_run_with_tests(exercise):
     exercise.run_compile_and_tests = MagicMock()
     exercise.run_compile = MagicMock()
 
-    exercise.check_wait = MagicMock(return_value=False)
+    exercise.check_done = MagicMock(return_value=True)
 
     exercise.run(MagicMock())
 
@@ -51,7 +51,7 @@ def test_run_without_tests(exercise):
     exercise.run_compile_and_tests = MagicMock()
     exercise.run_compile = MagicMock()
 
-    exercise.check_wait = MagicMock(return_value=False)
+    exercise.check_done = MagicMock(return_value=True)
 
     exercise.run(MagicMock())
 
@@ -177,23 +177,23 @@ print('Hello World!')
     assert exercise.check_done_comment() == False
 
 
-def test_check_wait_result_failure(exercise):
+def test_check_done_result_failure(exercise):
     exercise.result = Result(False, "We failed!")
 
-    assert exercise.check_wait() == True
+    assert exercise.check_done() == False
 
 
-def test_check_wait_not_done_comment(exercise):
+def test_check_done_not_done_comment(exercise):
     exercise.result = Result(True, "We compiled!")
     exercise.check_done_comment = MagicMock(return_value=True)
 
-    assert exercise.check_wait() == True
+    assert exercise.check_done() == False
     exercise.check_done_comment.assert_called_once()
 
 
-def test_check_wait_result_success_and_done(exercise):
+def test_check_done_result_success_and_done(exercise):
     exercise.result = Result(True, "We compiled!")
     exercise.check_done_comment = MagicMock(return_value=False)
 
-    assert exercise.check_wait() == False
+    assert exercise.check_done() == True
     exercise.check_done_comment.assert_called_once()
