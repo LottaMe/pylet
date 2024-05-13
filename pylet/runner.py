@@ -17,7 +17,7 @@ class Runner:
 
         self.completed_exercises = []
 
-    def load_exercises_from_yaml(self) -> List[Tuple[str, Dict[str, bool]]]:
+    def load_exercises_from_yaml(self) -> List[Tuple[str, Dict[str, any]]]:
         """
         Reads the exercises from exercise_yaml file and returns list of
         tuple with exercise name and a dict of path and test
@@ -26,7 +26,7 @@ class Runner:
             exercises = yaml.safe_load(f)
         return list(exercises["exercises"].items())
 
-    def parse_exercise(self, exercise_tuple: Tuple[str, Dict[str, bool]]) -> Exercise:
+    def parse_exercise(self, exercise_tuple: Tuple[str, Dict[str, any]]) -> Exercise:
         """
         Takes an exercise tuple, with the exercise name and a dict that contains
         a partial path and test. Returns parsed exercise object with those attributes.
