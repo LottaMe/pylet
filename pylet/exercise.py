@@ -47,17 +47,16 @@ class Exercise:
 
     def run_code_str(self) -> None:
         """
-        Try compiling and executing code_str. Set self.result to corresonding result and output
-        success or error message.
+        Try executing code_str. Set self.result to corresonding result and output success or error message.
         """
         try:
             exec(self.code_str)
-            
+
             self.result = Result(success=True, output="")
             self.interface.print_success()
         except Exception:
             error = traceback.format_exc()
-            
+
             self.result = Result(success=False, output=error)
             self.interface.print_error(error)
 
