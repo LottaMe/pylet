@@ -24,9 +24,7 @@ class Exercise:
         result in queue.
         """
         self.interface.clear()
-        self.interface.print_progress(
-            self.interface.all_length, self.interface.completed_length
-        )
+        self.interface.print_progress()
         print("Running exercise", self.path)
 
         self.read_code()

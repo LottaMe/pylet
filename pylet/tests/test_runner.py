@@ -101,7 +101,5 @@ def test_run(mock_queue, mock_file_change_handler, mock_observer, runner):
     mock_file_change_handler_instance.process.start.assert_called()
     mock_join.assert_called()
 
-    mock_interface.print_progress.assert_called_with(
-        mock_interface.all_length, mock_interface.completed_length
-    )
+    mock_interface.print_progress.assert_called()
     mock_interface.print_course_complete.assert_called()

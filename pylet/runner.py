@@ -84,7 +84,5 @@ class Runner:
             self.interface.completed_length += 1
             observer.stop()
             observer.join()
-        self.interface.print_progress(
-            self.interface.all_length, self.interface.completed_length
-        )
+        self.interface.print_progress()
         self.interface.print_course_complete()
