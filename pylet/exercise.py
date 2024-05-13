@@ -51,7 +51,6 @@ class Exercise:
         success or error message.
         """
         try:
-            compile(self.code_str, self.path, "exec")
             exec(self.code_str)
             
             self.result = Result(success=True, output="")
