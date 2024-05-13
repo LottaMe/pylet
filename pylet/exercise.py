@@ -32,7 +32,6 @@ class Exercise:
         self.read_code()
         if self.test:
             self.run_code_str_and_tests()
-            self.interface.print_output(self.result)
         else:
             self.run_code_str()
         queue.put(self.check_done())
@@ -68,8 +67,10 @@ class Exercise:
         result = subprocess.run(["pytest", self.path], capture_output=True, text=True)
         if "FAILURES" in result.stdout:
             self.result = Result(False, result.stdout)
+            self.interface.print_error(result.stdout)
         else:
             self.result = Result(True, result.stdout)
+            self.interface.print_success(result.stdout)
 
     def run_code_str_and_tests(self) -> Result:
         """
