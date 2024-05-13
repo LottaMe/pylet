@@ -18,11 +18,19 @@ class Runner:
         self.completed_exercises = []
 
     def load_exercises_from_yaml(self) -> List[Tuple[str, Dict[str, bool]]]:
+        """
+        Reads the exercises from exercise_yaml file and returns list of
+        tuple with exercise name and a dict of path and test
+        """
         with open(self.exercise_info_path) as f:
             exercises = yaml.safe_load(f)
         return list(exercises["exercises"].items())
 
     def parse_exercise(self, exercise_tuple: Tuple[str, Dict[str, bool]]) -> Exercise:
+        """
+        Takes an exercise tuple, with the exercise name and a dict that contains
+        a partial path and test. Returns parsed exercise object with those attributes.
+        """
         path = f"exercises/{exercise_tuple[1]['path']}.py"
         return Exercise(
             path=path,
@@ -31,6 +39,10 @@ class Runner:
         )
 
     def get_exercises(self) -> List[Exercise]:
+        """
+        Loads exercises from yaml and parses them as Exercise objects.
+        Returns a list of Exercises, parsed from the exercise_info.yaml
+        """
         final_list = []
         exercises = self.load_exercises_from_yaml()
         for exercise in exercises:
@@ -38,6 +50,14 @@ class Runner:
         return final_list
 
     def run(self) -> None:
+        """
+        Load exercises, setup interface, then go through the exercises and for each:
+            - setup observer, queue and filechangehandler
+            - start filechangehandler process & wait for queue to get a false
+            - add to completed_exercises
+            - stop observer
+        Message to comlete.
+        """
         all_exercises = self.get_exercises()
         self.interface.all_length = len(all_exercises)
         for exercise in all_exercises:
