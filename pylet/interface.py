@@ -35,15 +35,6 @@ class Interface:
         print()
         print(output)
 
-    def print_output(self, result: Result) -> None:
-        """
-        Takes result, checks if success and prints either success or error.
-        """
-        if result.success:
-            self.print_success(result.output)
-        else:
-            self.print_error(result.output)
-
     def print_progress(self, all_length: int, completed_length: int) -> None:
         """
         Takes length of all exercises and comleted exercises.

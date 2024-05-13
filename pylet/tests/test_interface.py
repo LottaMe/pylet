@@ -30,28 +30,6 @@ def test_print_error(interface, capsys) -> None:
     assert "nay" in captured.out
 
 
-def test_print_output_success_result(interface) -> None:
-    interface.print_success = MagicMock()
-    interface.print_error = MagicMock()
-
-    mock_compile_result = Result(success=True, output="We did it!!")
-
-    interface.print_output(mock_compile_result)
-    interface.print_success.assert_called_once_with(mock_compile_result.output)
-    interface.print_error.assert_not_called()
-
-
-def test_print_output_failure_result(interface) -> None:
-    interface.print_success = MagicMock()
-    interface.print_error = MagicMock()
-
-    mock_compile_result = Result(success=False, output="We failed!!")
-
-    interface.print_output(mock_compile_result)
-    interface.print_success.assert_not_called()
-    interface.print_error.assert_called_once_with(mock_compile_result.output)
-
-
 def test_print_progress_no_completed(interface, capsys) -> None:
     all = 5
     completed = 0
