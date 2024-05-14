@@ -10,6 +10,10 @@ class FileChangeHandler(FileSystemEventHandler):
         self.queue = queue
 
     def on_modified(self, event: FileSystemEvent) -> None:
+        """
+        If process is running, terminate process.
+        Start new process.
+        """
         print("File modified, restarting...")
         if self.process and self.process.is_alive():
             self.process.terminate()

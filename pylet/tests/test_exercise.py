@@ -30,16 +30,16 @@ def test_run_with_tests(exercise):
     exercise.test = True
 
     exercise.read_code = MagicMock()
-    exercise.run_compile_and_tests = MagicMock()
-    exercise.run_compile = MagicMock()
+    exercise.run_code_str_and_tests = MagicMock()
+    exercise.run_code_str = MagicMock()
 
-    exercise.check_wait = MagicMock(return_value=False)
+    exercise.check_done = MagicMock(return_value=True)
 
     exercise.run(MagicMock())
 
     exercise.read_code.assert_called_once()
-    exercise.run_compile_and_tests.assert_called_once()
-    exercise.run_compile.assert_not_called()
+    exercise.run_code_str_and_tests.assert_called_once()
+    exercise.run_code_str.assert_not_called()
 
 
 def test_run_without_tests(exercise):
@@ -48,16 +48,16 @@ def test_run_without_tests(exercise):
     exercise.test = False
 
     exercise.read_code = MagicMock()
-    exercise.run_compile_and_tests = MagicMock()
-    exercise.run_compile = MagicMock()
+    exercise.run_code_str_and_tests = MagicMock()
+    exercise.run_code_str = MagicMock()
 
-    exercise.check_wait = MagicMock(return_value=False)
+    exercise.check_done = MagicMock(return_value=True)
 
     exercise.run(MagicMock())
 
     exercise.read_code.assert_called_once()
-    exercise.run_compile_and_tests.assert_not_called()
-    exercise.run_compile.assert_called_once()
+    exercise.run_code_str_and_tests.assert_not_called()
+    exercise.run_code_str.assert_called_once()
 
 
 def test_read_code(temp_file, exercise):
@@ -66,16 +66,19 @@ def test_read_code(temp_file, exercise):
     assert exercise.code_str == "print('Hello, world!')"
 
 
-def test_run_compile_success(exercise):
+def test_run_code_str_success(exercise, capsys):
     exercise.code_str = "print('Hello, world!')"
-    exercise.run_compile()
+    exercise.run_code_str()
     assert exercise.result.success == True
-    assert exercise.result.output == None
+    assert exercise.result.output == ""
+
+    captured = capsys.readouterr()
+    assert captured.out.strip() == "Hello, world!"
 
 
-def test_run_compile_failure(exercise):
+def test_run_code_str_failure(exercise):
     exercise.code_str = "print('Hello, world!)"
-    exercise.run_compile()
+    exercise.run_code_str()
     assert exercise.result.success == False
     assert exercise.result.output != None
 
@@ -110,50 +113,50 @@ def test_run_tests_failures(exercise):
         assert exercise.result.output == "oh no FAILURES 0 of 1 passed"
 
 
-def test_run_compile_and_tests_success(exercise):
-    exercise.run_compile = MagicMock()
-    exercise.run_compile.side_effect = setattr(exercise, "result", Result(True))
+def test_run_code_str_and_tests_success(exercise):
+    exercise.run_code_str = MagicMock()
+    exercise.run_code_str.side_effect = setattr(exercise, "result", Result(True))
     exercise.run_tests = MagicMock()
 
-    exercise.run_compile_and_tests()
+    exercise.run_code_str_and_tests()
     exercise.run_tests.side_effect = setattr(
         exercise, "result", Result(True, "tests work")
     )
 
-    exercise.run_compile.assert_called_once()
+    exercise.run_code_str.assert_called_once()
     exercise.run_tests.assert_called_once()
     assert isinstance(exercise.result, Result)
     assert exercise.result.success == True
     assert exercise.result.output == "tests work"
 
 
-def test_run_compile_and_tests_compile_failure(exercise):
-    exercise.run_compile = MagicMock()
-    exercise.run_compile.side_effect = setattr(
+def test_run_code_str_and_tests_compile_failure(exercise):
+    exercise.run_code_str = MagicMock()
+    exercise.run_code_str.side_effect = setattr(
         exercise, "result", Result(False, "error")
     )
     exercise.run_tests = MagicMock()
 
-    exercise.run_compile_and_tests()
+    exercise.run_code_str_and_tests()
 
-    exercise.run_compile.assert_called_once()
+    exercise.run_code_str.assert_called_once()
     exercise.run_tests.assert_not_called()
     assert isinstance(exercise.result, Result)
     assert exercise.result.success == False
     assert exercise.result.output == "error"
 
 
-def test_run_compile_and_tests_test_failure(exercise):
-    exercise.run_compile = MagicMock()
-    exercise.run_compile.side_effect = setattr(exercise, "result", Result(True))
+def test_run_code_str_and_tests_test_failure(exercise):
+    exercise.run_code_str = MagicMock()
+    exercise.run_code_str.side_effect = setattr(exercise, "result", Result(True))
     exercise.run_tests = MagicMock()
 
-    exercise.run_compile_and_tests()
+    exercise.run_code_str_and_tests()
     exercise.run_tests.side_effect = setattr(
         exercise, "result", Result(False, "tests failed")
     )
 
-    exercise.run_compile.assert_called_once()
+    exercise.run_code_str.assert_called_once()
     exercise.run_tests.assert_called_once()
     assert isinstance(exercise.result, Result)
     assert exercise.result.success == False
@@ -177,23 +180,23 @@ print('Hello World!')
     assert exercise.check_done_comment() == False
 
 
-def test_check_wait_result_failure(exercise):
+def test_check_done_result_failure(exercise):
     exercise.result = Result(False, "We failed!")
 
-    assert exercise.check_wait() == True
+    assert exercise.check_done() == False
 
 
-def test_check_wait_not_done_comment(exercise):
+def test_check_done_not_done_comment(exercise):
     exercise.result = Result(True, "We compiled!")
     exercise.check_done_comment = MagicMock(return_value=True)
 
-    assert exercise.check_wait() == True
+    assert exercise.check_done() == False
     exercise.check_done_comment.assert_called_once()
 
 
-def test_check_wait_result_success_and_done(exercise):
+def test_check_done_result_success_and_done(exercise):
     exercise.result = Result(True, "We compiled!")
     exercise.check_done_comment = MagicMock(return_value=False)
 
-    assert exercise.check_wait() == False
+    assert exercise.check_done() == True
     exercise.check_done_comment.assert_called_once()

@@ -18,71 +18,81 @@ class Exercise:
         self.result: Result = Result(success=False)
 
     def run(self, queue):
+        """
+        Clear terminal & print progress.
+        Read code, execute code and tests, check wait and put
+        result in queue.
+        """
         self.interface.clear()
-        self.interface.print_progress(
-            self.interface.all_length, self.interface.completed_length
-        )
+        self.interface.print_progress()
         print("Running exercise", self.path)
 
         self.read_code()
         if self.test:
-            self.run_compile_and_tests()
-            self.interface.print_output(self.result)
+            self.run_code_str_and_tests()
         else:
-            self.run_compile()
-            if self.result.success:
-                self.execute()
-            else:
-                self.interface.print_error(self.result.output)
-        wait = self.check_wait()
-        queue.put(wait)
+            self.run_code_str()
+        queue.put(self.check_done())
 
     def read_code(self) -> None:
+        """
+        Open file at path and save it in attribute code_str.
+        """
         with open(self.path, "r") as f:
             code_str = f.read()
         self.code_str = str(code_str)
 
-    def execute(self) -> None:
+    def run_code_str(self) -> None:
+        """
+        Try executing code_str. Set self.result to corresonding result and output success or error message.
+        """
         try:
             exec(self.code_str)
+
+            self.result = Result(success=True, output="")
             self.interface.print_success()
         except Exception:
             error = traceback.format_exc()
+
             self.result = Result(success=False, output=error)
             self.interface.print_error(error)
 
-    def run_compile(self) -> None:
-        try:
-            compile(self.code_str, self.path, "exec")
-            self.result = Result(
-                success=True,
-            )
-        except Exception:
-            error = traceback.format_exc()
-            self.result = Result(success=False, output=error)
-
     def run_tests(self) -> Result:
+        """
+        Run tests on file at self.path.
+        Save result as self.result.
+        """
         result = subprocess.run(["pytest", self.path], capture_output=True, text=True)
         if "FAILURES" in result.stdout:
             self.result = Result(False, result.stdout)
+            self.interface.print_error(result.stdout)
         else:
             self.result = Result(True, result.stdout)
+            self.interface.print_success(result.stdout)
 
-    def run_compile_and_tests(self) -> Result:
-        self.run_compile()
-        self.execute()
+    def run_code_str_and_tests(self) -> Result:
+        """
+        Run code_str. If successful, also run tests.
+        """
+        self.run_code_str()
         if self.result.success:
             self.run_tests()
 
     def check_done_comment(self) -> bool:
+        """
+        Check code_str for # I AM NOT DONE comment, return True if its there and False if it isn't.
+        """
         if "# I AM NOT DONE" in self.code_str:
             return True
         else:
             return False
 
-    def check_wait(self) -> bool:
+    def check_done(self) -> bool:
+        """
+        Check if exercise is done, and return corresponding bool.
+        """
         if not self.result.success:
-            return True
+            return False
         if self.result.success and self.check_done_comment():
-            return True
-        return False
+            return False
+        return True

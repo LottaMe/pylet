@@ -30,33 +30,11 @@ def test_print_error(interface, capsys) -> None:
     assert "nay" in captured.out
 
 
-def test_print_output_success_result(interface) -> None:
-    interface.print_success = MagicMock()
-    interface.print_error = MagicMock()
-
-    mock_compile_result = Result(success=True, output="We did it!!")
-
-    interface.print_output(mock_compile_result)
-    interface.print_success.assert_called_once_with(mock_compile_result.output)
-    interface.print_error.assert_not_called()
-
-
-def test_print_output_failure_result(interface) -> None:
-    interface.print_success = MagicMock()
-    interface.print_error = MagicMock()
-
-    mock_compile_result = Result(success=False, output="We failed!!")
-
-    interface.print_output(mock_compile_result)
-    interface.print_success.assert_not_called()
-    interface.print_error.assert_called_once_with(mock_compile_result.output)
-
-
 def test_print_progress_no_completed(interface, capsys) -> None:
-    all = 5
-    completed = 0
+    interface.all_length = 5
+    interface.completed_length = 0
 
-    interface.print_progress(all, completed)
+    interface.print_progress()
     captured = capsys.readouterr()
     assert "progress: " in captured.out
     assert f"{interface.colors.neutral}>" in captured.out
@@ -66,10 +44,10 @@ def test_print_progress_no_completed(interface, capsys) -> None:
 
 
 def test_print_progress_half_completed(interface, capsys) -> None:
-    all = 5
-    completed = 2
+    interface.all_length = 5
+    interface.completed_length = 2
 
-    interface.print_progress(all, completed)
+    interface.print_progress()
     captured = capsys.readouterr()
     assert "progress: " in captured.out
     assert f"{interface.colors.success}##" in captured.out
@@ -80,9 +58,10 @@ def test_print_progress_half_completed(interface, capsys) -> None:
 
 
 def test_print_progress_completed(interface, capsys) -> None:
-    all = 2
-    completed = 2
-    interface.print_progress(all, completed)
+    interface.all_length = 2
+    interface.completed_length = 2
+
+    interface.print_progress()
     captured = capsys.readouterr()
     assert "progress: " in captured.out
     assert f"{interface.colors.success}##" in captured.out
@@ -91,9 +70,10 @@ def test_print_progress_completed(interface, capsys) -> None:
 
 
 def test_print_progress_last_exercise(interface, capsys) -> None:
-    all = 3
-    completed = 2
-    interface.print_progress(all, completed)
+    interface.all_length = 3
+    interface.completed_length = 2
+
+    interface.print_progress()
     captured = capsys.readouterr()
     assert "progress: " in captured.out
     assert f"{interface.colors.success}##" in captured.out

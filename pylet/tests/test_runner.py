@@ -75,14 +75,14 @@ def test_run(mock_queue, mock_file_change_handler, mock_observer, runner):
 
     mock_queue_instance = mock_queue.return_value
     mock_queue_instance.empty.side_effect = [False, False]
-    mock_queue_instance.get.side_effect = [False, False]
+    mock_queue_instance.get.side_effect = [True, True]
 
     mock_join = MagicMock()
     mock_file_change_handler_instance = mock_file_change_handler.return_value
     mock_file_change_handler_instance.process.join = mock_join
 
     def mock_process_start():
-        mock_queue_instance.put(False)
+        mock_queue_instance.put(True)
 
     mock_file_change_handler_instance.process.start.side_effect = mock_process_start
 
@@ -101,7 +101,5 @@ def test_run(mock_queue, mock_file_change_handler, mock_observer, runner):
     mock_file_change_handler_instance.process.start.assert_called()
     mock_join.assert_called()
 
-    mock_interface.print_progress.assert_called_with(
-        mock_interface.all_length, mock_interface.completed_length
-    )
+    mock_interface.print_progress.assert_called()
     mock_interface.print_course_complete.assert_called()
