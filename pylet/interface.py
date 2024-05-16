@@ -48,7 +48,9 @@ class Interface:
         progress.extend(["#" for _ in range(self.completed_length)])
         if self.completed_length < self.all_length:
             progress.append(f"{self.colors.neutral}>{self.colors.error}")
-            progress.extend(["-" for _ in range(self.all_length - self.completed_length)])
+            progress.extend(
+                ["-" for _ in range(self.all_length - self.completed_length)]
+            )
         progress.append(self.colors.standard)
         print(
             "progress:",
@@ -70,14 +72,19 @@ class Interface:
         subprocess.run(["clear"])
 
     def handle_command_inputs(self) -> None:
-        """"""
+        """
+        Open the standard input to get user input.
+        If the result includes 'help', print out help message.
+        If the result includes 'exit', print out exit message.
+        Recursively calls function until exit is called.
+        """
         with open(0) as stdin:
-            command = stdin.readline()
+            result = stdin.readline()
 
-            if "help" in command:
+            if "help" in result:
                 print("help is on the way")
                 self.handle_command_inputs()
-            elif "exit" in command:
+            elif "exit" in result:
                 print("exit was requested")
             else:
                 self.handle_command_inputs()
