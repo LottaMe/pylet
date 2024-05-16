@@ -1,3 +1,5 @@
+import threading
+import _thread
 import time
 from multiprocessing import Queue
 from typing import Dict, List, Tuple
@@ -9,7 +11,12 @@ from interface import Interface
 from process import PyletProcess
 from watchdog.observers import Observer
 
-
+def get_input():
+    i = input(">>")
+    if i == "help":
+        print("fun")
+    if i == "exit":
+        _thread.interrupt_main()
 class Runner:
     def __init__(self, exercise_info_path: str, interface: Interface) -> None:
         self.exercise_info_path = exercise_info_path
@@ -61,6 +68,7 @@ class Runner:
         all_exercises = self.get_exercises()
         self.interface.all_length = len(all_exercises)
         for exercise in all_exercises:
+            input_thread = threading.Thread(target=get_input)
             observer = Observer()
             queue = Queue()
             filechangehandler = FileChangeHandler(
@@ -70,12 +78,15 @@ class Runner:
             observer.start()
 
             try:
+                input_thread.start()
                 filechangehandler.process.start()
                 filechangehandler.process.join()
                 done = False
                 while not done:
                     if not queue.empty():
                         done = queue.get()
+                input_thread.join()
+                
 
             except KeyboardInterrupt:
                 observer.stop()
@@ -86,3 +97,4 @@ class Runner:
             observer.join()
         self.interface.print_progress()
         self.interface.print_course_complete()
+
