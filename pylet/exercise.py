@@ -32,14 +32,12 @@ class Exercise:
             self.run_code_str_and_tests()
         else:
             self.run_code_str()
-        queue.put(self.check_done())
+        
+        done = self.check_done()
+        queue.put(done)
 
-        stdin = open(0)
-        x = stdin.readline()
-        if "help" in x:
-            print("help is on the way")
-        else:
-            print("no help here")
+        if not done:
+            self.interface.handle_command_inputs()
 
 
     def read_code(self) -> None:

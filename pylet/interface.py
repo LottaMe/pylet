@@ -68,3 +68,16 @@ class Interface:
         Runs terminal command "clear".
         """
         subprocess.run(["clear"])
+
+    def handle_command_inputs(self) -> None:
+        """"""
+        with open(0) as stdin:
+            command = stdin.readline()
+
+            if "help" in command:
+                print("help is on the way")
+                self.handle_command_inputs()
+            elif "exit" in command:
+                print("exit was requested")
+            else:
+                self.handle_command_inputs()
