@@ -71,18 +71,15 @@ class Interface:
         """
         subprocess.run(["clear"])
 
-    def handle_command_inputs(self) -> None:
+    def handle_command_inputs(self, hint_message: str = "No hint for this exercise") -> None:
         """
         Open the standard input to get user input.
-        If the result includes 'help', print out help message.
-        If the result includes 'exit', print out exit message.
-        Recursively calls function until exit is called.
+        If the result includes 'hint', print out hint_message.
         """
-        with open(0) as stdin:
-            result = stdin.readline()
-
-            if "help" in result:
-                print("help is on the way")
-                self.handle_command_inputs()
-            else:
-                self.handle_command_inputs()
+        try:
+            with open(0) as stdin:
+                result = stdin.readline()
+                if "hint" in result:
+                    print(hint_message)
+        except OSError:
+            print("command failed")
