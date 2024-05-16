@@ -34,6 +34,14 @@ class Exercise:
             self.run_code_str()
         queue.put(self.check_done())
 
+        stdin = open(0)
+        x = stdin.readline()
+        if "help" in x:
+            print("help is on the way")
+        else:
+            print("no help here")
+
+
     def read_code(self) -> None:
         """
         Open file at path and save it in attribute code_str.
