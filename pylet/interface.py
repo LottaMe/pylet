@@ -76,6 +76,8 @@ class Interface:
         Open the standard input to get user input.
         If the result includes 'hint', print out hint_message.
         """
+        # comment for next time: input still blocks when it is gotten sometimes (needs more investigation). 
+        # all of this needs more fine tuning
         try:
             with open(0) as stdin:
                 result = stdin.readline()
