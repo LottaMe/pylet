@@ -1,8 +1,8 @@
+import _thread
 import fcntl
 import os
 import sys
 import threading
-import _thread
 import time
 from multiprocessing import Queue
 from typing import Dict, List, Tuple
@@ -81,7 +81,6 @@ class Runner:
                 while not done:
                     if not queue.empty():
                         done = queue.get()
-                
 
             except KeyboardInterrupt:
                 observer.stop()
@@ -92,4 +91,3 @@ class Runner:
             observer.join()
         self.interface.print_progress()
         self.interface.print_course_complete()
-

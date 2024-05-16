@@ -32,13 +32,12 @@ class Exercise:
             self.run_code_str_and_tests()
         else:
             self.run_code_str()
-        
+
         done = self.check_done()
         queue.put(done)
 
         if not done:
             self.interface.handle_command_inputs()
-
 
     def read_code(self) -> None:
         """
