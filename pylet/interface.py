@@ -84,7 +84,5 @@ class Interface:
             if "help" in result:
                 print("help is on the way")
                 self.handle_command_inputs()
-            elif "exit" in result:
-                print("exit was requested")
             else:
                 self.handle_command_inputs()
