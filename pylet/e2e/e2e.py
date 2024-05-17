@@ -37,7 +37,7 @@ def test_pylet():
     run_thread = threading.Thread(target=runner.run)
     run_thread.start()
 
-    # change exercise1
+    # change exercise1 - one change - tests false
     goal_content1 = """
 # exercise1.py
 
@@ -51,7 +51,7 @@ print ("hello world!")
     write_thread1.start()
     write_thread1.join()
 
-    # change exercise2
+    # change exercise2 - one change - tests true
     goal_content2 = """
 # exercise2.py
 
