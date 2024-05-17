@@ -34,6 +34,7 @@ def test_pylet(capsys):
     old_content1 = safe_old_content(exercises[0].path)
     old_content2 = safe_old_content(exercises[1].path)
     old_content3 = safe_old_content(exercises[2].path)
+    old_content4 = safe_old_content(exercises[3].path)
     
     run_thread = threading.Thread(target=runner.run)
     run_thread.start()
@@ -116,6 +117,23 @@ print("hello steve!")
     write_thread3.start()
     write_thread3.join()
 
+    # change exercise4 - one change - infinite while loop - tests false
+    goal_content4 = """
+# exercise4.py
+
+
+# Make the code print a greeting to the world.
+
+counter = 0
+while counter < 1:
+    print("counter is", counter)
+    counter += 1
+"""
+    write_thread4 = threading.Thread(target=write_in_file, args=(exercises[3].path, goal_content4,))
+    write_thread4.start()
+    write_thread4.join()
+
+    # finish run and add asserts
     run_thread.join()
 
     captured = capsys.readouterr()
@@ -125,6 +143,5 @@ print("hello steve!")
     write_in_file(exercises[0].path, old_content1)
     write_in_file(exercises[1].path, old_content2)
     write_in_file(exercises[2].path, old_content3)
-
-
+    write_in_file(exercises[3].path, old_content4)
     

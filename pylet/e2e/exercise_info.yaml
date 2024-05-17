@@ -8,3 +8,6 @@ exercises:
   exercise3:
     path: exercise3
     test: false
+  exercise4:
+    path: exercise4
+    test: false
