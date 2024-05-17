@@ -12,7 +12,7 @@ def safe_old_content(path):
     with open(path, "r") as f:
         return f.read()
     
-def test_pylet():
+def test_pylet(capsys):
     interface = Interface()
     runner = Runner(exercise_info_path="./pylet/e2e/exercise_info.yaml", interface=interface)
     exercises = runner.get_exercises()
@@ -75,6 +75,9 @@ def test_add_one():
 
     run_thread.join()
 
+    captured = capsys.readouterr()
+
+    assert "You have completed the course!" in captured.out
     # revert exercises
     write_in_file(exercises[0].path, old_content1)
     write_in_file(exercises[1].path, old_content2)
