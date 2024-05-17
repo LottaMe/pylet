@@ -5,3 +5,6 @@ exercises:
   exercise2:
     path: exercise2
     test: true
+  exercise3:
+    path: exercise3
+    test: false

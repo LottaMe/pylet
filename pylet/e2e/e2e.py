@@ -33,6 +33,7 @@ def test_pylet(capsys):
     # run exercise1
     old_content1 = safe_old_content(exercises[0].path)
     old_content2 = safe_old_content(exercises[1].path)
+    old_content3 = safe_old_content(exercises[2].path)
     
     run_thread = threading.Thread(target=runner.run)
     run_thread.start()
@@ -73,6 +74,48 @@ def test_add_one():
     write_thread2.start()
     write_thread2.join()
 
+    # change exercise3 - multiple changes - tests false
+    part1_goal_content3 = """
+# exercise3.py
+
+
+# Make the code print a greeting to the world.
+
+### I AM NOT DONE
+
+print("hello world!")
+"""
+    part2_goal_content3 = """
+# exercise3.py
+
+
+# Make the code print a greeting to the world.
+
+### I AM NOT DONE
+
+print("hello steve!")
+"""
+    goal_content3 = """
+# exercise3.py
+
+
+# Make the code print a greeting to the world.
+
+
+print("hello steve!")
+"""
+    write_thread3 = threading.Thread(target=write_in_file, args=(exercises[2].path, part1_goal_content3,))
+    write_thread3.start()
+    write_thread3.join()
+
+    write_thread3 = threading.Thread(target=write_in_file, args=(exercises[2].path, part2_goal_content3,))
+    write_thread3.start()
+    write_thread3.join()
+
+    write_thread3 = threading.Thread(target=write_in_file, args=(exercises[2].path, goal_content3,))
+    write_thread3.start()
+    write_thread3.join()
+
     run_thread.join()
 
     captured = capsys.readouterr()
@@ -81,5 +124,7 @@ def test_add_one():
     # revert exercises
     write_in_file(exercises[0].path, old_content1)
     write_in_file(exercises[1].path, old_content2)
+    write_in_file(exercises[2].path, old_content3)
+
 
     
