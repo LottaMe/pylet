@@ -19,15 +19,19 @@ def test_pylet():
     assert exercises[0].path == "exercises/exercise1.py"
     assert exercises[0].test == False
 
+    # change exercise paths
     for exercise in exercises: 
         new_path = "./pylet/e2e/" + exercise.path
         exercise.path = new_path
 
+    # check path is correct
     assert exercises[0].path == "./pylet/e2e/exercises/exercise1.py"
     
+    # fix returnvalue of get_exercises to use new paths
     runner.get_exercises = MagicMock(return_value=exercises)
 
-    old_content = safe_old_content("./pylet/e2e/exercises/exercise1.py")
+    # run exercise1
+    old_content1 = safe_old_content(exercises[0].path)
     goal_content = """
 # exercise1.py
 
@@ -37,14 +41,16 @@ def test_pylet():
 
 print ("hello world!")
 """
-
     run_thread = threading.Thread(target=runner.run)
-    write_thread = threading.Thread(target=write_in_file, args=("./pylet/e2e/exercises/exercise1.py", goal_content,))
     run_thread.start()
+
+    # change exercise1
+    write_thread = threading.Thread(target=write_in_file, args=(exercises[0].path, goal_content,))
     write_thread.start()
-    run_thread.join()
     write_thread.join()
 
-    write_thread = write_in_file("./pylet/e2e/exercises/exercise1.py", old_content)
+    run_thread.join()
 
+    # revert exercises
+    write_in_file("./pylet/e2e/exercises/exercise1.py", old_content1)
     
