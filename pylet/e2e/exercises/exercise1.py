@@ -1,4 +1,4 @@
-# intro2.py
+# exercise1.py
 
 
 # Make the code print a greeting to the world.
