@@ -32,7 +32,13 @@ def test_pylet():
 
     # run exercise1
     old_content1 = safe_old_content(exercises[0].path)
-    goal_content = """
+    old_content2 = safe_old_content(exercises[1].path)
+    
+    run_thread = threading.Thread(target=runner.run)
+    run_thread.start()
+
+    # change exercise1
+    goal_content1 = """
 # exercise1.py
 
 
@@ -41,16 +47,36 @@ def test_pylet():
 
 print ("hello world!")
 """
-    run_thread = threading.Thread(target=runner.run)
-    run_thread.start()
+    write_thread1 = threading.Thread(target=write_in_file, args=(exercises[0].path, goal_content1,))
+    write_thread1.start()
+    write_thread1.join()
 
-    # change exercise1
-    write_thread = threading.Thread(target=write_in_file, args=(exercises[0].path, goal_content,))
-    write_thread.start()
-    write_thread.join()
+    # change exercise2
+    goal_content2 = """
+# exercise2.py
+
+
+# Write function that adds 1
+
+
+def add_one(number):
+    return number + 1
+
+
+def test_add_one():
+    assert add_one(1) == 2
+    assert add_one(-1) == 0
+    assert add_one(12) == 13
+
+"""
+    write_thread2 = threading.Thread(target=write_in_file, args=(exercises[1].path, goal_content2,))
+    write_thread2.start()
+    write_thread2.join()
 
     run_thread.join()
 
     # revert exercises
-    write_in_file("./pylet/e2e/exercises/exercise1.py", old_content1)
+    write_in_file(exercises[0].path, old_content1)
+    write_in_file(exercises[1].path, old_content2)
+
     

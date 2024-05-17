@@ -2,3 +2,6 @@ exercises:
   exercise1:
     path: exercise1
     test: false
+  exercise2:
+    path: exercise2
+    test: true
