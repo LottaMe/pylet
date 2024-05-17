@@ -1,0 +1,4 @@
+exercises:
+  exercise1:
+    path: exercise1
+    test: false
