@@ -11,3 +11,6 @@ exercises:
   exercise4:
     path: exercise4
     test: false
+  exercise5:
+    path: exercise5
+    test: false

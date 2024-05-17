@@ -174,6 +174,31 @@ while counter < 1:
     write_thread4.start()
     write_thread4.join()
 
+    # change exercise5 - one change - import packages - tests false
+    goal_content5 = """
+# exercise5.py
+
+
+# Import packages
+
+import random
+import math
+import time
+
+random.randint(0, 2)
+math.pi
+time.time()
+"""
+    write_thread5 = threading.Thread(
+        target=write_in_file,
+        args=(
+            exercises[4].path,
+            goal_content5,
+        ),
+    )
+    write_thread5.start()
+    write_thread5.join()
+
     # finish run and add asserts
     run_thread.join()
 
