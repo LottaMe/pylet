@@ -36,10 +36,16 @@ Thanksss for wanting to contribute 🐍🤍!!
 
 ### Test the application
 
-To test the application enter:
+You should regularly run unittests, with:
 
 ```
 pytest
+```
+
+Before creating a pull request you should also run the end to end test with:
+
+```
+pytest pylet/e2e/e2e.py -s # the -s flag is so you see the output while running the test
 ```
 
 ### Keep code formatting consistent
