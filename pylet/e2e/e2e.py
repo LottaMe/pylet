@@ -1,7 +1,6 @@
 import threading
 from unittest.mock import MagicMock
 from interface import Interface
-from exercise import Exercise
 from runner import Runner
 
 def get_initial_content(exercise_index):
@@ -89,22 +88,26 @@ def test_pylet(capsys):
         exercise_info_path="./pylet/e2e/exercise_info.yaml", interface=interface
     )
     exercises = runner.get_exercises()
+
+    # assert that get_exercises worked
     assert exercises[0].path == "exercises/exercise1.py"
     assert exercises[0].test == False
 
-    # change exercise paths
     for index, exercise in enumerate(exercises):
+        # change exercise path to test path       
         new_path = "./pylet/e2e/" + exercise.path
         exercise.path = new_path
+
+        # change file content to initial content, in case it didn't reset 
         write_in_file(new_path, get_initial_content(index))
 
-    # check path is correct
+    # check new path is correct
     assert exercises[0].path == "./pylet/e2e/exercises/exercise1.py"
 
-    # fix returnvalue of get_exercises to use new paths
+    # have get_exercises return adjusted exercises
     runner.get_exercises = MagicMock(return_value=exercises)
 
-    # run exercise1
+    # start runner.run
     run_thread = threading.Thread(target=runner.run)
     run_thread.start()
 
@@ -273,7 +276,7 @@ time.time()
     write_in_file(exercises[3].path, get_initial_content(3))
     write_in_file(exercises[4].path, get_initial_content(4))
 
-    # asserts
+    # assert course completed message has printed
     captured = capsys.readouterr()
 
     assert (
