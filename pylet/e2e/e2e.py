@@ -13,7 +13,7 @@ def write_in_file(path, content):
 def safe_old_content(path):
     with open(path, "r") as f:
         return f.read()
-
+    
 
 def test_pylet(capsys):
     interface = Interface()
@@ -40,6 +40,7 @@ def test_pylet(capsys):
     old_content2 = safe_old_content(exercises[1].path)
     old_content3 = safe_old_content(exercises[2].path)
     old_content4 = safe_old_content(exercises[3].path)
+    old_content5 = safe_old_content(exercises[4].path)
 
     run_thread = threading.Thread(target=runner.run)
     run_thread.start()
@@ -199,15 +200,20 @@ time.time()
     write_thread5.start()
     write_thread5.join()
 
-    # finish run and add asserts
+    # finish run
     run_thread.join()
-
-    captured = capsys.readouterr()
-
-    assert "You have completed the course!" in captured.out
 
     # revert exercises
     write_in_file(exercises[0].path, old_content1)
     write_in_file(exercises[1].path, old_content2)
     write_in_file(exercises[2].path, old_content3)
     write_in_file(exercises[3].path, old_content4)
+    write_in_file(exercises[4].path, old_content5)
+
+    # asserts
+    captured = capsys.readouterr()
+
+    assert (
+        captured.out
+        == "File modified, restarting...\nprogress: \x1b[1;32m#####\x1b[0;0m 5/5 100.0%\nYou have completed the course!\n"
+    )
