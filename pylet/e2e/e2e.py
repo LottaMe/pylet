@@ -4,15 +4,83 @@ from interface import Interface
 from exercise import Exercise
 from runner import Runner
 
+def get_initial_content(exercise_index):
+    match exercise_index:
+        case 0:
+            return """
+# exercise1.py
+
+
+# Make the code print a greeting to the world.
+
+### I AM NOT DONE
+
+print "hello world!")
+""".lstrip()
+        case 1:
+            return """
+# exercise2.py
+
+
+# Write function that adds 1
+
+### I AM NOT DONE
+
+
+def add_one(number):
+    return number
+
+
+def test_add_one():
+    assert add_one(1) == 2
+    assert add_one(-1) == 0
+    assert add_one(12) == 13
+""".lstrip()
+        case 2:
+            return """
+# exercise3.py
+
+
+# Make the code print a greeting to the world.
+
+### I AM NOT DONE
+
+print "hello world!"
+""".lstrip()
+        case 3:
+            return """
+# exercise4.py
+
+
+# Make the code print a greeting to the world.
+
+### I AM NOT DONE
+
+counter = 0
+while counter < 1:
+    print("counter is", counter)
+""".lstrip()
+        case 4:
+            return """
+# exercise5.py
+
+### I AM NOT DONE
+
+# Import packages
+
+import random
+import math
+import time
+
+random.randint(0, 2)
+math.pi
+time.time()
+""".lstrip()
+        
 
 def write_in_file(path, content):
     with open(path, "w") as f:
         f.write(content)
-
-
-def safe_old_content(path):
-    with open(path, "r") as f:
-        return f.read()
     
 
 def test_pylet(capsys):
@@ -25,9 +93,10 @@ def test_pylet(capsys):
     assert exercises[0].test == False
 
     # change exercise paths
-    for exercise in exercises:
+    for index, exercise in enumerate(exercises):
         new_path = "./pylet/e2e/" + exercise.path
         exercise.path = new_path
+        write_in_file(new_path, get_initial_content(index))
 
     # check path is correct
     assert exercises[0].path == "./pylet/e2e/exercises/exercise1.py"
@@ -36,12 +105,6 @@ def test_pylet(capsys):
     runner.get_exercises = MagicMock(return_value=exercises)
 
     # run exercise1
-    old_content1 = safe_old_content(exercises[0].path)
-    old_content2 = safe_old_content(exercises[1].path)
-    old_content3 = safe_old_content(exercises[2].path)
-    old_content4 = safe_old_content(exercises[3].path)
-    old_content5 = safe_old_content(exercises[4].path)
-
     run_thread = threading.Thread(target=runner.run)
     run_thread.start()
 
@@ -204,16 +267,16 @@ time.time()
     run_thread.join()
 
     # revert exercises
-    write_in_file(exercises[0].path, old_content1)
-    write_in_file(exercises[1].path, old_content2)
-    write_in_file(exercises[2].path, old_content3)
-    write_in_file(exercises[3].path, old_content4)
-    write_in_file(exercises[4].path, old_content5)
+    write_in_file(exercises[0].path, get_initial_content(0))
+    write_in_file(exercises[1].path, get_initial_content(1))
+    write_in_file(exercises[2].path, get_initial_content(2))
+    write_in_file(exercises[3].path, get_initial_content(3))
+    write_in_file(exercises[4].path, get_initial_content(4))
 
     # asserts
     captured = capsys.readouterr()
 
     assert (
         captured.out
-        == "File modified, restarting...\nprogress: \x1b[1;32m#####\x1b[0;0m 5/5 100.0%\nYou have completed the course!\n"
+        == "progress: \x1b[1;32m#####\x1b[0;0m 5/5 100.0%\nYou have completed the course!\n"
     )
