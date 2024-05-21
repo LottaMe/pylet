@@ -2,8 +2,6 @@ import argparse
 from interface import Interface
 from runner import Runner
 
-def summary():
-    print("summary not implemented yet")
 
 if __name__ == "__main__":
     interface = Interface()
@@ -16,7 +14,7 @@ if __name__ == "__main__":
     watch_parser.set_defaults(func=runner.watch)
 
     summary_parser = subparsers.add_parser("summary")
-    summary_parser.set_defaults(func=summary)
+    summary_parser.set_defaults(func=runner.summary)
 
     args = parser.parse_args()
     args.func()  # call the default function

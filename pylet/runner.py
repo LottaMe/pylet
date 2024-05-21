@@ -86,3 +86,8 @@ class Runner:
             observer.join()
         self.interface.print_progress()
         self.interface.print_course_complete()
+
+    def summary(self) -> None:
+        print("getting fake summary...")
+        time.sleep(1)
+        print("finished fake summary!")
