@@ -1,0 +1,16 @@
+exercises:
+  exercise1:
+    path: exercise1
+    test: false
+  exercise2:
+    path: exercise2
+    test: true
+  exercise3:
+    path: exercise3
+    test: false
+  exercise4:
+    path: exercise4
+    test: false
+  exercise5:
+    path: exercise5
+    test: false
