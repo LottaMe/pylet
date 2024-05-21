@@ -2,17 +2,24 @@ import argparse
 from interface import Interface
 from runner import Runner
 
-if __name__ == "__main__":
+def watch(args):
     interface = Interface()
+    runner = Runner(exercise_info_path="exercise_info.yaml", interface=interface)
 
-    parser = argparse.ArgumentParser()
+    runner.run()
 
-    parser.add_argument("-c", "--command", required=False, type=str)
-    args, unkown = parser.parse_known_args()
+def summary(args):
+    print("summary not implemented yet")
 
-    if args.command and args.command.lower() == "summary":
-        print(args.command)
-    else:
-        runner = Runner(exercise_info_path="exercise_info.yaml", interface=interface)
+parser = argparse.ArgumentParser()
+subparsers = parser.add_subparsers()
 
-        runner.run()
+watch_parser = subparsers.add_parser("watch")
+watch_parser.set_defaults(func=watch)
+
+summary_parser = subparsers.add_parser("summary")
+summary_parser.set_defaults(func=summary)
+
+if __name__ == "__main__":
+    args = parser.parse_args()
+    args.func(args)  # call the default function
