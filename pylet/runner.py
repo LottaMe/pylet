@@ -89,5 +89,23 @@ class Runner:
 
     def summary(self) -> None:
         print("getting fake summary...")
-        time.sleep(1)
+
+        all_exercises = self.get_exercises()
+        self.interface.all_length = len(all_exercises)
+
+        for exercise in all_exercises:
+            try:
+                exercise.read_code()
+                if exercise.test:
+                    exercise.run_code_str_and_tests()
+                else:
+                    exercise.run_code_str()
+                if exercise.check_done() is False:
+                    break
+            except:
+                print("There has been an oopsie!")
+                exit(0)
+            self.interface.completed_length += 1
+        self.interface.print_progress()
+            
         print("finished fake summary!")
