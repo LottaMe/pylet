@@ -8,12 +8,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
     parser.add_argument("-c", "--command", required=False, type=str)
-    args = parser.parse_args()
+    args, unkown = parser.parse_known_args()
 
-    if args.command:
+    if args.command and args.command.lower() == "summary":
         print(args.command)
-        exit(0)
+    else:
+        runner = Runner(exercise_info_path="exercise_info.yaml", interface=interface)
 
-    runner = Runner(exercise_info_path="exercise_info.yaml", interface=interface)
-
-    runner.run()
+        runner.run()
