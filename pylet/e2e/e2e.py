@@ -108,7 +108,7 @@ def test_pylet(capsys):
     runner.get_exercises = MagicMock(return_value=exercises)
 
     # start runner.run
-    run_thread = threading.Thread(target=runner.run)
+    run_thread = threading.Thread(target=runner.watch)
     run_thread.start()
 
     # change exercise1 - one change - tests false

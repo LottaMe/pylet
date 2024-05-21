@@ -49,7 +49,7 @@ class Runner:
             final_list.append(self.parse_exercise(exercise))
         return final_list
 
-    def run(self) -> None:
+    def watch(self) -> None:
         """
         Load exercises, setup interface, then go through the exercises and for each:
             - setup observer, queue and filechangehandler
