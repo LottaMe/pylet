@@ -28,10 +28,9 @@ class Exercise:
         print("Running exercise", self.path)
 
         self.read_code()
-        if self.test:
-            self.run_code_str_and_tests()
-        else:
-            self.run_code_str()
+        
+        self.run_code_str_and_tests()
+        
         queue.put(self.check_done())
 
     def read_code(self) -> None:
@@ -72,10 +71,10 @@ class Exercise:
 
     def run_code_str_and_tests(self) -> Result:
         """
-        Run code_str. If successful, also run tests.
+        Run code_str. If successful and test=true, also run tests.
         """
         self.run_code_str()
-        if self.result.success:
+        if self.test and self.result.success:
             self.run_tests()
 
     def check_done_comment(self) -> bool:
