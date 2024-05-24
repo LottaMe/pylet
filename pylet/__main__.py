@@ -9,7 +9,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     subparsers = parser.add_subparsers()
-    
+
     watch_parser = subparsers.add_parser("watch")
     watch_parser.set_defaults(func=runner.watch)
 

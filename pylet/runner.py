@@ -10,7 +10,6 @@ from process import PyletProcess
 from watchdog.observers import Observer
 
 
-
 class Runner:
     def __init__(self, exercise_info_path: str, interface: Interface) -> None:
         self.exercise_info_path = exercise_info_path
@@ -97,12 +96,13 @@ class Runner:
         for exercise in all_exercises:
             self.interface.clear()
             try:
-                exercise.run_timeout_3()
+                exercise.read_code()
+                exercise.run_with_timeout()
                 if exercise.check_done() is False:
                     break
             except:
                 break
             self.interface.completed_length += 1
         self.interface.print_progress()
-            
+
         print("finished fake summary!")

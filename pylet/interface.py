@@ -48,7 +48,9 @@ class Interface:
         progress.extend(["#" for _ in range(self.completed_length)])
         if self.completed_length < self.all_length:
             progress.append(f"{self.colors.neutral}>{self.colors.error}")
-            progress.extend(["-" for _ in range(self.all_length - self.completed_length)])
+            progress.extend(
+                ["-" for _ in range(self.all_length - self.completed_length)]
+            )
         progress.append(self.colors.standard)
         print(
             "progress:",

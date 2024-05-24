@@ -1,27 +1,11 @@
-import functools
 import math  # needed for exercises to work
-import multiprocessing.pool
 import random  # needed for exercises to work
 import subprocess
 import time  # needed for exercises to work
 import traceback
 
-from components import Result
+from components import Result, timeout
 from interface import Interface
-
-def timeout(max_timeout):
-    """Timeout decorator, parameter in seconds."""
-    def timeout_decorator(item):
-        """Wrap the original function."""
-        @functools.wraps(item)
-        def func_wrapper(*args, **kwargs):
-            """Closure for function."""
-            pool = multiprocessing.pool.ThreadPool(processes=1)
-            async_result = pool.apply_async(item, args, kwargs)
-            # raises a TimeoutError if execution exceeds max_timeout
-            return async_result.get(max_timeout)
-        return func_wrapper
-    return timeout_decorator
 
 
 class Exercise:
@@ -44,16 +28,18 @@ class Exercise:
         print("Running exercise", self.path)
 
         self.read_code()
-        
+
         self.run_code_str_and_tests()
-        
+
         queue.put(self.check_done())
 
     @timeout(3)
-    def run_timeout_3(self):
-        self.read_code()
+    def run_with_timeout(self):
+        """
+        Executes run_code_str_and_test method. If method isn't done executing after 3 seconds,
+        it raises TimeoutError.
+        """
         self.run_code_str_and_tests()
-
 
     def read_code(self) -> None:
         """

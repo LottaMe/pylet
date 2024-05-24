@@ -3,6 +3,7 @@ from unittest.mock import MagicMock
 from interface import Interface
 from runner import Runner
 
+
 def get_initial_content(exercise_index):
     match exercise_index:
         case 0:
@@ -75,12 +76,12 @@ random.randint(0, 2)
 math.pi
 time.time()
 """.lstrip()
-        
+
 
 def write_in_file(path, content):
     with open(path, "w") as f:
         f.write(content)
-    
+
 
 def test_pylet(capsys):
     interface = Interface()
@@ -94,11 +95,11 @@ def test_pylet(capsys):
     assert exercises[0].test == False
 
     for index, exercise in enumerate(exercises):
-        # change exercise path to test path       
+        # change exercise path to test path
         new_path = "./pylet/e2e/" + exercise.path
         exercise.path = new_path
 
-        # change file content to initial content, in case it didn't reset 
+        # change file content to initial content, in case it didn't reset
         write_in_file(new_path, get_initial_content(index))
 
     # check new path is correct
