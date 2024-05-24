@@ -95,6 +95,7 @@ class Runner:
         self.interface.all_length = len(all_exercises)
 
         for exercise in all_exercises:
+            self.interface.clear()
             try:
                 exercise.run_timeout_3()
                 if exercise.check_done() is False:
