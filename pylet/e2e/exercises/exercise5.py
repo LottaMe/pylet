@@ -4,8 +4,8 @@
 
 # Import packages
 
-import random
 import math
+import random
 import time
 
 random.randint(0, 2)

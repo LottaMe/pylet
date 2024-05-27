@@ -1,7 +1,7 @@
 import argparse
+
 from interface import Interface
 from runner import Runner
-
 
 if __name__ == "__main__":
     interface = Interface()

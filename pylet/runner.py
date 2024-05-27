@@ -1,4 +1,3 @@
-import time
 from multiprocessing import Queue
 from typing import Dict, List, Tuple
 
@@ -88,9 +87,9 @@ class Runner:
         self.interface.print_course_complete()
 
     def summary(self) -> None:
-        print("getting fake summary...")
         # create summary folder
         self.interface.create_folder("./summary")
+
         # create completed folder in summary folder
         self.interface.create_folder("./summary/completed")
 
@@ -113,8 +112,6 @@ class Runner:
                 break
             # add file to completed
             self.interface.create_file(f"./summary/completed/{name}", exercise.code_str)
-
             self.interface.completed_length += 1
         # create progress file
         self.interface.create_summary_file("./summary")
-        print("finished fake summary!")

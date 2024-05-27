@@ -1,5 +1,6 @@
 import threading
 from unittest.mock import MagicMock
+
 from interface import Interface
 from runner import Runner
 
