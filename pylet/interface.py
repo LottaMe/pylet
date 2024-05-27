@@ -1,9 +1,10 @@
 import os
 import subprocess
-from typing import List
+from typing import List, TYPE_CHECKING
 
 from components import Colors
-
+if TYPE_CHECKING:
+    from exercise import Exercise
 
 class Interface:
     def __init__(self) -> None:
