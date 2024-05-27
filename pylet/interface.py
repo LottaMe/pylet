@@ -1,7 +1,6 @@
 import os
 import subprocess
-
-from components import Colors, Result
+from components import Colors
 
 
 class Interface:
@@ -79,5 +78,27 @@ class Interface:
             print(e)
 
     def create_file(self, path: str, content: str = "") -> None:
-        with open(path, 'x') as f:
+        with open(path, "x") as f:
             f.write(content)
+
+    def create_summary_file(self, path: str):
+        completed = [
+            f"- [{f}](./completed/{f})" for f in os.listdir(f"{path}/completed")
+        ]
+        current = next(f"- [{f}](./{f})" for f in os.listdir(path) if ".py" in f)
+        progress = f"{self.completed_length}/{self.all_length} ({round((self.completed_length/self.all_length)*100, 2)}%)"
+
+        summary = [
+            f"## PROGRESS: {progress}",
+            "",
+            "### current: ",
+            "",
+            current,
+            "",
+            "### completed: ",
+            "",
+        ]
+        summary.extend(sorted(completed))
+        summary.append("")
+        with open(f"{path}/summary.md", "x") as f:
+            f.write("\n".join(summary))

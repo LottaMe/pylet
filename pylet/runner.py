@@ -115,7 +115,6 @@ class Runner:
             self.interface.create_file(f"./summary/completed/{name}", exercise.code_str)
 
             self.interface.completed_length += 1
-        self.interface.print_progress()
         # create progress file
-
+        self.interface.create_summary_file("./summary")
         print("finished fake summary!")
