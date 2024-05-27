@@ -127,5 +127,5 @@ class Interface:
                 self.create_file(f"./summary/completed/{name}", exercise.code_str)
 
             self.create_summary_file("./summary")
-        except OSError or FileExistsError:
+        except FileExistsError:
             self.print_summary_error()
