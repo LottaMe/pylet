@@ -103,6 +103,6 @@ class Runner:
             self.interface.completed_length += 1
 
         self.interface.create_summary_folder(
-            completed_exercises=all_exercises[:self.interface.completed_length],
-            current_exercise=all_exercises[self.interface.completed_length]    
+            completed_exercises=all_exercises[: self.interface.completed_length],
+            current_exercise=all_exercises[self.interface.completed_length],
         )

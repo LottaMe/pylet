@@ -111,10 +111,8 @@ class Interface:
         print(self.colors.standard)
 
     def create_summary_folder(
-            self, 
-            completed_exercises: list, 
-            current_exercise
-        ) -> None:
+        self, completed_exercises: List['Exercise'], current_exercise: 'Exercise'
+    ) -> None:
         try:
             self.create_folder("./summary")
             self.create_folder("./summary/completed")
