@@ -87,31 +87,35 @@ class Runner:
         self.interface.print_course_complete()
 
     def summary(self) -> None:
-        # create summary folder
-        self.interface.create_folder("./summary")
+        try:
+            # create summary folder
+            self.interface.create_folder("./summary")
+        
+            # create completed folder in summary folder
+            self.interface.create_folder("./summary/completed")
 
-        # create completed folder in summary folder
-        self.interface.create_folder("./summary/completed")
+            all_exercises = self.get_exercises()
+            self.interface.all_length = len(all_exercises)
 
-        all_exercises = self.get_exercises()
-        self.interface.all_length = len(all_exercises)
+            for exercise in all_exercises:
+                name = exercise.path.split("/")[-1]
+                try:
+                    exercise.read_code()
+                    exercise.run_with_timeout()
+                    self.interface.clear()
 
-        for exercise in all_exercises:
-            name = exercise.path.split("/")[-1]
-            self.interface.clear()
-            try:
-                exercise.read_code()
-                exercise.run_with_timeout()
-                if exercise.check_done() is False:
+                    if exercise.check_done() is False:
+                        # add file to summary
+                        self.interface.create_file(f"./summary/{name}", exercise.code_str)
+                        break
+                except:
                     # add file to summary
                     self.interface.create_file(f"./summary/{name}", exercise.code_str)
                     break
-            except:
-                # add file to summary
-                self.interface.create_file(f"./summary/{name}", exercise.code_str)
-                break
-            # add file to completed
-            self.interface.create_file(f"./summary/completed/{name}", exercise.code_str)
-            self.interface.completed_length += 1
-        # create progress file
-        self.interface.create_summary_file("./summary")
+                # add file to completed
+                self.interface.create_file(f"./summary/completed/{name}", exercise.code_str)
+                self.interface.completed_length += 1
+            # create progress file
+            self.interface.create_summary_file("./summary")
+        except FileExistsError:
+            print("Please remove the  ./summary folder to generate a new summary.")
