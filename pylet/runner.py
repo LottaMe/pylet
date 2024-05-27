@@ -87,6 +87,10 @@ class Runner:
         self.interface.print_course_complete()
 
     def summary(self) -> None:
+        """
+        Run exercises with timeout until exercise is not done,
+        then create a summary folder.
+        """
         all_exercises = self.get_exercises()
         self.interface.all_length = len(all_exercises)
 

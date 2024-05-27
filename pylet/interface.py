@@ -74,16 +74,23 @@ class Interface:
         subprocess.run(["clear"])
 
     def create_folder(self, path: str) -> None:
-        try:
-            os.makedirs(path)
-        except OSError as e:
-            print(e)
+        """
+        Create a folder at path.
+        """
+        os.makedirs(path)
 
     def create_file(self, path: str, content: str = "") -> None:
+        """
+        Create file at path, optionally with content.
+        """
         with open(path, "x") as f:
             f.write(content)
 
     def create_summary_file(self, path: str):
+        """
+        Create a summary file with progress information, a link to the current exercise and a list with links
+        to the completed files.
+        """
         completed = [
             f"- [{f}](./completed/{f})" for f in os.listdir(f"{path}/completed")
         ]
@@ -106,6 +113,9 @@ class Interface:
             f.write("\n".join(summary))
 
     def print_summary_error(self) -> None:
+        """
+        Print error summary folder exists
+        """
         print(self.colors.error)
         print("Please remove the ./summary folder to generate a new summary.")
         print(self.colors.standard)
@@ -113,6 +123,10 @@ class Interface:
     def create_summary_folder(
         self, completed_exercises: List['Exercise'], current_exercise: 'Exercise'
     ) -> None:
+        """
+        Take lists of exercises and the current exercise and create the summary folder with
+        completed exercises, current exercises and summary file.
+        """
         try:
             self.create_folder("./summary")
             self.create_folder("./summary/completed")
