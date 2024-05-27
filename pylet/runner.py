@@ -89,20 +89,33 @@ class Runner:
 
     def summary(self) -> None:
         print("getting fake summary...")
+        # create summary folder
+        self.interface.create_folder("./summary")
+        # create completed folder in summary folder
+        self.interface.create_folder("./summary/completed")
 
         all_exercises = self.get_exercises()
         self.interface.all_length = len(all_exercises)
 
         for exercise in all_exercises:
+            name = exercise.path.split("/")[-1]
             self.interface.clear()
             try:
                 exercise.read_code()
                 exercise.run_with_timeout()
                 if exercise.check_done() is False:
+                    # add file to summary
+                    self.interface.create_file(f"./summary/{name}", exercise.code_str)
                     break
             except:
+                # add file to summary
+                self.interface.create_file(f"./summary/{name}", exercise.code_str)
                 break
+            # add file to completed
+            self.interface.create_file(f"./summary/completed/{name}", exercise.code_str)
+
             self.interface.completed_length += 1
         self.interface.print_progress()
+        # create progress file
 
         print("finished fake summary!")

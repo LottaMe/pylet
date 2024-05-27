@@ -1,3 +1,4 @@
+import os
 import subprocess
 
 from components import Colors, Result
@@ -70,3 +71,13 @@ class Interface:
         Runs terminal command "clear".
         """
         subprocess.run(["clear"])
+
+    def create_folder(self, path: str) -> None:
+        try:
+            os.makedirs(path)
+        except OSError as e:
+            print(e)
+
+    def create_file(self, path: str, content: str = "") -> None:
+        with open(path, 'x') as f:
+            f.write(content)
