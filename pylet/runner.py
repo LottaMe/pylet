@@ -118,4 +118,4 @@ class Runner:
             # create progress file
             self.interface.create_summary_file("./summary")
         except FileExistsError:
-            print("Please remove the  ./summary folder to generate a new summary.")
+            self.interface.print_summary_error()

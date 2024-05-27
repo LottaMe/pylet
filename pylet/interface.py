@@ -103,3 +103,9 @@ class Interface:
         summary.append("")
         with open(f"{path}/summary.md", "x") as f:
             f.write("\n".join(summary))
+
+
+    def print_summary_error(self) -> None:
+        print(self.colors.error)
+        print("Please remove the ./summary folder to generate a new summary.")
+        print(self.colors.standard)
