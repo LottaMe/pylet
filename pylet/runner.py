@@ -87,35 +87,22 @@ class Runner:
         self.interface.print_course_complete()
 
     def summary(self) -> None:
-        try:
-            # create summary folder
-            self.interface.create_folder("./summary")
-        
-            # create completed folder in summary folder
-            self.interface.create_folder("./summary/completed")
+        all_exercises = self.get_exercises()
+        self.interface.all_length = len(all_exercises)
 
-            all_exercises = self.get_exercises()
-            self.interface.all_length = len(all_exercises)
+        for exercise in all_exercises:
+            try:
+                exercise.read_code()
+                exercise.run_with_timeout()
+                self.interface.clear()
 
-            for exercise in all_exercises:
-                name = exercise.path.split("/")[-1]
-                try:
-                    exercise.read_code()
-                    exercise.run_with_timeout()
-                    self.interface.clear()
-
-                    if exercise.check_done() is False:
-                        # add file to summary
-                        self.interface.create_file(f"./summary/{name}", exercise.code_str)
-                        break
-                except:
-                    # add file to summary
-                    self.interface.create_file(f"./summary/{name}", exercise.code_str)
+                if exercise.check_done() is False:
                     break
-                # add file to completed
-                self.interface.create_file(f"./summary/completed/{name}", exercise.code_str)
-                self.interface.completed_length += 1
-            # create progress file
-            self.interface.create_summary_file("./summary")
-        except FileExistsError:
-            self.interface.print_summary_error()
+            except:
+                break
+            self.interface.completed_length += 1
+
+        self.interface.create_summary_folder(
+            completed_exercises=all_exercises[:self.interface.completed_length],
+            current_exercise=all_exercises[self.interface.completed_length]    
+        )

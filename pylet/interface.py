@@ -1,5 +1,6 @@
 import os
 import subprocess
+from typing import List
 
 from components import Colors
 
@@ -104,8 +105,27 @@ class Interface:
         with open(f"{path}/summary.md", "x") as f:
             f.write("\n".join(summary))
 
-
     def print_summary_error(self) -> None:
         print(self.colors.error)
         print("Please remove the ./summary folder to generate a new summary.")
         print(self.colors.standard)
+
+    def create_summary_folder(
+            self, 
+            completed_exercises: list, 
+            current_exercise
+        ) -> None:
+        try:
+            self.create_folder("./summary")
+            self.create_folder("./summary/completed")
+
+            current_name = current_exercise.path.split("/")[-1]
+            self.create_file(f"./summary/{current_name}", current_exercise.code_str)
+
+            for exercise in completed_exercises:
+                name = exercise.path.split("/")[-1]
+                self.create_file(f"./summary/completed/{name}", exercise.code_str)
+
+            self.create_summary_file("./summary")
+        except OSError or FileExistsError:
+            self.print_summary_error()
