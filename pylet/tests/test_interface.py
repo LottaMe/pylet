@@ -1,8 +1,6 @@
 from unittest.mock import MagicMock, patch
-import zipfile
 
 import pytest
-from components import Result
 from interface import Interface
 
 
