@@ -88,8 +88,7 @@ class Runner:
 
     def summary(self) -> None:
         """
-        Run exercises with timeout until exercise is not done,
-        then create a summary folder.
+        Run exercises with timeout until exercise is not done, then create a summary zip file.
         """
         all_exercises = self.get_exercises()
         self.interface.all_length = len(all_exercises)
@@ -106,7 +105,7 @@ class Runner:
                 break
             self.interface.completed_length += 1
 
-        self.interface.create_summary_folder(
+        self.interface.create_summary_zip(
             completed_exercises=all_exercises[: self.interface.completed_length],
             current_exercise=all_exercises[self.interface.completed_length],
         )

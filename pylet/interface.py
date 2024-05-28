@@ -1,11 +1,12 @@
-import os
 import subprocess
-from typing import List, TYPE_CHECKING
 import zipfile
+from typing import TYPE_CHECKING, List
 
 from components import Colors
+
 if TYPE_CHECKING:
     from exercise import Exercise
+
 
 class Interface:
     def __init__(self) -> None:
@@ -75,28 +76,31 @@ class Interface:
         """
         subprocess.run(["clear"])
 
-    def create_folder(self, path: str) -> None:
+    def create_file_in_zip(
+        self, archive: zipfile.ZipFile, path: str, content: str = ""
+    ) -> None:
         """
-        Create a folder at path.
-        """
-        os.makedirs(path)
-
-    def create_file(self, archive:zipfile.ZipFile, path: str, content: str = "") -> None:
-        """
-        Create file at path, optionally with content.
+        In a ZipFile, create file at path, optionally with content.
         """
         with archive.open(path, "w") as f:
             f.write(content)
 
-    def create_summary_file(self, archive: zipfile.ZipFile, path: str):
+    def create_summary_file_in_zip(self, archive: zipfile.ZipFile, path: str):
         """
-        Create a summary file with progress information, a link to the current exercise and a list with links
-        to the completed files.
+        In a ZipFile, create a summary file with progress information, a link to the current exercise
+        and a list with links to the completed files.
         """
+        zipfiles = archive.namelist()
         completed = [
-            f"- [{f}](./completed/{f})" for f in os.listdir(f"{path}/completed")
+            f"- [{f.split('/')[-1]}](./completed/{f.split('/')[-1]})"
+            for f in zipfiles
+            if "completed" in f
         ]
-        current = next(f"- [{f}](./{f})" for f in os.listdir(path) if ".py" in f)
+        current = next(
+            f"- [{f.split('/')[-1]}](./{f.split('/')[-1]})"
+            for f in zipfiles
+            if "completed" not in f
+        )
         progress = f"{self.completed_length}/{self.all_length} ({round((self.completed_length/self.all_length)*100, 2)}%)"
 
         summary = [
@@ -111,47 +115,29 @@ class Interface:
         ]
         summary.extend(sorted(completed))
         summary.append("")
-        
-        self.create_file(archive, f"{path}/summary.md", "\n".join(summary).encode())
-        
 
-    def print_summary_error(self) -> None:
-        """
-        Print error summary folder exists
-        """
-        print(self.colors.error)
-        print("Please remove the ./summary folder to generate a new summary.")
-        print(self.colors.standard)
+        self.create_file_in_zip(
+            archive, f"{path}/summary.md", "\n".join(summary).encode()
+        )
 
-    def create_summary_folder(
-        self, completed_exercises: List['Exercise'], current_exercise: 'Exercise'
+    def create_summary_zip(
+        self, completed_exercises: List["Exercise"], current_exercise: "Exercise"
     ) -> None:
         """
-        Take lists of exercises and the current exercise and create the summary folder with
+        Take lists of exercises and the current exercise and create a zip file summary with
         completed exercises, current exercises and summary file.
         """
-        try:
-            # self.create_folder("./summary")
-            # self.create_folder("./summary/completed")
+        with zipfile.ZipFile("summary.zip", mode="w") as archive:
 
-            # current_name = current_exercise.path.split("/")[-1]
-            # self.create_file(f"./summary/{current_name}", current_exercise.code_str)
+            current_name = current_exercise.path.split("/")[-1]
+            self.create_file_in_zip(
+                archive, f"./summary/{current_name}", current_exercise.code_str.encode()
+            )
 
-            # for exercise in completed_exercises:
-            #     name = exercise.path.split("/")[-1]
-            #     self.create_file(f"./summary/completed/{name}", exercise.code_str)
+            for exercise in completed_exercises:
+                name = exercise.path.split("/")[-1]
+                self.create_file_in_zip(
+                    archive, f"./summary/completed/{name}", exercise.code_str.encode()
+                )
 
-            # self.create_summary_file("./summary")
-            with zipfile.ZipFile("summary.zip", mode="w") as archive:
-
-                current_name = current_exercise.path.split("/")[-1]
-                self.create_file(archive, f"./summary/{current_name}", current_exercise.code_str.encode())
-
-                for exercise in completed_exercises:
-                    name = exercise.path.split("/")[-1]
-                    self.create_file(archive, f"./summary/completed/{name}", exercise.code_str.encode())
-
-                self.create_summary_file(archive, "./summary")
-                
-        except FileExistsError:
-            self.print_summary_error()
+            self.create_summary_file_in_zip(archive, "./summary")
