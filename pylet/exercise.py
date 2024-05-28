@@ -9,7 +9,8 @@ from interface import Interface
 
 
 class Exercise:
-    def __init__(self, path: str, test: bool, interface: Interface) -> None:
+    def __init__(self, name: str, path: str, test: bool, interface: Interface) -> None:
+        self.name = name
         self.path = path
         self.code_str = ""
         self.interface = interface

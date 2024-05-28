@@ -32,6 +32,7 @@ class Runner:
         """
         path = f"exercises/{exercise_tuple[1]['path']}.py"
         return Exercise(
+            name=exercise_tuple[0],
             path=path,
             test=exercise_tuple[1]["test"],
             interface=self.interface,
