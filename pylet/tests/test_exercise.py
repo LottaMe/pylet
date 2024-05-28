@@ -1,3 +1,4 @@
+from unittest import mock
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -199,3 +200,11 @@ def test_check_done_result_success_and_done(exercise):
 
     assert exercise.check_done() == True
     exercise.check_done_comment.assert_called_once()
+
+@mock.patch('exercise.timeout', lambda x: x)
+def test_run_with_timeout(exercise):
+    exercise.run_code_str_and_tests = MagicMock()
+
+    exercise.run_with_timeout()
+
+    exercise.run_code_str_and_tests.assert_called_once()
