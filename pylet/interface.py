@@ -129,15 +129,13 @@ class Interface:
         """
         with zipfile.ZipFile("summary.zip", mode="w") as archive:
 
-            current_name = current_exercise.path.split("/")[-1]
             self.create_file_in_zip(
-                archive, f"./summary/{current_name}", current_exercise.code_str.encode()
+                archive, f"./summary/{current_exercise.name}.py", current_exercise.code_str.encode()
             )
 
             for exercise in completed_exercises:
-                name = exercise.path.split("/")[-1]
                 self.create_file_in_zip(
-                    archive, f"./summary/completed/{name}", exercise.code_str.encode()
+                    archive, f"./summary/completed/{exercise.name}.py", exercise.code_str.encode()
                 )
 
             self.create_summary_file_in_zip(archive, "./summary")
