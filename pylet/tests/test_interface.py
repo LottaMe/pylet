@@ -1,4 +1,5 @@
 from unittest.mock import MagicMock, patch
+import zipfile
 
 import pytest
 from components import Result
@@ -92,3 +93,28 @@ def test_print_course_complete(interface, capsys) -> None:
 def test_clear(mock_subprocess, interface):
     interface.clear()
     mock_subprocess.assert_called_once_with(["clear"])
+
+
+def test_create_file_in_zip(interface):
+    archive = MagicMock()
+
+    path = "testexercise.py"
+
+    interface.create_file_in_zip(archive, path)
+
+    archive.open.assert_called_once_with(path, "w")
+    archive.open.return_value.__enter__().write.assert_called_once_with("".encode())
+
+
+def test_create_file_in_zip_with_content(interface):
+    archive = MagicMock()
+
+    path = "testexercise.py"
+    content = 'print("hello world")'
+
+    interface.create_file_in_zip(archive, path, content)
+
+    archive.open.assert_called_once_with(path, "w")
+    archive.open.return_value.__enter__().write.assert_called_once_with(
+        content.encode()
+    )

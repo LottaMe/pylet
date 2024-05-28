@@ -12,7 +12,7 @@ def mock_interface():
 
 @pytest.fixture
 def exercise(mock_interface):
-    return Exercise("mock_name","mock_path", False, mock_interface)
+    return Exercise("mock_name", "mock_path", False, mock_interface)
 
 
 @pytest.fixture

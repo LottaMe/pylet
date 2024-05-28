@@ -83,7 +83,7 @@ class Interface:
         In a ZipFile, create file at path, optionally with content.
         """
         with archive.open(path, "w") as f:
-            f.write(content)
+            f.write(content.encode())
 
     def create_summary_file_in_zip(self, archive: zipfile.ZipFile, path: str):
         """
@@ -116,9 +116,7 @@ class Interface:
         summary.extend(sorted(completed))
         summary.append("")
 
-        self.create_file_in_zip(
-            archive, f"{path}/summary.md", "\n".join(summary).encode()
-        )
+        self.create_file_in_zip(archive, f"{path}/summary.md", "\n".join(summary))
 
     def create_summary_zip(
         self, completed_exercises: List["Exercise"], current_exercise: "Exercise"
@@ -130,12 +128,16 @@ class Interface:
         with zipfile.ZipFile("summary.zip", mode="w") as archive:
 
             self.create_file_in_zip(
-                archive, f"./summary/{current_exercise.name}.py", current_exercise.code_str.encode()
+                archive,
+                f"./summary/{current_exercise.name}.py",
+                current_exercise.code_str,
             )
 
             for exercise in completed_exercises:
                 self.create_file_in_zip(
-                    archive, f"./summary/completed/{exercise.name}.py", exercise.code_str.encode()
+                    archive,
+                    f"./summary/completed/{exercise.name}.py",
+                    exercise.code_str,
                 )
 
             self.create_summary_file_in_zip(archive, "./summary")
