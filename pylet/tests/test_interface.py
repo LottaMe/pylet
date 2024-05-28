@@ -118,3 +118,53 @@ def test_create_file_in_zip_with_content(interface):
     archive.open.return_value.__enter__().write.assert_called_once_with(
         content.encode()
     )
+
+def test_create_summary_file_in_zip(interface):
+    interface.all_length = 5
+    interface.completed_length = 3
+    interface.create_file_in_zip = MagicMock()
+
+    archive = MagicMock()
+    archive.namelist.return_value = [
+        'completed/exercise1.py', 'completed/exercise2.py', 'exercise3.py'
+    ]
+    path = './summary'
+
+    interface.create_summary_file_in_zip(archive, path)
+
+    expected_content = """## PROGRESS: 3/5 (60.0%)
+
+### current: 
+
+- [exercise3.py](./exercise3.py)
+
+### completed: 
+
+- [exercise1.py](./completed/exercise1.py)
+- [exercise2.py](./completed/exercise2.py)
+"""
+    interface.create_file_in_zip.assert_called_once_with(archive, f"{path}/summary.md", expected_content)
+
+def test_create_summary_file_in_zip_no_completed(interface):
+    interface.all_length = 5
+    interface.completed_length = 0
+    interface.create_file_in_zip = MagicMock()
+
+    archive = MagicMock()
+    archive.namelist.return_value = [
+        'exercise1.py'
+    ]
+    path = './summary'
+
+    interface.create_summary_file_in_zip(archive, path)
+
+    expected_content = """## PROGRESS: 0/5 (0.0%)
+
+### current: 
+
+- [exercise1.py](./exercise1.py)
+
+### completed: 
+
+"""
+    interface.create_file_in_zip.assert_called_once_with(archive, f"{path}/summary.md", expected_content)
