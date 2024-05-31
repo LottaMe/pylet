@@ -56,6 +56,14 @@ def test_run_without_tests(exercise):
     exercise.read_code.assert_called_once()
     exercise.run_code_str_and_tests.assert_called_once()
 
+@mock.patch('exercise.timeout', lambda x: x)
+def test_run_with_timeout(exercise):
+    exercise.run_code_str_and_tests = MagicMock()
+
+    exercise.run_with_timeout()
+
+    exercise.run_code_str_and_tests.assert_called_once()
+    
 
 def test_read_code(temp_file, exercise):
     exercise.path = temp_file
@@ -200,11 +208,3 @@ def test_check_done_result_success_and_done(exercise):
 
     assert exercise.check_done() == True
     exercise.check_done_comment.assert_called_once()
-
-@mock.patch('exercise.timeout', lambda x: x)
-def test_run_with_timeout(exercise):
-    exercise.run_code_str_and_tests = MagicMock()
-
-    exercise.run_with_timeout()
-
-    exercise.run_code_str_and_tests.assert_called_once()
