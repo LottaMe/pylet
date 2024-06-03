@@ -1,7 +1,11 @@
+import os
 import threading
 from unittest.mock import MagicMock
+import zipfile
+
 from interface import Interface
 from runner import Runner
+
 
 def get_initial_content(exercise_index):
     match exercise_index:
@@ -75,14 +79,14 @@ random.randint(0, 2)
 math.pi
 time.time()
 """.lstrip()
-        
+
 
 def write_in_file(path, content):
     with open(path, "w") as f:
         f.write(content)
-    
 
-def test_pylet(capsys):
+
+def test_pylet_watch(capsys):
     interface = Interface()
     runner = Runner(
         exercise_info_path="./pylet/e2e/exercise_info.yaml", interface=interface
@@ -94,11 +98,11 @@ def test_pylet(capsys):
     assert exercises[0].test == False
 
     for index, exercise in enumerate(exercises):
-        # change exercise path to test path       
+        # change exercise path to test path
         new_path = "./pylet/e2e/" + exercise.path
         exercise.path = new_path
 
-        # change file content to initial content, in case it didn't reset 
+        # change file content to initial content, in case it didn't reset
         write_in_file(new_path, get_initial_content(index))
 
     # check new path is correct
@@ -108,7 +112,7 @@ def test_pylet(capsys):
     runner.get_exercises = MagicMock(return_value=exercises)
 
     # start runner.run
-    run_thread = threading.Thread(target=runner.run)
+    run_thread = threading.Thread(target=runner.watch)
     run_thread.start()
 
     # change exercise1 - one change - tests false
@@ -283,3 +287,89 @@ time.time()
         captured.out
         == "progress: \x1b[1;32m#####\x1b[0;0m 5/5 100.0%\nYou have completed the course!\n"
     )
+
+
+def test_pylet_summary():
+    interface = Interface()
+    runner = Runner(
+        exercise_info_path="./pylet/e2e/exercise_info.yaml", interface=interface
+    )
+    exercises = runner.get_exercises()
+
+    # assert that get_exercises worked
+    assert exercises[0].path == "exercises/exercise1.py"
+    assert exercises[0].test == False
+
+    for index, exercise in enumerate(exercises):
+        # change exercise path to test path
+        new_path = "./pylet/e2e/" + exercise.path
+        exercise.path = new_path
+
+        # change file content to initial content, in case it didn't reset
+        write_in_file(new_path, get_initial_content(index))
+
+    # check new path is correct
+    assert exercises[0].path == "./pylet/e2e/exercises/exercise1.py"
+
+    # have get_exercises return adjusted exercises
+    runner.get_exercises = MagicMock(return_value=exercises)
+
+    # fix exercise1
+    content1 = """# exercise1.py
+
+
+# Make the code print a greeting to the world.
+
+print("hello world!")
+"""
+    write_in_file(exercises[0].path, content1)
+
+    # fix exercise2
+    content2 = """# exercise2.py
+
+
+# Write function that adds 1
+
+
+def add_one(number):
+    return number+1
+
+
+def test_add_one():
+    assert add_one(1) == 2
+    assert add_one(-1) == 0
+    assert add_one(12) == 13
+"""
+    write_in_file(exercises[1].path, content2)
+
+    runner.summary()
+
+    # asserts
+    with zipfile.ZipFile("summary.zip", mode="r") as archive:
+        assert sorted(archive.namelist()) == sorted(
+            [
+                "./summary/exercise3.py",
+                "./summary/completed/exercise1.py",
+                "./summary/completed/exercise2.py",
+                "./summary/summary.md",
+            ]
+        )
+        assert archive.read("./summary/exercise3.py") == exercises[2].code_str.encode()
+        assert archive.read("./summary/completed/exercise1.py") == content1.encode()
+        assert archive.read("./summary/completed/exercise2.py") == content2.encode()
+        assert archive.read("./summary/summary.md") == """## PROGRESS: 2/5 (40.0%)
+
+### current: 
+
+- [exercise3.py](./exercise3.py)
+
+### completed: 
+
+- [exercise1.py](./completed/exercise1.py)
+- [exercise2.py](./completed/exercise2.py)
+""".encode()
+
+    write_in_file(exercises[0].path, get_initial_content(0))
+    write_in_file(exercises[1].path, get_initial_content(1))
+
+    os.remove("./summary.zip")

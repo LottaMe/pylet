@@ -4,12 +4,13 @@ import subprocess
 import time  # needed for exercises to work
 import traceback
 
-from components import Result
+from components import Result, timeout
 from interface import Interface
 
 
 class Exercise:
-    def __init__(self, path: str, test: bool, interface: Interface) -> None:
+    def __init__(self, name: str, path: str, test: bool, interface: Interface) -> None:
+        self.name = name
         self.path = path
         self.code_str = ""
         self.interface = interface
@@ -28,11 +29,18 @@ class Exercise:
         print("Running exercise", self.path)
 
         self.read_code()
-        if self.test:
-            self.run_code_str_and_tests()
-        else:
-            self.run_code_str()
+
+        self.run_code_str_and_tests()
+
         queue.put(self.check_done())
+
+    @timeout(3)
+    def run_with_timeout(self):
+        """
+        Executes run_code_str_and_test method. If method isn't done executing after 3 seconds,
+        it raises TimeoutError.
+        """
+        self.run_code_str_and_tests()
 
     def read_code(self) -> None:
         """
@@ -72,10 +80,10 @@ class Exercise:
 
     def run_code_str_and_tests(self) -> Result:
         """
-        Run code_str. If successful, also run tests.
+        Run code_str. If successful and test=true, also run tests.
         """
         self.run_code_str()
-        if self.result.success:
+        if self.test and self.result.success:
             self.run_tests()
 
     def check_done_comment(self) -> bool:
