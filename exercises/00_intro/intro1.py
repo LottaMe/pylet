@@ -31,4 +31,3 @@ This exercise is already compiling successfully. The following exercises will co
 errors for you to fix. To complete pylet, you will solve the exercises. Have fun!!
       """
 )
-print("Remove the ### I AM NOT DONE comment to continue :)")
