@@ -55,7 +55,9 @@ class Interface:
         progress.extend(["#" for _ in range(self.completed_length)])
         if self.completed_length < self.all_length:
             progress.append(f"{self.colors.neutral}>{self.colors.error}")
-            progress.extend(["-" for _ in range(self.all_length - self.completed_length)])
+            progress.extend(
+                ["-" for _ in range(self.all_length - self.completed_length)]
+            )
         progress.append(self.colors.standard)
         print(
             "progress:",
@@ -69,7 +71,8 @@ class Interface:
         Prints course completed message
         """
         print("Congratsss!! You have completed the courssssse!")
-        print("""
+        print(
+            """
                       __    __    __    __
                      /  \  /  \  /  \  /  \\
 ____________________/  __\/  __\/  __\/  __\_____________________________
@@ -77,7 +80,8 @@ ___________________/  /__/  /__/  /__/  /________________________________
                    | / \   / \   / \   / \  \____
                    |/   \_/   \_/   \_/   \    o \\
                                            \_____/--<
-              """)
+              """
+        )
 
     def clear(self) -> None:
         """

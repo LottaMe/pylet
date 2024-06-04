@@ -45,9 +45,7 @@ def test_print_failure_with_test(interface, capsys) -> None:
     interface.print_failure("nay", True)
     captured = capsys.readouterr()
     assert "\033[1;31m" in captured.out
-    assert (
-        "Tests failed! Please try again. Here's the output:" in captured.out
-    )
+    assert "Tests failed! Please try again. Here's the output:" in captured.out
     assert "\033[0;0m" in captured.out
     assert "nay" in captured.out
 
