@@ -28,8 +28,8 @@ def test_print_success_with_test(interface, capsys) -> None:
     assert "yay" in captured.out
 
 
-def test_print_error(interface, capsys) -> None:
-    interface.print_error("nay")
+def test_print_failure(interface, capsys) -> None:
+    interface.print_failure("nay")
     captured = capsys.readouterr()
     assert "\033[1;31m" in captured.out
     assert (
@@ -37,10 +37,10 @@ def test_print_error(interface, capsys) -> None:
     )
     assert "\033[0;0m" in captured.out
     assert "nay" in captured.out
-    
 
-def test_print_error_with_test(interface, capsys) -> None:
-    interface.print_error("nay", True)
+
+def test_print_failure_with_test(interface, capsys) -> None:
+    interface.print_failure("nay", True)
     captured = capsys.readouterr()
     assert "\033[1;31m" in captured.out
     assert (

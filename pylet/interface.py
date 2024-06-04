@@ -25,10 +25,10 @@ class Interface:
         print()
         print(output)
 
-    def print_error(self, output: str, test: bool = False) -> None:
+    def print_failure(self, output: str, test: bool = False) -> None:
         """
         Takes output string and test boolean.
-        Prints colorful error message for running or testing the code, empty line and output.
+        Prints colorful failure message for running or testing the code, empty line and output.
         """
         message = "Running the code failed! Please try again. Here's the output:"
         if test:
