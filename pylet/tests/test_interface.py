@@ -17,6 +17,7 @@ def test_print_success(interface, capsys) -> None:
     assert "Running the code was successful!" in captured.out
     assert "\033[0;0m" in captured.out
     assert "yay" in captured.out
+    assert "Remove the # I AM NOT DONE comment to continue" in captured.out
 
 
 def test_print_success_with_test(interface, capsys) -> None:
@@ -26,6 +27,7 @@ def test_print_success_with_test(interface, capsys) -> None:
     assert "Tests ran successfully!" in captured.out
     assert "\033[0;0m" in captured.out
     assert "yay" in captured.out
+    assert "Remove the # I AM NOT DONE comment to continue" in captured.out
 
 
 def test_print_failure(interface, capsys) -> None:

@@ -20,6 +20,7 @@ class Interface:
         print(
             self.colors.success,
             message,
+            "\n Remove the # I AM NOT DONE comment to continue",
             self.colors.standard,
         )
         print()
