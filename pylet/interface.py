@@ -68,7 +68,16 @@ class Interface:
         """
         Prints course completed message
         """
-        print("You have completed the course!")
+        print("Congratsss!! You have completed the courssssse!")
+        print("""
+                      __    __    __    __
+                     /  \  /  \  /  \  /  \\
+____________________/  __\/  __\/  __\/  __\_____________________________
+___________________/  /__/  /__/  /__/  /________________________________
+                   | / \   / \   / \   / \  \____
+                   |/   \_/   \_/   \_/   \    o \\
+                                           \_____/--<
+              """)
 
     def clear(self) -> None:
         """
