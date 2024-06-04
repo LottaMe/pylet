@@ -27,7 +27,8 @@ print(
 )
 print(
     """
-      This exercise is already compiling successfully. The following exercises will contain
-      errors for you to fix. To complete pylet, you will solve the exercises. Have fun!!
+This exercise is already compiling successfully. The following exercises will contain
+errors for you to fix. To complete pylet, you will solve the exercises. Have fun!!
       """
 )
+print("Remove the ### I AM NOT DONE comment to continue :)")
