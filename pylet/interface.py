@@ -9,27 +9,33 @@ class Interface:
         self.all_length = 0
         self.completed_length = 0
 
-    def print_success(self, output: str = "") -> None:
+    def print_success(self, output: str = "", test: bool = False) -> None:
         """
-        Takes output string.
-        Prints colorful success message, empty line and output.
+        Takes output string and test boolean.
+        Prints colorful success message for running or testing the code, empty line and output.
         """
+        message = "Running the code was successful!"
+        if test:
+            message = "Tests ran successfully!"
         print(
             self.colors.success,
-            "Running the code was successful!",
+            message,
             self.colors.standard,
         )
         print()
         print(output)
 
-    def print_error(self, output: str) -> None:
+    def print_error(self, output: str, test: bool = False) -> None:
         """
-        Takes output string.
-        Prints colorful error message, empty line and output.
+        Takes output string and test boolean.
+        Prints colorful error message for running or testing the code, empty line and output.
         """
+        message = "Running the code failed! Please try again. Here's the output:"
+        if test:
+            message = "Tests failed! Please try again. Here's the output:"
         print(
             self.colors.error,
-            "Running the code failed! Please try again. Here's the output:",
+            message,
             self.colors.standard,
         )
         print()

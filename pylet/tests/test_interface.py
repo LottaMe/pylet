@@ -19,12 +19,32 @@ def test_print_success(interface, capsys) -> None:
     assert "yay" in captured.out
 
 
+def test_print_success_with_test(interface, capsys) -> None:
+    interface.print_success("yay", True)
+    captured = capsys.readouterr()
+    assert "\033[1;32m" in captured.out
+    assert "Tests ran successfully!" in captured.out
+    assert "\033[0;0m" in captured.out
+    assert "yay" in captured.out
+
+
 def test_print_error(interface, capsys) -> None:
     interface.print_error("nay")
     captured = capsys.readouterr()
     assert "\033[1;31m" in captured.out
     assert (
         "Running the code failed! Please try again. Here's the output:" in captured.out
+    )
+    assert "\033[0;0m" in captured.out
+    assert "nay" in captured.out
+    
+
+def test_print_error_with_test(interface, capsys) -> None:
+    interface.print_error("nay", True)
+    captured = capsys.readouterr()
+    assert "\033[1;31m" in captured.out
+    assert (
+        "Tests failed! Please try again. Here's the output:" in captured.out
     )
     assert "\033[0;0m" in captured.out
     assert "nay" in captured.out
