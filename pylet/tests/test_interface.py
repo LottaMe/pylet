@@ -105,7 +105,15 @@ def test_print_progress_last_exercise(interface, capsys) -> None:
 def test_print_course_complete(interface, capsys) -> None:
     interface.print_course_complete()
     captured = capsys.readouterr()
-    assert captured.out.strip() == "You have completed the course!"
+    assert "Congratsss!! You have completed the courssssse!" in captured.out
+    assert r"""
+                      __    __    __    __
+                     /  \  /  \  /  \  /  \
+____________________/  __\/  __\/  __\/  __\_____________________________
+___________________/  /__/  /__/  /__/  /________________________________
+                   | / \   / \   / \   / \  \____
+                   |/   \_/   \_/   \_/   \    o \
+                                           \_____/--<""" in captured.out
 
 
 @patch("subprocess.run")
