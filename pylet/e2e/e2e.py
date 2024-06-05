@@ -281,6 +281,13 @@ time.time()
     captured = capsys.readouterr()
 
     assert (
-        captured.out
-        == "progress: \x1b[1;32m#####\x1b[0;0m 5/5 100.0%\nYou have completed the course!\n"
+        "progress: \x1b[1;32m#####\x1b[0;0m 5/5 100.0%\nCongratsss!! You have completed the courssssse!" in captured.out
     )
+    assert r"""
+                      __    __    __    __
+                     /  \  /  \  /  \  /  \
+____________________/  __\/  __\/  __\/  __\_____________________________
+___________________/  /__/  /__/  /__/  /________________________________
+                   | / \   / \   / \   / \  \____
+                   |/   \_/   \_/   \_/   \    o \
+                                           \_____/--<""" in captured.out
