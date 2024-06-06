@@ -17,15 +17,35 @@ def test_print_success(interface, capsys) -> None:
     assert "Running the code was successful!" in captured.out
     assert "\033[0;0m" in captured.out
     assert "yay" in captured.out
+    assert "Remove the # I AM NOT DONE comment to continue" in captured.out
 
 
-def test_print_error(interface, capsys) -> None:
-    interface.print_error("nay")
+def test_print_success_with_test(interface, capsys) -> None:
+    interface.print_success("yay", True)
+    captured = capsys.readouterr()
+    assert "\033[1;32m" in captured.out
+    assert "Tests ran successfully!" in captured.out
+    assert "\033[0;0m" in captured.out
+    assert "yay" in captured.out
+    assert "Remove the # I AM NOT DONE comment to continue" in captured.out
+
+
+def test_print_failure(interface, capsys) -> None:
+    interface.print_failure("nay")
     captured = capsys.readouterr()
     assert "\033[1;31m" in captured.out
     assert (
         "Running the code failed! Please try again. Here's the output:" in captured.out
     )
+    assert "\033[0;0m" in captured.out
+    assert "nay" in captured.out
+
+
+def test_print_failure_with_test(interface, capsys) -> None:
+    interface.print_failure("nay", True)
+    captured = capsys.readouterr()
+    assert "\033[1;31m" in captured.out
+    assert "Tests failed! Please try again. Here's the output:" in captured.out
     assert "\033[0;0m" in captured.out
     assert "nay" in captured.out
 
@@ -85,7 +105,15 @@ def test_print_progress_last_exercise(interface, capsys) -> None:
 def test_print_course_complete(interface, capsys) -> None:
     interface.print_course_complete()
     captured = capsys.readouterr()
-    assert captured.out.strip() == "You have completed the course!"
+    assert "Congratsss!! You have completed the courssssse!" in captured.out
+    assert r"""
+                      __    __    __    __
+                     /  \  /  \  /  \  /  \
+____________________/  __\/  __\/  __\/  __\_____________________________
+___________________/  /__/  /__/  /__/  /________________________________
+                   | / \   / \   / \   / \  \____
+                   |/   \_/   \_/   \_/   \    o \
+                                           \_____/--<""" in captured.out
 
 
 @patch("subprocess.run")

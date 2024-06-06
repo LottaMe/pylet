@@ -140,6 +140,9 @@ exercises:
   classes3:
     path: 10_classes/classes3
     test: false
+  classes4:
+    path: 10_classes/classes4
+    test: false
   error_handling1:
     path: 11_error_handling/error_handling1
     test: false
