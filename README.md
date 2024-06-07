@@ -7,6 +7,8 @@ It is encouraged to do your own research while using `pylet`. Here are some sour
 - [python docs tutorial](https://docs.python.org/3/tutorial/index.html)
 - [w3school python tutorial](https://www.w3schools.com/python/)
 
+If you are using pylet as part of a course, check out the [teacher](./guides/teacher-guide.md) or [student](./guides/student-guide.md) guides.
+
 ## Prerequisites
 
 To use `pylet`, you need to have python3 installed.
