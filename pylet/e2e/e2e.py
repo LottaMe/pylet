@@ -86,6 +86,7 @@ def write_in_file(path, content):
         f.write(content)
 
 
+
 def test_pylet_watch(capsys):
     interface = Interface()
     runner = Runner(
@@ -284,9 +285,16 @@ time.time()
     captured = capsys.readouterr()
 
     assert (
-        captured.out
-        == "progress: \x1b[1;32m#####\x1b[0;0m 5/5 100.0%\nYou have completed the course!\n"
+        "progress: \x1b[1;32m#####\x1b[0;0m 5/5 100.0%\nCongratsss!! You have completed the courssssse!" in captured.out
     )
+    assert r"""
+                      __    __    __    __
+                     /  \  /  \  /  \  /  \
+____________________/  __\/  __\/  __\/  __\_____________________________
+___________________/  /__/  /__/  /__/  /________________________________
+                   | / \   / \   / \   / \  \____
+                   |/   \_/   \_/   \_/   \    o \
+                                           \_____/--<""" in captured.out
 
 
 def test_pylet_summary():
@@ -373,3 +381,4 @@ def test_add_one():
     write_in_file(exercises[1].path, get_initial_content(1))
 
     os.remove("./summary.zip")
+    

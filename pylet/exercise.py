@@ -63,7 +63,7 @@ class Exercise:
             error = traceback.format_exc()
 
             self.result = Result(success=False, output=error)
-            self.interface.print_error(error)
+            self.interface.print_failure(error)
 
     def run_tests(self) -> Result:
         """
@@ -73,7 +73,7 @@ class Exercise:
         result = subprocess.run(["pytest", self.path], capture_output=True, text=True)
         if "FAILURES" in result.stdout:
             self.result = Result(False, result.stdout)
-            self.interface.print_error(result.stdout)
+            self.interface.print_failure(result.stdout)
         else:
             self.result = Result(True, result.stdout)
             self.interface.print_success(result.stdout)
