@@ -3,8 +3,6 @@ import argparse
 from interface import Interface
 from runner import Runner
 
-def generate():
-    print("generating...")
 
 if __name__ == "__main__":
     interface = Interface()
@@ -20,7 +18,7 @@ if __name__ == "__main__":
     summary_parser.set_defaults(func=runner.summary)
 
     generate_parser = subparsers.add_parser("generate")
-    generate_parser.set_defaults(func=generate)
+    generate_parser.set_defaults(func=runner.generate)
 
     args = parser.parse_args()
     args.func()  # call the default function

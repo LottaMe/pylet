@@ -110,3 +110,6 @@ class Runner:
             completed_exercises=all_exercises[: self.interface.completed_length],
             current_exercise=all_exercises[self.interface.completed_length],
         )
+
+    def generate(self) -> None:
+        print("generating...")
