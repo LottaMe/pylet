@@ -113,3 +113,15 @@ class Runner:
 
     def generate(self) -> None:
         print("generating...")
+        # check that exercise_info.yaml does not exist
+            # if it exists, tell user to either adjust it or remove it before generating a nwe one
+        # go through exercises and create a list with folders and files in exercises folder -> only
+        # accept folder and .py files
+        # create an empty dict/or other ordered data structure 
+        # -> this is supposed to be the order of exercises + include a data structure with name, path and test
+        # ask user to pick first in order
+        # add picked thing to ordered data strucutre -> if its a folder, add items in that order to data structure
+        # remove item from list
+        # repeat until list is empty
+        # take ordered data structure and exercise_info.yaml from it
+        # -> this way the exercise_info.yaml is only created when rest ran successfully
