@@ -1,4 +1,5 @@
 from multiprocessing import Queue
+import os
 from typing import Dict, List, Tuple
 
 import yaml
@@ -114,14 +115,61 @@ class Runner:
     def generate(self) -> None:
         print("generating...")
         # check that exercise_info.yaml does not exist
-            # if it exists, tell user to either adjust it or remove it before generating a nwe one
+        if os.path.isfile("exercise_info.yaml"):
+            # if it exists, tell user to either adjust it or remove it before generating a new one
+            print("exercise_info.yaml already exists")
+            exit(0)
         # go through exercises and create a list with folders and files in exercises folder -> only
         # accept folder and .py files
+        exercise_dir = [f for f in sorted(os.listdir("exercises")) if "__" not in f]
         # create an empty dict/or other ordered data structure 
         # -> this is supposed to be the order of exercises + include a data structure with name, path and test
+        exercise_order = []
         # ask user to pick first in order
-        # add picked thing to ordered data strucutre -> if its a folder, add items in that order to data structure
-        # remove item from list
-        # repeat until list is empty
+        while len(exercise_dir) > 0:
+            self.interface.clear()
+            for i, exercise in enumerate(exercise_dir):
+                print(f"{i}. {exercise}")
+            user_input = input("pick first exercise or exercise group    ")
+            if user_input not in [str(f) for f in range(len(exercise_dir))]:
+                continue
+            # add picked thing to ordered data strucutre -> if its a folder, add items in that order to data structure
+            if os.path.isdir(f"exercises/{exercise_dir[int(user_input)]}"):
+                for i, exercise in enumerate([f.split(".")[0] for f in sorted(os.listdir(f"exercises/{exercise_dir[int(user_input)]}")) if ".py" in f]):
+                    test = "false"
+                    with open(f"exercises/{exercise_dir[int(user_input)]}/{exercise}.py", "r") as f:
+                        if "def test_" in f.read():
+                            test = "true"
+                    e = {
+                        "name": exercise,
+                        "path": f"{exercise_dir[int(user_input)]}/{exercise}",
+                        "test": test
+
+                    }
+                    exercise_order.append(e)
+            else:
+                test = "false"
+                with open(f"exercises/{exercise_dir[int(user_input)]}", "r") as f:
+                    if "def test_" in f.read():
+                        test = "true"
+                e = {
+                        "name": exercise_dir[int(user_input)].split(".")[0],
+                        "path": exercise_dir[int(user_input)].split(".")[0],
+                        "test": test
+
+                    }
+                exercise_order.append(e)
+            # remove item from list
+            exercise_dir.pop(int(user_input))
+        
         # take ordered data structure and exercise_info.yaml from it
         # -> this way the exercise_info.yaml is only created when rest ran successfully
+        print(exercise_order)
+        yaml_list = ["exercises:"]
+        for exercise in exercise_order:
+            yaml_list.append(f"""  {exercise["name"]}:
+    path: {exercise["path"]}
+    test: {exercise["test"]}""")
+        yaml_list.append("")
+        with open("exercise_info.yaml", "x") as f:
+            f.write("\n".join(yaml_list))
