@@ -59,13 +59,13 @@ exercises:
   quiz1:
     path: quiz1
     test: true
-  while1:
+  while_loops1:
     path: 05_while_loops/while_loops1
     test: false
-  while2:
+  while_loops2:
     path: 05_while_loops/while_loops2
     test: false
-  while3:
+  while_loops3:
     path: 05_while_loops/while_loops3
     test: false
   strings1:
