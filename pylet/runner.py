@@ -127,12 +127,7 @@ class Runner:
         exercise_order = []
         # ask user to pick first in order
         while len(exercise_dir) > 0:
-            self.interface.clear()
-            for i, exercise in enumerate(exercise_dir):
-                print(f"{i}. {exercise}")
-            user_input = input("pick first exercise or exercise group    ")
-            if user_input not in [str(f) for f in range(len(exercise_dir))]:
-                continue
+            user_input = self.interface.get_order_index(exercise_dir)
             # add picked thing to ordered data strucutre -> if its a folder, add items in that order to data structure
             if os.path.isdir(f"exercises/{exercise_dir[int(user_input)]}"):
                 for i, exercise in enumerate([f.split(".")[0] for f in sorted(os.listdir(f"exercises/{exercise_dir[int(user_input)]}")) if ".py" in f]):

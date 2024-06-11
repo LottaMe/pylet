@@ -159,3 +159,17 @@ ___________________/  /__/  /__/  /__/  /________________________________
                 )
 
             self.create_summary_file_in_zip(archive, "./summary")
+
+
+    def get_order_index(self, exercises: List[str]) -> str:
+        """
+        Take list of exercises, display them numbered to the user and ask for them to
+        pick an index. If the index is valid, return it.
+        """
+        self.clear()
+        for i, exercise in enumerate(exercises):
+            print(f"{i}. {exercise}")
+        user_input = input("pick first exercise or exercise group    ")
+        if user_input not in [str(f) for f in range(len(exercises))]:
+            self.get_order_index(exercises)
+        return user_input
