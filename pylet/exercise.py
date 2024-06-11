@@ -68,7 +68,7 @@ class Exercise:
             self.interface.print_failure(result.stdout)
         else:
             self.result = Result(True, result.stdout)
-            self.interface.print_success(result.stdout)
+            self.interface.print_success(result.stdout, test=True)
 
     def run_code_str_and_tests(self) -> Result:
         """
