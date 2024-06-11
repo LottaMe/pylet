@@ -39,6 +39,17 @@ class Runner:
             interface=self.interface,
         )
 
+    def get_exercise_info_from_path(self, path: str) -> Dict[str, str]:
+        """
+        Take exercise path and return dictionary with info for exercise_info.yaml.
+        """
+        test = "false"
+        with open(f"exercises/{path}", "r") as f:
+            if "def test_" in f.read():
+                test = "true"
+        name = path.split("/")[-1].split(".")[0]
+        return {"name": name, "path": path.split(".")[0], "test": test}
+
     def get_exercises(self) -> List[Exercise]:
         """
         Loads exercises from yaml and parses them as Exercise objects.
@@ -122,7 +133,7 @@ class Runner:
         # go through exercises and create a list with folders and files in exercises folder -> only
         # accept folder and .py files
         exercise_dir = [f for f in sorted(os.listdir("exercises")) if "__" not in f]
-        # create an empty dict/or other ordered data structure 
+        # create an empty dict/or other ordered data structure
         # -> this is supposed to be the order of exercises + include a data structure with name, path and test
         exercise_order = []
         # ask user to pick first in order
@@ -130,41 +141,35 @@ class Runner:
             user_input = self.interface.get_order_index(exercise_dir)
             # add picked thing to ordered data strucutre -> if its a folder, add items in that order to data structure
             if os.path.isdir(f"exercises/{exercise_dir[int(user_input)]}"):
-                for i, exercise in enumerate([f.split(".")[0] for f in sorted(os.listdir(f"exercises/{exercise_dir[int(user_input)]}")) if ".py" in f]):
-                    test = "false"
-                    with open(f"exercises/{exercise_dir[int(user_input)]}/{exercise}.py", "r") as f:
-                        if "def test_" in f.read():
-                            test = "true"
-                    e = {
-                        "name": exercise,
-                        "path": f"{exercise_dir[int(user_input)]}/{exercise}",
-                        "test": test
-
-                    }
-                    exercise_order.append(e)
+                for exercise in [
+                    f
+                    for f in sorted(
+                        os.listdir(f"exercises/{exercise_dir[int(user_input)]}")
+                    )
+                    if ".py" in f
+                ]:
+                    exercise_order.append(
+                        self.get_exercise_info_from_path(
+                            f"{exercise_dir[int(user_input)]}/{exercise}"
+                        )
+                    )
             else:
-                test = "false"
-                with open(f"exercises/{exercise_dir[int(user_input)]}", "r") as f:
-                    if "def test_" in f.read():
-                        test = "true"
-                e = {
-                        "name": exercise_dir[int(user_input)].split(".")[0],
-                        "path": exercise_dir[int(user_input)].split(".")[0],
-                        "test": test
-
-                    }
-                exercise_order.append(e)
+                exercise_order.append(
+                    self.get_exercise_info_from_path(exercise_dir[int(user_input)])
+                )
             # remove item from list
             exercise_dir.pop(int(user_input))
-        
+
         # take ordered data structure and exercise_info.yaml from it
         # -> this way the exercise_info.yaml is only created when rest ran successfully
         print(exercise_order)
         yaml_list = ["exercises:"]
         for exercise in exercise_order:
-            yaml_list.append(f"""  {exercise["name"]}:
+            yaml_list.append(
+                f"""  {exercise["name"]}:
     path: {exercise["path"]}
-    test: {exercise["test"]}""")
+    test: {exercise["test"]}"""
+            )
         yaml_list.append("")
         with open("exercise_info.yaml", "x") as f:
             f.write("\n".join(yaml_list))
