@@ -52,7 +52,7 @@ class Exercise:
             self.result = Result(success=True, output="")
             self.interface.print_success()
         except Exception:
-            error = traceback.format_exc()
+            error = traceback.format_exc().split("exec(self.code_str)")[1].strip()
 
             self.result = Result(success=False, output=error)
             self.interface.print_failure(error)
