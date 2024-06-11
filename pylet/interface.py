@@ -1,6 +1,6 @@
 import subprocess
 import zipfile
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING, Dict, List
 
 from components import Colors
 
@@ -173,3 +173,17 @@ ___________________/  /__/  /__/  /__/  /________________________________
         if user_input not in [str(f) for f in range(len(exercises))]:
             self.get_order_index(exercises)
         return user_input
+    
+
+    def create_exercise_info_yaml(self, exercises: Dict[str, str]) -> None:
+        yaml_list = ["exercises:"]
+        for exercise in exercises:
+            yaml_list.append(
+                f"""  {exercise["name"]}:
+    path: {exercise["path"]}
+    test: {exercise["test"]}"""
+            )
+        yaml_list.append("")
+        with open("exercise_info.yaml", "x") as f:
+            f.write("\n".join(yaml_list))
+            

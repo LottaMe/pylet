@@ -158,13 +158,4 @@ class Runner:
             exercise_dir.pop(int(user_input))
 
         # create exercise_info.yaml from list of exercise dicts
-        yaml_list = ["exercises:"]
-        for exercise in exercise_order:
-            yaml_list.append(
-                f"""  {exercise["name"]}:
-    path: {exercise["path"]}
-    test: {exercise["test"]}"""
-            )
-        yaml_list.append("")
-        with open("exercise_info.yaml", "x") as f:
-            f.write("\n".join(yaml_list))
+        self.interface.create_exercise_info_yaml(exercise_order)

@@ -152,7 +152,6 @@ def test_generate_yaml_exists(runner, monkeypatch):
 
 def test_generate(runner, monkeypatch):
     runner.interface.get_order_index.side_effect = ["0", "0", "0", "0"]
-
     # Helper mock functions
     def mock_listdir(path):
         if path == "exercises":
@@ -169,27 +168,13 @@ def test_generate(runner, monkeypatch):
     monkeypatch.setattr(os, "listdir", mock_listdir)
     monkeypatch.setattr(os.path, "isdir", mock_isdir)
     
-    with patch('builtins.open', mock_open()) as m_open:
-        # Capture written content
-        written_content = []
-        m_open.return_value.write.side_effect = lambda content: written_content.append(content)
-
-        with patch('builtins.print'):
-            runner.generate()
-    
-    expected_yaml_content = """exercises:
-  exercise1:
-    path: exercise1
-    test: false
-  exercise2:
-    path: exercise2
-    test: false
-  ex1:
-    path: group1/ex1
-    test: false
-  ex2:
-    path: group1/ex2
-    test: false
-"""
+    with patch('builtins.open'):
+        runner.generate()
+    expected_yaml_exercises = [
+        {"name": "exercise1", "path": "exercise1", "test": "false"},
+        {"name": "exercise2", "path": "exercise2", "test": "false"},
+        {"name": "ex1", "path": "group1/ex1", "test": "false"},
+        {"name": "ex2", "path": "group1/ex2", "test": "false"}
+    ]
     # assert(s)
-    assert "".join(written_content) == expected_yaml_content
+    runner.interface.create_exercise_info_yaml.assert_called_once_with(expected_yaml_exercises)
