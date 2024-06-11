@@ -151,6 +151,8 @@ def test_generate_yaml_exists(runner, monkeypatch):
 
 
 def test_generate(runner, monkeypatch):
+    runner.interface.get_order_index.side_effect = ["0", "0", "0", "0"]
+
     # Helper mock functions
     def mock_listdir(path):
         if path == "exercises":
@@ -172,11 +174,8 @@ def test_generate(runner, monkeypatch):
         written_content = []
         m_open.return_value.write.side_effect = lambda content: written_content.append(content)
 
-        # Simulate user inputs
-        inputs = iter(["0", "0", "0", "0"])
-        with patch('builtins.input', lambda _: next(inputs)):
-            with patch('builtins.print'):
-                runner.generate()
+        with patch('builtins.print'):
+            runner.generate()
     
     expected_yaml_content = """exercises:
   exercise1:
