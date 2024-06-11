@@ -124,22 +124,18 @@ class Runner:
         )
 
     def generate(self) -> None:
-        print("generating...")
         # check that exercise_info.yaml does not exist
         if os.path.isfile("exercise_info.yaml"):
-            # if it exists, tell user to either adjust it or remove it before generating a new one
             print("exercise_info.yaml already exists")
             exit(0)
-        # go through exercises and create a list with folders and files in exercises folder -> only
-        # accept folder and .py files
+            
         exercise_dir = [f for f in sorted(os.listdir("exercises")) if "__" not in f]
-        # create an empty dict/or other ordered data structure
-        # -> this is supposed to be the order of exercises + include a data structure with name, path and test
         exercise_order = []
-        # ask user to pick first in order
+
+        # sort exercises to user defined order
         while len(exercise_dir) > 0:
             user_input = self.interface.get_order_index(exercise_dir)
-            # add picked thing to ordered data strucutre -> if its a folder, add items in that order to data structure
+            
             if os.path.isdir(f"exercises/{exercise_dir[int(user_input)]}"):
                 for exercise in [
                     f
@@ -157,12 +153,11 @@ class Runner:
                 exercise_order.append(
                     self.get_exercise_info_from_path(exercise_dir[int(user_input)])
                 )
-            # remove item from list
+
+            # remove picked item
             exercise_dir.pop(int(user_input))
 
-        # take ordered data structure and exercise_info.yaml from it
-        # -> this way the exercise_info.yaml is only created when rest ran successfully
-        print(exercise_order)
+        # create exercise_info.yaml from list of exercise dicts
         yaml_list = ["exercises:"]
         for exercise in exercise_order:
             yaml_list.append(
