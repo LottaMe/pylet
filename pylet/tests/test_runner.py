@@ -1,4 +1,5 @@
-from unittest.mock import MagicMock, patch
+import os
+from unittest.mock import MagicMock, mock_open, patch
 
 import pytest
 import yaml
@@ -137,3 +138,59 @@ def test_summary(runner) -> None:
     mock_interface.create_summary_zip.assert_called_with(
         completed_exercises=[exercise1], current_exercise=exercise2
     )
+
+
+def test_generate_yaml_exists(runner, monkeypatch):
+    monkeypatch.setattr(os.path, "isfile", lambda x: x == "exercise_info.yaml")
+
+    with pytest.raises(SystemExit) as e:
+        runner.generate()
+
+    assert e.type == SystemExit
+    assert e.value.code == 0
+
+
+def test_generate(runner, monkeypatch):
+    # Helper mock functions
+    def mock_listdir(path):
+        if path == "exercises":
+            return ["exercise1.py", "exercise2.py", "group1"]
+        elif path == "exercises/group1":
+            return ["ex1.py", "ex2.py"]
+        return []
+
+    def mock_isdir(path):
+        return path == "exercises/group1"
+
+    # Mock os functions
+    monkeypatch.setattr(os.path, "isfile", lambda x: False)
+    monkeypatch.setattr(os, "listdir", mock_listdir)
+    monkeypatch.setattr(os.path, "isdir", mock_isdir)
+    
+    with patch('builtins.open', mock_open()) as m_open:
+        # Capture written content
+        written_content = []
+        m_open.return_value.write.side_effect = lambda content: written_content.append(content)
+
+        # Simulate user inputs
+        inputs = iter(["0", "0", "0", "0"])
+        with patch('builtins.input', lambda _: next(inputs)):
+            with patch('builtins.print'):
+                runner.generate()
+    
+    expected_yaml_content = """exercises:
+  exercise1:
+    path: exercise1
+    test: false
+  exercise2:
+    path: exercise2
+    test: false
+  ex1:
+    path: group1/ex1
+    test: false
+  ex2:
+    path: group1/ex2
+    test: false
+"""
+    # assert(s)
+    assert "".join(written_content) == expected_yaml_content
