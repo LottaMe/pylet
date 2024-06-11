@@ -65,7 +65,7 @@ class Exercise:
         result = subprocess.run(["pytest", self.path], capture_output=True, text=True)
         if "FAILURES" in result.stdout:
             self.result = Result(False, result.stdout)
-            self.interface.print_failure(result.stdout)
+            self.interface.print_failure(result.stdout, test=True)
         else:
             self.result = Result(True, result.stdout)
             self.interface.print_success(result.stdout, test=True)
