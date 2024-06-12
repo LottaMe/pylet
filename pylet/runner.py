@@ -1,4 +1,3 @@
-import time
 from multiprocessing import Queue
 from typing import Dict, List, Tuple
 
@@ -33,6 +32,7 @@ class Runner:
         """
         path = f"exercises/{exercise_tuple[1]['path']}.py"
         return Exercise(
+            name=exercise_tuple[0],
             path=path,
             test=exercise_tuple[1]["test"],
             interface=self.interface,
@@ -49,7 +49,7 @@ class Runner:
             final_list.append(self.parse_exercise(exercise))
         return final_list
 
-    def run(self) -> None:
+    def watch(self) -> None:
         """
         Load exercises, setup interface, then go through the exercises and for each:
             - setup observer, queue and filechangehandler
@@ -86,3 +86,27 @@ class Runner:
             observer.join()
         self.interface.print_progress()
         self.interface.print_course_complete()
+
+    def summary(self) -> None:
+        """
+        Run exercises with timeout until exercise is not done, then create a summary zip file.
+        """
+        all_exercises = self.get_exercises()
+        self.interface.all_length = len(all_exercises)
+
+        for exercise in all_exercises:
+            try:
+                exercise.read_code()
+                exercise.run_with_timeout()
+                self.interface.clear()
+
+                if exercise.check_done() is False:
+                    break
+            except:
+                break
+            self.interface.completed_length += 1
+
+        self.interface.create_summary_zip(
+            completed_exercises=all_exercises[: self.interface.completed_length],
+            current_exercise=all_exercises[self.interface.completed_length],
+        )

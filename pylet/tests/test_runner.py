@@ -65,7 +65,7 @@ def test_get_exercises(runner):
 @patch("runner.Observer")
 @patch("runner.FileChangeHandler")
 @patch("runner.Queue")
-def test_run(mock_queue, mock_file_change_handler, mock_observer, runner):
+def test_watch(mock_queue, mock_file_change_handler, mock_observer, runner):
     # Setup Mocks for test
     mock_interface = MagicMock()
     runner.interface = mock_interface
@@ -92,7 +92,7 @@ def test_run(mock_queue, mock_file_change_handler, mock_observer, runner):
     mock_file_change_handler_instance.process.join.side_effect = mock_process_join
 
     # Call method that is being tested
-    runner.run()
+    runner.watch()
 
     # Assert expected methods were called
     mock_file_change_handler.assert_called()
@@ -103,3 +103,37 @@ def test_run(mock_queue, mock_file_change_handler, mock_observer, runner):
 
     mock_interface.print_progress.assert_called()
     mock_interface.print_course_complete.assert_called()
+
+
+def test_summary(runner) -> None:
+
+    mock_interface = MagicMock()
+    runner.interface = mock_interface
+
+    exercise1 = MagicMock()
+    exercise1.check_done.return_value = True
+    exercise2 = MagicMock()
+    exercise2.check_done.return_value = False
+    exercise3 = MagicMock()
+
+    mock_exercises = [exercise1, exercise2, exercise3]
+    runner.get_exercises = MagicMock(return_value=mock_exercises)
+
+    runner.summary()
+
+    exercise1.read_code.assert_called_once()
+    exercise1.run_with_timeout.assert_called_once()
+    exercise1.check_done.assert_called_once()
+
+    exercise2.read_code.assert_called_once()
+    exercise2.run_with_timeout.assert_called_once()
+    exercise2.check_done.assert_called_once()
+
+    # assert that loop breaks before exercise3
+    exercise3.read_code.assert_not_called()
+    exercise3.run_with_timeout.assert_not_called()
+    exercise3.check_done.assert_not_called()
+
+    mock_interface.create_summary_zip.assert_called_with(
+        completed_exercises=[exercise1], current_exercise=exercise2
+    )

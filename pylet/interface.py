@@ -1,6 +1,11 @@
 import subprocess
+import zipfile
+from typing import TYPE_CHECKING, List
 
-from components import Colors, Result
+from components import Colors
+
+if TYPE_CHECKING:
+    from exercise import Exercise
 
 
 class Interface:
@@ -88,3 +93,69 @@ ___________________/  /__/  /__/  /__/  /________________________________
         Runs terminal command "clear".
         """
         subprocess.run(["clear"])
+
+    def create_file_in_zip(
+        self, archive: zipfile.ZipFile, path: str, content: str = ""
+    ) -> None:
+        """
+        In a ZipFile, create file at path, optionally with content.
+        """
+        with archive.open(path, "w") as f:
+            f.write(content.encode())
+
+    def create_summary_file_in_zip(self, archive: zipfile.ZipFile, path: str):
+        """
+        In a ZipFile, create a summary file with progress information, a link to the current exercise
+        and a list with links to the completed files.
+        """
+        zipfiles = archive.namelist()
+        completed = [
+            f"- [{f.split('/')[-1]}](./completed/{f.split('/')[-1]})"
+            for f in zipfiles
+            if "completed" in f
+        ]
+        current = next(
+            f"- [{f.split('/')[-1]}](./{f.split('/')[-1]})"
+            for f in zipfiles
+            if "completed" not in f
+        )
+        progress = f"{self.completed_length}/{self.all_length} ({round((self.completed_length/self.all_length)*100, 2)}%)"
+
+        summary = [
+            f"## PROGRESS: {progress}",
+            "",
+            "### current: ",
+            "",
+            current,
+            "",
+            "### completed: ",
+            "",
+        ]
+        summary.extend(sorted(completed))
+        summary.append("")
+
+        self.create_file_in_zip(archive, f"{path}/summary.md", "\n".join(summary))
+
+    def create_summary_zip(
+        self, completed_exercises: List["Exercise"], current_exercise: "Exercise"
+    ) -> None:
+        """
+        Take lists of exercises and the current exercise and create a zip file summary with
+        completed exercises, current exercises and summary file.
+        """
+        with zipfile.ZipFile("summary.zip", mode="w") as archive:
+
+            self.create_file_in_zip(
+                archive,
+                f"./summary/{current_exercise.name}.py",
+                current_exercise.code_str,
+            )
+
+            for exercise in completed_exercises:
+                self.create_file_in_zip(
+                    archive,
+                    f"./summary/completed/{exercise.name}.py",
+                    exercise.code_str,
+                )
+
+            self.create_summary_file_in_zip(archive, "./summary")

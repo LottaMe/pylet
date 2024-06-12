@@ -1,3 +1,4 @@
+from unittest import mock
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -12,7 +13,7 @@ def mock_interface():
 
 @pytest.fixture
 def exercise(mock_interface):
-    return Exercise("mock_path", False, mock_interface)
+    return Exercise("mock_name", "mock_path", False, mock_interface)
 
 
 @pytest.fixture
@@ -31,7 +32,6 @@ def test_run_with_tests(exercise):
 
     exercise.read_code = MagicMock()
     exercise.run_code_str_and_tests = MagicMock()
-    exercise.run_code_str = MagicMock()
 
     exercise.check_done = MagicMock(return_value=True)
 
@@ -39,7 +39,6 @@ def test_run_with_tests(exercise):
 
     exercise.read_code.assert_called_once()
     exercise.run_code_str_and_tests.assert_called_once()
-    exercise.run_code_str.assert_not_called()
 
 
 def test_run_without_tests(exercise):
@@ -49,15 +48,22 @@ def test_run_without_tests(exercise):
 
     exercise.read_code = MagicMock()
     exercise.run_code_str_and_tests = MagicMock()
-    exercise.run_code_str = MagicMock()
 
     exercise.check_done = MagicMock(return_value=True)
 
     exercise.run(MagicMock())
 
     exercise.read_code.assert_called_once()
-    exercise.run_code_str_and_tests.assert_not_called()
-    exercise.run_code_str.assert_called_once()
+    exercise.run_code_str_and_tests.assert_called_once()
+
+
+@mock.patch("exercise.timeout", lambda x: x)
+def test_run_with_timeout(exercise):
+    exercise.run_code_str_and_tests = MagicMock()
+
+    exercise.run_with_timeout()
+
+    exercise.run_code_str_and_tests.assert_called_once()
 
 
 def test_read_code(temp_file, exercise):
@@ -114,6 +120,7 @@ def test_run_tests_failures(exercise):
 
 
 def test_run_code_str_and_tests_success(exercise):
+    exercise.test = True
     exercise.run_code_str = MagicMock()
     exercise.run_code_str.side_effect = setattr(exercise, "result", Result(True))
     exercise.run_tests = MagicMock()
@@ -147,6 +154,8 @@ def test_run_code_str_and_tests_compile_failure(exercise):
 
 
 def test_run_code_str_and_tests_test_failure(exercise):
+    exercise.test = True
+
     exercise.run_code_str = MagicMock()
     exercise.run_code_str.side_effect = setattr(exercise, "result", Result(True))
     exercise.run_tests = MagicMock()
