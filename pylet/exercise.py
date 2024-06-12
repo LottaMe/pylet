@@ -52,7 +52,7 @@ class Exercise:
             self.result = Result(success=True, output="")
             self.interface.print_success()
         except Exception:
-            error = traceback.format_exc()
+            error = traceback.format_exc().split("exec(self.code_str)")[1].strip()
 
             self.result = Result(success=False, output=error)
             self.interface.print_failure(error)
@@ -65,10 +65,10 @@ class Exercise:
         result = subprocess.run(["pytest", self.path], capture_output=True, text=True)
         if "FAILURES" in result.stdout:
             self.result = Result(False, result.stdout)
-            self.interface.print_failure(result.stdout)
+            self.interface.print_failure(result.stdout, test=True)
         else:
             self.result = Result(True, result.stdout)
-            self.interface.print_success(result.stdout)
+            self.interface.print_success(result.stdout, test=True)
 
     def run_code_str_and_tests(self) -> Result:
         """
