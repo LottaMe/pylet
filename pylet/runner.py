@@ -1,4 +1,5 @@
 from multiprocessing import Queue
+import os
 from typing import Dict, List, Tuple
 
 import yaml
@@ -37,6 +38,17 @@ class Runner:
             test=exercise_tuple[1]["test"],
             interface=self.interface,
         )
+
+    def get_exercise_info_from_path(self, path: str) -> Dict[str, str]:
+        """
+        Take exercise path and return dictionary with info for exercise_info.yaml.
+        """
+        test = "false"
+        with open(f"exercises/{path}", "r") as f:
+            if "def test_" in f.read():
+                test = "true"
+        name = path.split("/")[-1].split(".")[0]
+        return {"name": name, "path": path.split(".")[0], "test": test}
 
     def get_exercises(self) -> List[Exercise]:
         """
@@ -110,3 +122,20 @@ class Runner:
             completed_exercises=all_exercises[: self.interface.completed_length],
             current_exercise=all_exercises[self.interface.completed_length],
         )
+
+    def generate(self) -> None:
+        """
+        Creates a list with every exercise folder/file name in exercises, has user order them
+        and creates the exercise_info.yaml, if it doesn't already exist.
+        """
+        if os.path.isfile("exercise_info.yaml"):
+            print("exercise_info.yaml already exists")
+            exit(0)
+
+        exercise_dir = [f for f in sorted(os.listdir("exercises")) if "__" not in f]
+        ordered_exercises = [
+            self.get_exercise_info_from_path(f)
+            for f in self.interface.order_exercises(exercise_dir)
+        ]
+
+        self.interface.create_exercise_info_yaml(ordered_exercises)

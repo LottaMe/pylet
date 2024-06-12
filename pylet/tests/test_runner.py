@@ -1,4 +1,5 @@
-from unittest.mock import MagicMock, patch
+import os
+from unittest.mock import MagicMock, mock_open, patch
 
 import pytest
 import yaml
@@ -48,6 +49,28 @@ def test_parse_exercise(runner):
     assert exercise.path == "exercises/path/e1.py"
     assert exercise.test == True
     assert exercise.interface == runner.interface
+
+
+def test_get_exercise_info_from_path_no_test(runner):
+    mock_content = "def normal_fake():\n  pass"
+    fake_path = "fake/path.py"
+
+    with patch("builtins.open", mock_open(read_data=mock_content)) as mock_file:
+        result = runner.get_exercise_info_from_path(fake_path)
+
+    mock_file.assert_called_with(f"exercises/{fake_path}", "r")
+    assert result == {"name": "path", "path": "fake/path", "test": "false"}
+
+
+def test_get_exercise_info_from_path_test(runner):
+    mock_content = "def test_fake():\n  pass"
+    fake_path = "fake/path.py"
+
+    with patch("builtins.open", mock_open(read_data=mock_content)) as mock_file:
+        result = runner.get_exercise_info_from_path(fake_path)
+
+    mock_file.assert_called_with(f"exercises/{fake_path}", "r")
+    assert result == {"name": "path", "path": "fake/path", "test": "true"}
 
 
 def test_get_exercises(runner):
@@ -137,3 +160,44 @@ def test_summary(runner) -> None:
     mock_interface.create_summary_zip.assert_called_with(
         completed_exercises=[exercise1], current_exercise=exercise2
     )
+
+
+def test_generate_yaml_exists(runner, monkeypatch):
+    monkeypatch.setattr(os.path, "isfile", lambda x: x == "exercise_info.yaml")
+
+    with pytest.raises(SystemExit) as e:
+        runner.generate()
+
+    assert e.type == SystemExit
+    assert e.value.code == 0
+
+
+def test_generate(runner, monkeypatch):
+    runner.interface.order_exercises.return_value = ["exercise1", "exercise2", "group1/ex1", "group1/ex2"]
+    # Helper mock functions
+    def mock_listdir(path):
+        if path == "exercises":
+            return ["exercise1.py", "exercise2.py", "group1"]
+        elif path == "exercises/group1":
+            return ["ex1.py", "ex2.py"]
+        return []
+
+    def mock_isdir(path):
+        return path == "exercises/group1"
+
+    # Mock os functions
+    monkeypatch.setattr(os.path, "isfile", lambda x: False)
+    monkeypatch.setattr(os, "listdir", mock_listdir)
+    monkeypatch.setattr(os.path, "isdir", mock_isdir)
+    
+    with patch('builtins.open'):
+        runner.generate()
+    expected_yaml_exercises = [
+        {"name": "exercise1", "path": "exercise1", "test": "false"},
+        {"name": "exercise2", "path": "exercise2", "test": "false"},
+        {"name": "ex1", "path": "group1/ex1", "test": "false"},
+        {"name": "ex2", "path": "group1/ex2", "test": "false"}
+    ]
+    # assert(s)
+    runner.interface.order_exercises.assert_called_once_with(["exercise1.py", "exercise2.py", "group1"])
+    runner.interface.create_exercise_info_yaml.assert_called_once_with(expected_yaml_exercises)

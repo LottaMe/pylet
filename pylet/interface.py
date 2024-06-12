@@ -1,6 +1,7 @@
+import os
 import subprocess
 import zipfile
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING, Dict, List
 
 from components import Colors
 
@@ -159,3 +160,57 @@ ___________________/  /__/  /__/  /__/  /________________________________
                 )
 
             self.create_summary_file_in_zip(archive, "./summary")
+
+    def get_order_index(self, exercises: List[str]) -> str:
+        """
+        Take list of exercises, display them numbered to the user and ask for them to
+        pick an index. If the index is valid, return it.
+        """
+        self.clear()
+        for i, exercise in enumerate(exercises):
+            print(f"{i}. {exercise}")
+        user_input = input("pick first exercise or exercise group    ")
+        if user_input not in [str(f) for f in range(len(exercises))]:
+            user_input = self.get_order_index(exercises)
+        return user_input
+
+    def order_exercises(self, exercise_paths: List[str]) -> List[str]:
+        """
+        Take list of exercise_paths and order them with the help of user input.
+        For folders, add all python files in folder to ordered list.
+        Return ordered list.
+        """
+        exercise_order = []
+
+        while len(exercise_paths) > 0:
+            user_input = self.get_order_index(exercise_paths)
+
+            if os.path.isdir(f"exercises/{exercise_paths[int(user_input)]}"):
+                for exercise in [
+                    f
+                    for f in sorted(
+                        os.listdir(f"exercises/{exercise_paths[int(user_input)]}")
+                    )
+                    if ".py" in f
+                ]:
+                    exercise_order.append(
+                        f"{exercise_paths[int(user_input)]}/{exercise}"
+                    )
+            else:
+                exercise_order.append(exercise_paths[int(user_input)])
+            # remove picked item
+            exercise_paths.pop(int(user_input))
+
+        return exercise_order
+
+    def create_exercise_info_yaml(self, exercises: Dict[str, str]) -> None:
+        yaml_list = ["exercises:"]
+        for exercise in exercises:
+            yaml_list.append(
+                f"""  {exercise["name"]}:
+    path: {exercise["path"]}
+    test: {exercise["test"]}"""
+            )
+        yaml_list.append("")
+        with open("exercise_info.yaml", "x") as f:
+            f.write("\n".join(yaml_list))
