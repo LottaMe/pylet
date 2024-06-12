@@ -45,7 +45,12 @@ Your students can clone the pylet repository (or rather, your version of the rep
 Now this has some disadvantages. It might not be the best way to go, to have every student's repository locally on your machine to keep up to date with their progress.
 It also might not be in your interest to introduce students to git & GitHub early as it might confuse beginners that are just learning to program.
 
-For this you and your students have another tool: `python pylet summary.`
+For this you and your students have another tool:
+
+```
+python pylet summary
+```
+
 With this pylet command the students can generate a summary.zip, which they can share with you. It includes a folder with the completed exercises, the current exercise file that the student is solving and a summary markdown file, which includes an overview of what is included and completed.
 
 This way you can have students share their progress easily, check out their completed exercises and help them with the current exercise, if they are stuck.

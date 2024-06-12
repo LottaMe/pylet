@@ -19,6 +19,12 @@ Now you can look at the output you are getting in the terminal - it should inclu
 
 ## 3. Keeping teacher up to date with your work
 
-With another pylet command, you will have an easier time updating your teacher about your progress. Just run `python pylet summary` and pylet will generate a summary.zip file that will include a folder with your completed exercises, the current exercise and a summary.md that lists the progress in a simple overview.
+With another pylet command, you will have an easier time updating your teacher about your progress. Just run the folling command:
+
+```
+python pylet summary
+```
+
+With the summary command, pylet will generate a summary.zip file that will include a folder with your completed exercises, the current exercise and a summary.md that lists the progress in a simple overview.
 
 You can send this to your teacher if they need an update on your progress or if you are stuck, or unsure about your solutions.

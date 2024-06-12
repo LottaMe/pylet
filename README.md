@@ -70,12 +70,14 @@ source env/bin/activate
 To run pylet enter:
 
 ```
-python pylet
+python pylet watch
 ```
 
 You can always exit it, with a KeyboardInterrupt (control c).
 
 As this is an early version, `pylet` may hang at times. Try exiting it and running pylet again.
+
+_If you are using pylet as part of a course, check out the [teacher](./guides/teacher-guide.md) or [student](./guides/student-guide.md) guides, for more useful pylet commands_
 
 ## Continuing on
 
