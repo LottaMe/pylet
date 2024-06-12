@@ -79,6 +79,14 @@ As this is an early version, `pylet` may hang at times. Try exiting it and runni
 
 _If you are using pylet as part of a course, check out the [teacher](./guides/teacher-guide.md) or [student](./guides/student-guide.md) guides, for more useful pylet commands_
 
+## Solving exercises
+
+After running `python pylet`, you will see the the current progress and the output of the first exercise in the terminal, as well as which exercise is running.
+
+You can either command click on the path to the exercise (in the terminal) or look for the exercise in the exercises folder. Open the exercise python file and solve the exercise.
+
+When the code is running successfully, You will get a success message in the terminal, to continue to the next exercise, you need to remove the ### I AM NOT DONE comment from the exercise file. Only when the code is running (and optionally the tests pass) and the ### I AM NOT DONE comment is removed, `pylet` will move on to the next exercise.
+
 ## Continuing on
 
 After completing all the exercises in `pylet`, you should have a good understanding of the basics of python.
