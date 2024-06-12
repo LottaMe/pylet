@@ -124,7 +124,10 @@ class Runner:
         )
 
     def generate(self) -> None:
-        # check that exercise_info.yaml does not exist
+        """
+        Creates a list with every exercise folder/file name in exercises, has user order them
+        and creates the exercise_info.yaml, if it doesn't already exist.
+        """
         if os.path.isfile("exercise_info.yaml"):
             print("exercise_info.yaml already exists")
             exit(0)
@@ -135,5 +138,4 @@ class Runner:
             for f in self.interface.order_exercises(exercise_dir)
         ]
 
-        # create exercise_info.yaml from list of exercise dicts
         self.interface.create_exercise_info_yaml(ordered_exercises)

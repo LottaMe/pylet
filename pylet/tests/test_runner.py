@@ -51,6 +51,28 @@ def test_parse_exercise(runner):
     assert exercise.interface == runner.interface
 
 
+def test_get_exercise_info_from_path_no_test(runner):
+    mock_content = "def normal_fake():\n  pass"
+    fake_path = "fake/path.py"
+
+    with patch("builtins.open", mock_open(read_data=mock_content)) as mock_file:
+        result = runner.get_exercise_info_from_path(fake_path)
+
+    mock_file.assert_called_with(f"exercises/{fake_path}", "r")
+    assert result == {"name": "path", "path": "fake/path", "test": "false"}
+
+
+def test_get_exercise_info_from_path_test(runner):
+    mock_content = "def test_fake():\n  pass"
+    fake_path = "fake/path.py"
+
+    with patch("builtins.open", mock_open(read_data=mock_content)) as mock_file:
+        result = runner.get_exercise_info_from_path(fake_path)
+
+    mock_file.assert_called_with(f"exercises/{fake_path}", "r")
+    assert result == {"name": "path", "path": "fake/path", "test": "true"}
+
+
 def test_get_exercises(runner):
     exercises = runner.get_exercises()
 
