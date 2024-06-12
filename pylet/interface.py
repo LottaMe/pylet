@@ -1,3 +1,4 @@
+import os
 import subprocess
 import zipfile
 from typing import TYPE_CHECKING, Dict, List
@@ -160,7 +161,6 @@ ___________________/  /__/  /__/  /__/  /________________________________
 
             self.create_summary_file_in_zip(archive, "./summary")
 
-
     def get_order_index(self, exercises: List[str]) -> str:
         """
         Take list of exercises, display them numbered to the user and ask for them to
@@ -173,7 +173,30 @@ ___________________/  /__/  /__/  /__/  /________________________________
         if user_input not in [str(f) for f in range(len(exercises))]:
             self.get_order_index(exercises)
         return user_input
-    
+
+    def order_exercises(self, exercise_paths: List[str]) -> List[str]:
+        exercise_order = []
+
+        while len(exercise_paths) > 0:
+            user_input = self.get_order_index(exercise_paths)
+
+            if os.path.isdir(f"exercises/{exercise_paths[int(user_input)]}"):
+                for exercise in [
+                    f
+                    for f in sorted(
+                        os.listdir(f"exercises/{exercise_paths[int(user_input)]}")
+                    )
+                    if ".py" in f
+                ]:
+                    exercise_order.append(
+                        f"{exercise_paths[int(user_input)]}/{exercise}"
+                    )
+            else:
+                exercise_order.append(exercise_paths[int(user_input)])
+            # remove picked item
+            exercise_paths.pop(int(user_input))
+
+        return exercise_order
 
     def create_exercise_info_yaml(self, exercises: Dict[str, str]) -> None:
         yaml_list = ["exercises:"]
@@ -186,4 +209,3 @@ ___________________/  /__/  /__/  /__/  /________________________________
         yaml_list.append("")
         with open("exercise_info.yaml", "x") as f:
             f.write("\n".join(yaml_list))
-            

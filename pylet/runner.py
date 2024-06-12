@@ -128,34 +128,12 @@ class Runner:
         if os.path.isfile("exercise_info.yaml"):
             print("exercise_info.yaml already exists")
             exit(0)
-            
+
         exercise_dir = [f for f in sorted(os.listdir("exercises")) if "__" not in f]
-        exercise_order = []
-
-        # sort exercises to user defined order
-        while len(exercise_dir) > 0:
-            user_input = self.interface.get_order_index(exercise_dir)
-            
-            if os.path.isdir(f"exercises/{exercise_dir[int(user_input)]}"):
-                for exercise in [
-                    f
-                    for f in sorted(
-                        os.listdir(f"exercises/{exercise_dir[int(user_input)]}")
-                    )
-                    if ".py" in f
-                ]:
-                    exercise_order.append(
-                        self.get_exercise_info_from_path(
-                            f"{exercise_dir[int(user_input)]}/{exercise}"
-                        )
-                    )
-            else:
-                exercise_order.append(
-                    self.get_exercise_info_from_path(exercise_dir[int(user_input)])
-                )
-
-            # remove picked item
-            exercise_dir.pop(int(user_input))
+        ordered_exercises = [
+            self.get_exercise_info_from_path(f)
+            for f in self.interface.order_exercises(exercise_dir)
+        ]
 
         # create exercise_info.yaml from list of exercise dicts
-        self.interface.create_exercise_info_yaml(exercise_order)
+        self.interface.create_exercise_info_yaml(ordered_exercises)

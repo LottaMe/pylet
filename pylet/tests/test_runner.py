@@ -151,7 +151,7 @@ def test_generate_yaml_exists(runner, monkeypatch):
 
 
 def test_generate(runner, monkeypatch):
-    runner.interface.get_order_index.side_effect = ["0", "0", "0", "0"]
+    runner.interface.order_exercises.return_value = ["exercise1", "exercise2", "group1/ex1", "group1/ex2"]
     # Helper mock functions
     def mock_listdir(path):
         if path == "exercises":
@@ -177,4 +177,5 @@ def test_generate(runner, monkeypatch):
         {"name": "ex2", "path": "group1/ex2", "test": "false"}
     ]
     # assert(s)
+    runner.interface.order_exercises.assert_called_once_with(["exercise1.py", "exercise2.py", "group1"])
     runner.interface.create_exercise_info_yaml.assert_called_once_with(expected_yaml_exercises)
