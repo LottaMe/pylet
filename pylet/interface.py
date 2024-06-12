@@ -175,6 +175,11 @@ ___________________/  /__/  /__/  /__/  /________________________________
         return user_input
 
     def order_exercises(self, exercise_paths: List[str]) -> List[str]:
+        """
+        Take list of exercise_paths and order them with the help of user input.
+        For folders, add all python files in folder to ordered list.
+        Return ordered list.
+        """
         exercise_order = []
 
         while len(exercise_paths) > 0:
