@@ -171,7 +171,7 @@ ___________________/  /__/  /__/  /__/  /________________________________
             print(f"{i}. {exercise}")
         user_input = input("pick first exercise or exercise group    ")
         if user_input not in [str(f) for f in range(len(exercises))]:
-            self.get_order_index(exercises)
+            user_input = self.get_order_index(exercises)
         return user_input
 
     def order_exercises(self, exercise_paths: List[str]) -> List[str]:

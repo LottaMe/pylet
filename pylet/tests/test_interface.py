@@ -245,3 +245,32 @@ def test_create_summary_zip(interface):
         interface.create_summary_file_in_zip.assert_called_once_with(
             mock_archive, "./summary"
         )
+
+
+def test_get_order_index_valid(interface, capsys):
+    interface.clear = MagicMock()
+    mock_exercises = ["exercise1", "exercise2"]
+
+    with patch('builtins.input', return_value="1"):
+        result = interface.get_order_index(mock_exercises)
+
+    captured = capsys.readouterr()
+    interface.clear.assert_called_once()
+    assert result == "1"
+    assert "0. exercise1" in captured.out
+    assert "1. exercise2" in captured.out
+
+
+def test_get_order_index_invalid(interface, capsys):
+    interface.clear = MagicMock()
+    mock_exercises = ["exercise1", "exercise2"]
+
+    with patch('builtins.input', side_effect=["bad", "1"]):
+        result = interface.get_order_index(mock_exercises)
+
+    captured = capsys.readouterr()
+    assert interface.clear.call_count == 2
+    assert result == "1"
+    assert "0. exercise1" in captured.out
+    assert "1. exercise2" in captured.out
+    
